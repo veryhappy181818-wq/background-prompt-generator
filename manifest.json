@@ -1,9 +1,11 @@
 {
+  "id": "/background-prompt-generator/",
   "name": "Nightmare Studio",
   "short_name": "Nightmare Studio",
   "description": "Background Prompt Generator for Horror Scripts",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#1a0000",
   "theme_color": "#8B0000",
   "icons": [
