@@ -914,7 +914,15 @@ $("copyAllBtn").addEventListener("click",()=>{
   const text=currentBackgrounds.map(b=>`BG ${String(b.backgroundNumber).padStart(2,"0")} — ${b.environmentType||""}\nScenes: ${b.sceneIndex||"-"}\n${b.isReused?"Reused from #"+b.reusedFrom+"\n":""}\nPrompt: ${b.promptText||""}\n`).join("\n---\n\n");
   copyText(text);
 });
-
+$("exportTxtBtn").addEventListener("click",()=>{
+  if(!currentBackgrounds.length) return showToast("Koi background nahi hai.");
+  const text=currentBackgrounds.map(b=>`BG ${String(b.backgroundNumber).padStart(2,"0")} — ${b.environmentType||""}\nScenes: ${b.sceneIndex||"-"}\nCamera: ${b.cameraView||""}\nMood: ${b.timeWeatherMood||""}\n\nPROMPT:\n${b.promptText||""}\n`).join("\n---\n\n");
+  const blob=new Blob([text],{type:"text/plain"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=(currentProject?.projectName||"backgrounds")+".txt"; a.click();
+  URL.revokeObjectURL(url); showToast("TXT exported ✅");
+});
 async function toggleLock(b){
   b.locked=!b.locked;
   await db.collection("backgrounds").doc(b.id).update({locked:b.locked});
