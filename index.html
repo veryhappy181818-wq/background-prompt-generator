@@ -210,7 +210,7 @@ const firebaseConfig = {
 let WORKER_URL = "https://withered-field-2311.veryhappy181818.workers.dev";
 
 const ALLOWED_EMAIL = "veryhappy181818@gmail.com";
-const DAILY_LIMIT = 3;
+const DAILY_LIMIT = parseInt(localStorage.getItem("ns_daily_limit")||"3");
 const MAX_SCRIPT_MINUTES = 10;
 const WORDS_PER_MINUTE = 130;
 </script>
@@ -338,6 +338,7 @@ const WORDS_PER_MINUTE = 130;
           <div class="bg-toolbar">
             <input type="text" class="search-input" id="bgSearch" placeholder="Search scenes, backgrounds…" style="max-width:300px;"/>
             <button class="btn btn-amber btn-sm" id="copyAllBtn">📋 Copy All Prompts</button>
+            <button class="btn btn-outline btn-sm" id="exportTxtBtn">⬇️ Export TXT</button>
           </div>
           <div class="bg-list" id="bgList"></div>
           <div id="bgEmpty" class="empty-state"><div class="em-mark">📽️</div><div>No backgrounds yet. Analyze a script first.</div></div>
@@ -971,5 +972,6 @@ function statCard(num,label){ return `<div class="stat-card"><div class="stat-nu
 
 window.addEventListener("beforeunload",()=>{ if(currentProject) saveDraft(); });
 </script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");</script>
 </body>
 </html>
