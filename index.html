@@ -184,6 +184,23 @@ footer.appfoot{text-align:center;padding:24px;font-size:11px;color:var(--ink-fai
 .cf-banner{background:rgba(217,142,58,.1);border:1px solid var(--ember-dim);color:var(--ink);border-radius:8px;padding:14px 16px;font-size:13px;margin-bottom:16px;line-height:1.5;}
 .cf-banner input{width:100%;padding:10px 12px;border-radius:6px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;margin-top:8px;}
 .cf-banner input:focus{border-color:var(--ember);}
+.onboard-overlay{position:fixed;inset:0;background:#060505;z-index:9000;display:flex;align-items:center;justify-content:center;padding:24px;}
+.onboard-card{background:#0c0a0a;border:1px solid #332424;border-radius:16px;width:100%;max-width:360px;overflow:hidden;}
+.onboard-header{padding:28px 24px 0;text-align:center;}
+.onboard-eyebrow{font-size:10px;letter-spacing:.3em;color:#d98e3a;text-transform:uppercase;margin-bottom:20px;}
+.onboard-icon-wrap{width:80px;height:80px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:36px;border:1px solid #332424;}
+.onboard-title{font-family:"Cinzel","Georgia",serif;font-size:20px;color:#ece4dd;letter-spacing:.04em;margin:0 0 10px;}
+.onboard-desc{font-size:13px;color:#a8978f;line-height:1.65;margin:0 0 24px;padding:0 8px;}
+.onboard-steps{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1);}
+.onboard-step{min-width:100%;padding:0 24px;text-align:center;}
+.onboard-progress{display:flex;gap:6px;justify-content:center;padding:16px 0;}
+.onboard-dot{height:6px;border-radius:3px;background:#332424;transition:.3s;width:6px;}
+.onboard-dot.active{background:#b1272d;width:22px;}
+.onboard-footer{padding:0 20px 24px;}
+.onboard-next{width:100%;padding:13px;border-radius:8px;background:#b1272d;color:#fff;font-size:14px;font-weight:600;border:none;cursor:pointer;letter-spacing:.06em;font-family:"Cinzel","Georgia",serif;margin-bottom:10px;}
+.onboard-next:hover{background:#c8302f;}
+.onboard-skip{width:100%;padding:8px;border-radius:8px;background:transparent;border:1px solid #332424;color:#6e5e58;font-size:12px;cursor:pointer;letter-spacing:.08em;}
+.onboard-skip:hover{border-color:#6e5e58;color:#a8978f;}
 </style>
 <link rel="manifest" href="manifest.json">
 </head>
@@ -213,10 +230,11 @@ const ALLOWED_EMAIL = "veryhappy181818@gmail.com";
 const DAILY_LIMIT = parseInt(localStorage.getItem("ns_daily_limit")||"3");
 const MAX_SCRIPT_MINUTES = 10;
 const WORDS_PER_MINUTE = 130;
+<div class="onboard-overlay hidden" id="onboardOverlay"><div class="onboard-card"><div class="onboard-header"><div class="onboard-eyebrow">GK Horror Tales</div><div class="onboard-steps" id="obSteps"><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#b1272d 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">📜</div><div class="onboard-title">Script Paste Karo</div><div class="onboard-desc">Apna Hindi horror script paste karo. App automatically scenes detect karke analyze karega.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#b1272d,#7a1a1f 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">🩸</div><div class="onboard-title">AI Analysis</div><div class="onboard-desc">Analyze Script button dabao. Gemini AI har scene ke liye unique background art prompts generate karega.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#8a5d27 70%);box-shadow:0 0 24px rgba(217,142,58,.3);">🎞️</div><div class="onboard-title">Prompts Copy Karo</div><div class="onboard-desc">Backgrounds tab mein prompts milenge. Copy karke kisi bhi image AI mein paste karo!</div></div></div><div class="onboard-progress"><div class="onboard-dot active" id="ob0"></div><div class="onboard-dot" id="ob1"></div><div class="onboard-dot" id="ob2"></div></div></div><div class="onboard-footer"><button class="onboard-next" id="obNext">AAGE BADHO</button><button class="onboard-skip" id="obSkip">SKIP KARO</button></div></div></div>
 </script>
-
+  
 <div class="app" id="app">
-
+  
   <!-- AUTH SCREEN -->
   <div id="authScreen" class="auth-wrap">
     <div class="auth-card">
