@@ -989,6 +989,7 @@ function renderAnalytics(){
 function statCard(num,label){ return `<div class="stat-card"><div class="stat-num">${num}</div><div class="stat-label">${label}</div></div>`; }
 
 window.addEventListener("beforeunload",()=>{ if(currentProject) saveDraft(); });
+(function(){if(localStorage.getItem("ns_onboard_done"))return;const ov=document.getElementById("onboardOverlay");ov.classList.remove("hidden");let cur=0;function go(n){cur=n;document.getElementById("obSteps").style.transform=`translateX(-${cur*100}%)`;[0,1,2].forEach(i=>{const d=document.getElementById("ob"+i);d.className="onboard-dot"+(i===cur?" active":"");});document.getElementById("obNext").textContent=cur===2?"SHURU KARO 🔥":"AAGE BADHO";}document.getElementById("obNext").addEventListener("click",()=>{cur<2?go(cur+1):done();});document.getElementById("obSkip").addEventListener("click",done);function done(){localStorage.setItem("ns_onboard_done","1");ov.classList.add("hidden");}})();
 </script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");</script>
 </body>
