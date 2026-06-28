@@ -272,7 +272,24 @@ const WORDS_PER_MINUTE = 130;
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </div>
         <div class="avatar" id="userAvatar">U</div>
-        <div class="icon-btn" id="menuBtn" title="More" onclick="document.getElementById('sideDrawer').classList.toggle('hidden')" style="font-size:18px;font-weight:700;letter-spacing:1px;">≡</div><div id="sideDrawer" class="hidden" style="position:fixed;top:56px;right:12px;background:#1a0a0a;border:1px solid #332424;border-radius:12px;z-index:999;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:8px 0;"><div onclick="document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));document.getElementById('panel-ideas').classList.remove('hidden');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('sideDrawer').classList.add('hidden');" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">💡 Idea Writer</div><div onclick="document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));document.getElementById('panel-production').classList.remove('hidden');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('sideDrawer').classList.add('hidden');" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎬 One-Click Production</div><div onclick="document.getElementById('sideDrawer').classList.add('hidden');" style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🩺 AI Script Doctor<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div onclick="document.getElementById('sideDrawer').classList.add('hidden');" style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🎥 Director Mode<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div onclick="document.getElementById('sideDrawer').classList.add('hidden');" style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;">🔗 Share Project<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div></div>      </div>
+        <div class="icon-btn" id="menuBtn" title="More" onclick="document.getElementById('sideDrawer').classList.toggle('hidden')" style="font-size:18px;font-weight:700;letter-spacing:1px;">≡</div><div id="sideDrawer" class="hidden" style="position:fixed;top:56px;right:12px;background:#1a0a0a;border:1px solid #332424;border-radius:12px;z-index:999;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:8px 0;"><div onclick="openFeature('ideas')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">💡 Idea Writer</div><div onclick="openFeature('production')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎬 One-Click Production</div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🩺 AI Script Doctor<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🎥 Director Mode<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;">🔗 Share Project<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div></div>
+<!-- FEATURE PROJECT SELECTOR MODAL -->
+<div id="featureModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;">
+<div style="background:#110808;border:1px solid #332424;border-radius:16px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;">
+<div id="featureModalHeader" style="padding:16px 20px;border-bottom:1px solid #332424;display:flex;align-items:center;justify-content:space-between;">
+<span style="font-size:14px;font-weight:700;color:#d98e3a;letter-spacing:.08em;" id="featureModalTitle">💡 Idea Writer</span>
+<span onclick="closeFeatureModal()" style="color:#6e5e58;font-size:20px;cursor:pointer;line-height:1;">✕</span>
+</div>
+<div style="padding:16px 20px;">
+<div style="font-size:11px;color:#8a5d27;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;">Project Select Karo</div>
+<div id="featureProjList" style="margin-bottom:12px;max-height:220px;overflow-y:auto;"></div>
+<div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin:12px 0;"></div>
+<div style="font-size:11px;color:#8a5d27;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">Ya Naya Project Banao</div>
+<input id="featureNewProjName" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="Project naam likho..."/>
+<button onclick="createAndOpenFeature()" style="width:100%;padding:11px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.08em;">🩸 Naya Project Banao & Kholo</button>
+</div>
+</div>
+</div>      </div>
     </div>
 
     <div class="container">
@@ -993,6 +1010,78 @@ function statCard(num,label){ return `<div class="stat-card"><div class="stat-nu
 window.addEventListener("beforeunload",()=>{ if(currentProject) saveDraft(); });
 (function(){if(localStorage.getItem("ns_onboard_done"))return;const ov=document.getElementById("onboardOverlay");ov.classList.remove("hidden");let cur=0;function go(n){cur=n;document.getElementById("obSteps").style.transform=`translateX(-${cur*100}%)`;[0,1,2].forEach(i=>{const d=document.getElementById("ob"+i);d.className="onboard-dot"+(i===cur?" active":"");});document.getElementById("obNext").textContent=cur===2?"SHURU KARO 🔥":"AAGE BADHO";}document.getElementById("obNext").addEventListener("click",()=>{cur<2?go(cur+1):done();});document.getElementById("obSkip").addEventListener("click",done);function done(){localStorage.setItem("ns_onboard_done","1");ov.classList.add("hidden");}})();
 (function(){const iwColors=['c1','c2','c3','c4','c5'];const iwBadges=['Supernatural','Mystery','Psychological','Ghost','Thriller'];const iwStyles={c1:{bg:'linear-gradient(135deg,#04342C,#0F6E56)',border:'#1D9E75',num:'#5DCAA5',text:'#9FE1CB',badge:'rgba(29,158,117,.25)',badgeText:'#5DCAA5',badgeBorder:'rgba(29,158,117,.4)'},c2:{bg:'linear-gradient(135deg,#042C53,#185FA5)',border:'#378ADD',num:'#85B7EB',text:'#B5D4F4',badge:'rgba(24,95,165,.25)',badgeText:'#85B7EB',badgeBorder:'rgba(55,138,221,.4)'},c3:{bg:'linear-gradient(135deg,#412402,#854F0B)',border:'#d98e3a',num:'#EF9F27',text:'#FAC775',badge:'rgba(186,117,23,.25)',badgeText:'#EF9F27',badgeBorder:'rgba(217,142,58,.4)'},c4:{bg:'linear-gradient(135deg,#501313,#A32D2D)',border:'#b1272d',num:'#F09595',text:'#F7C1C1',badge:'rgba(163,45,45,.25)',badgeText:'#F09595',badgeBorder:'rgba(177,39,45,.4)'},c5:{bg:'linear-gradient(135deg,#26215C,#534AB7)',border:'#7F77DD',num:'#AFA9EC',text:'#CECBF6',badge:'rgba(83,74,183,.25)',badgeText:'#AFA9EC',badgeBorder:'rgba(127,119,221,.4)'}};document.querySelectorAll('.iw-dur').forEach(btn=>{btn.style.cssText='padding:10px 0;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#6e5e58;font-size:12px;font-weight:600;cursor:pointer;text-align:center;letter-spacing:.06em;';btn.addEventListener('click',function(){document.querySelectorAll('.iw-dur').forEach(b=>{b.classList.remove('active');b.style.cssText='padding:10px 0;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#6e5e58;font-size:12px;font-weight:600;cursor:pointer;text-align:center;letter-spacing:.06em;';});this.classList.add('active');const m=this.dataset.min;const styles={2:'border-color:#1D9E75;background:linear-gradient(135deg,#04342C,#0F6E56);color:#9FE1CB;box-shadow:0 0 12px rgba(29,158,117,.3);',5:'border-color:#185FA5;background:linear-gradient(135deg,#042C53,#185FA5);color:#B5D4F4;box-shadow:0 0 12px rgba(24,95,165,.3);',8:'border-color:#d98e3a;background:linear-gradient(135deg,#412402,#854F0B);color:#FAC775;box-shadow:0 0 12px rgba(217,142,58,.3);',10:'border-color:#b1272d;background:linear-gradient(135deg,#501313,#A32D2D);color:#F7C1C1;box-shadow:0 0 12px rgba(177,39,45,.3);'};this.style.cssText='padding:10px 0;border-radius:8px;cursor:pointer;text-align:center;font-size:12px;font-weight:600;letter-spacing:.06em;'+styles[m];});});document.getElementById('iw-gen-btn').addEventListener('click',async()=>{const btn=document.getElementById('iw-gen-btn');const subject=document.getElementById('iw-subject').value.trim()||'horror story';const dur=document.querySelector('.iw-dur.active').dataset.min;btn.textContent='Generating...';btn.disabled=true;try{const prompt=`Generate exactly 10 unique Hindi horror YouTube story ideas for the topic: "${subject}". Duration: ${dur} minutes. Format as JSON array: [{"idea":"story idea in Hindi/Hinglish","badge":"one of: Supernatural/Mystery/Psychological/Ghost/Thriller"}]. Return only valid JSON, no markdown.`;const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.9,responseMimeType:'application/json'}})});const data=await res.json();const text=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'[]';const ideas=JSON.parse(text.replace(/```json|```/g,'').trim());const list=document.getElementById('iw-list');list.innerHTML='';ideas.forEach((item,i)=>{const c=iwColors[i%5];const s=iwStyles[c];const d=document.createElement('div');d.style.cssText=`background:${s.bg};border:1px solid ${s.border};border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 4px 16px rgba(0,0,0,.3);`;d.innerHTML=`<span style="font-size:20px;font-weight:700;min-width:28px;color:${s.num};line-height:1;">${i+1}</span><div style="flex:1;"><p style="font-size:12px;line-height:1.6;margin:0 0 8px;color:${s.text};">${item.idea||item}</p><span style="display:inline-block;font-size:9px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:${s.badge};color:${s.badgeText};border:1px solid ${s.badgeBorder};">${item.badge||iwBadges[i%5]}</span></div>`;list.appendChild(d);});document.getElementById('iw-ideas-section').style.display='block';}catch(e){showToast('Error: '+e.message);}finally{btn.textContent='🩸 Generate 10 Ideas';btn.disabled=false;}});})();
+// ============================================================
+// FEATURE PROJECT SELECTOR
+// ============================================================
+let currentFeature = null;
+const featureLabels = {ideas:'💡 Idea Writer', production:'🎬 One-Click Production'};
+
+function openFeature(feature){
+  document.getElementById('sideDrawer').classList.add('hidden');
+  currentFeature = feature;
+  document.getElementById('featureModalTitle').textContent = featureLabels[feature]||feature;
+  document.getElementById('featureNewProjName').value = '';
+  // Agar project already open hai to seedha feature kholo
+  if(currentProject){
+    closeFeatureModal();
+    switchToFeaturePanel(feature);
+    return;
+  }
+  // Project list render karo
+  const list = document.getElementById('featureProjList');
+  list.innerHTML = '';
+  if(!projects || projects.length === 0){
+    list.innerHTML = '<div style="color:#6e5e58;font-size:12px;text-align:center;padding:12px 0;">Koi project nahi hai — naya banao!</div>';
+  } else {
+    projects.forEach(p => {
+      const d = document.createElement('div');
+      d.style.cssText = 'padding:10px 14px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:13px;cursor:pointer;margin-bottom:6px;';
+      d.textContent = p.projectName || 'Untitled Reel';
+      d.onmouseenter = ()=> d.style.borderColor='#b1272d';
+      d.onmouseleave = ()=> d.style.borderColor='#332424';
+      d.onclick = async()=>{
+        closeFeatureModal();
+        await openProject(p);
+        switchToFeaturePanel(feature);
+      };
+      list.appendChild(d);
+    });
+  }
+  document.getElementById('featureModal').classList.remove('hidden');
+}
+
+function closeFeatureModal(){
+  document.getElementById('featureModal').classList.add('hidden');
+}
+
+async function createAndOpenFeature(){
+  const name = document.getElementById('featureNewProjName').value.trim() || 'Untitled Reel';
+  const ref = await db.collection('projects').add({
+    userId: currentUser.uid, projectName: name,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    bgCount:0, sceneCount:0
+  });
+  const doc = await ref.get();
+  closeFeatureModal();
+  await loadProjects();
+  await openProject({id:ref.id,...doc.data()});
+  switchToFeaturePanel(currentFeature);
+}
+
+function switchToFeaturePanel(feature){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const panel = document.getElementById('panel-'+feature);
+  if(panel) panel.classList.remove('hidden');
+}
+
+// Modal bahar click karne pe band ho
+document.getElementById('featureModal').addEventListener('click', function(e){
+  if(e.target === this) closeFeatureModal();
+});
+
 (function(){function ocpCopyBtn(id,text){const b=document.createElement('button');b.textContent='Copy';b.style.cssText='padding:4px 12px;border-radius:6px;border:1px solid #332424;background:#1a0a0a;color:#d98e3a;font-size:11px;cursor:pointer;float:right;';b.onclick=()=>{navigator.clipboard.writeText(text).then(()=>{b.textContent='✓ Copied';setTimeout(()=>b.textContent='Copy',1500);});};return b;}function ocpSection(icon,title,content){const wrap=document.createElement('div');wrap.style.cssText='background:#110808;border:1px solid #332424;border-radius:10px;padding:14px 16px;margin-bottom:12px;';const head=document.createElement('div');head.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;';const t=document.createElement('span');t.style.cssText='font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a5d27;';t.textContent=icon+' '+title;head.appendChild(t);head.appendChild(ocpCopyBtn(title,content));wrap.appendChild(head);const p=document.createElement('p');p.style.cssText='font-size:12px;line-height:1.7;color:#ece4dd;margin:0;white-space:pre-wrap;';p.textContent=content;wrap.appendChild(p);return wrap;}document.getElementById('ocp-gen-btn').addEventListener('click',async()=>{const btn=document.getElementById('ocp-gen-btn');const script=document.getElementById('scriptInput').value.trim();if(!script){showToast('⚠️ Pehle script paste karo!');return;}btn.textContent='Generating...';btn.disabled=true;try{const prompt=`You are a Hindi horror YouTube production expert. Based on this script, generate a complete production pack in JSON format.\n\nScript:\n${script.substring(0,2000)}\n\nReturn ONLY valid JSON (no markdown):\n{"bgm":{"mood":"string","suggestions":["track1","track2","track3"],"sources":"string"},"sfx":["scene: sound effect description (3-5 items)"],"thumbnail":"detailed thumbnail visual description in Hinglish","title":{"hindi":"Hindi title","hinglish":"Hinglish title","english":"English title"},"description":"YouTube description 150 words Hindi/Hinglish with emojis","hashtags":"#tag1 #tag2 #tag3 ... (15 tags)"}`;const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,responseMimeType:'application/json'}})});const data=await res.json();const text=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'{}';const d=JSON.parse(text.replace(/```json|```/g,'').trim());const result=document.getElementById('ocp-result');['ocp-bgm','ocp-sfx','ocp-thumb','ocp-title','ocp-desc','ocp-tags'].forEach(id=>document.getElementById(id).innerHTML='');const bgmText=`Mood: ${d.bgm?.mood||''}\n\nSuggested Tracks:\n${(d.bgm?.suggestions||[]).join('\n')}\n\nSources: ${d.bgm?.sources||'YouTube Audio Library, Pixabay'}`;document.getElementById('ocp-bgm').appendChild(ocpSection('🎵','Background Music',bgmText));const sfxText=(d.sfx||[]).join('\n');document.getElementById('ocp-sfx').appendChild(ocpSection('🔊','Sound Effects',sfxText));document.getElementById('ocp-thumb').appendChild(ocpSection('🖼️','Thumbnail Idea',d.thumbnail||''));const titleText=`Hindi: ${d.title?.hindi||''}\nHinglish: ${d.title?.hinglish||''}\nEnglish: ${d.title?.english||''}`;document.getElementById('ocp-title').appendChild(ocpSection('📝','YouTube Title',titleText));document.getElementById('ocp-desc').appendChild(ocpSection('📄','Description',d.description||''));document.getElementById('ocp-tags').appendChild(ocpSection('#️⃣','Hashtags',d.hashtags||''));result.style.display='block';}catch(e){showToast('Error: '+e.message);}finally{btn.textContent='🎬 Generate Production Pack';btn.disabled=false;}});})();
 </script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");</script>
