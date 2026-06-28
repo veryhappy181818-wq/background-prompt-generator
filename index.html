@@ -201,6 +201,62 @@ footer.appfoot{text-align:center;padding:24px;font-size:11px;color:var(--ink-fai
 .onboard-next:hover{background:#c8302f;}
 .onboard-skip{width:100%;padding:8px;border-radius:8px;background:transparent;border:1px solid #332424;color:#6e5e58;font-size:12px;cursor:pointer;letter-spacing:.08em;}
 .onboard-skip:hover{border-color:#6e5e58;color:#a8978f;}
+
+/* ============================================================ */
+/* FEATURE PAGES */
+/* ============================================================ */
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.1)} }
+@keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+.iw2-chip {
+  padding:9px 14px;border-radius:20px;border:1px solid var(--line);
+  background:var(--bg-deep);color:var(--ink-faint);font-size:12px;
+  font-weight:600;cursor:pointer;text-align:center;letter-spacing:.04em;
+  transition:all .2s;white-space:nowrap;
+}
+.iw2-chip.active {
+  border-color:var(--blood);background:linear-gradient(135deg,var(--blood-2),var(--blood));
+  color:#fff;box-shadow:0 0 12px rgba(177,39,45,.3);
+}
+.idea-card {
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:16px;margin-bottom:12px;animation:slideUp .3s ease forwards;
+}
+.idea-card-title { font-size:14px;font-weight:700;color:var(--ember);margin-bottom:6px;font-family:var(--font-display); }
+.idea-card-summary { font-size:12px;color:var(--ink-dim);line-height:1.6;margin-bottom:12px; }
+.idea-card-meta { display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap; }
+.idea-badge { padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase; }
+.idea-card-actions { display:flex;gap:8px; }
+.prod-tab {
+  padding:8px 14px;border-radius:20px;border:1px solid var(--line);
+  background:var(--bg-deep);color:var(--ink-faint);font-size:11px;
+  font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;
+}
+.prod-tab.active {
+  border-color:var(--blood);background:linear-gradient(135deg,var(--blood-2),var(--blood));
+  color:#fff;
+}
+.prod-panel { animation:slideUp .3s ease; }
+.prod-section {
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:16px;margin-bottom:12px;
+}
+.prod-section-head {
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;gap:8px;
+}
+.prod-section-title {
+  font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ember-dim);
+}
+.prod-section-body {
+  font-size:12px;line-height:1.8;color:var(--ink);white-space:pre-wrap;
+}
+.copy-btn {
+  padding:5px 12px;border-radius:6px;border:1px solid var(--line);
+  background:var(--bg-deep);color:var(--ember);font-size:11px;
+  cursor:pointer;flex-shrink:0;transition:all .2s;
+}
+.copy-btn:active { background:var(--blood-2);color:#fff; }
 </style>
 <link rel="manifest" href="manifest.json">
 </head>
@@ -235,6 +291,174 @@ const WORDS_PER_MINUTE = 130;
 <div class="onboard-overlay hidden" id="onboardOverlay"><div class="onboard-card"><div class="onboard-header"><div class="onboard-eyebrow">GK Horror Tales</div><div class="onboard-steps" id="obSteps"><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#b1272d 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">📜</div><div class="onboard-title">Script Paste Karo</div><div class="onboard-desc">Apna Hindi horror script paste karo. App automatically scenes detect karke analyze karega.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#b1272d,#7a1a1f 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">🩸</div><div class="onboard-title">AI Analysis</div><div class="onboard-desc">Analyze Script button dabao. Gemini AI har scene ke liye unique background art prompts generate karega.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#8a5d27 70%);box-shadow:0 0 24px rgba(217,142,58,.3);">🎞️</div><div class="onboard-title">Prompts Copy Karo</div><div class="onboard-desc">Backgrounds tab mein prompts milenge. Copy karke kisi bhi image AI mein paste karo!</div></div></div><div class="onboard-progress"><div class="onboard-dot active" id="ob0"></div><div class="onboard-dot" id="ob1"></div><div class="onboard-dot" id="ob2"></div></div></div><div class="onboard-footer"><button class="onboard-next" id="obNext">AAGE BADHO</button><button class="onboard-skip" id="obSkip">SKIP KARO</button></div></div></div>
 <div class="app" id="app">
   
+
+  <!-- ============================================================ -->
+  <!-- IDEA WRITER PAGE -->
+  <!-- ============================================================ -->
+  <div id="ideaWriterPage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
+    <div style="max-width:480px;margin:0 auto;padding:16px;">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:8px;">
+        <button onclick="closePage('ideaWriterPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;">GK Horror Tales</div>
+          <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);letter-spacing:.08em;">💡 Idea Writer</div>
+        </div>
+      </div>
+
+      <!-- Form Card -->
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;">
+        
+        <!-- Subject -->
+        <div style="margin-bottom:18px;">
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Subject / Topic</label>
+          <input id="iw2-subject" style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;box-sizing:border-box;" placeholder="e.g. Haunted school, cursed mirror, abandoned hospital..."/>
+        </div>
+
+        <!-- Category -->
+        <div style="margin-bottom:18px;">
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Story Category</label>
+          <div id="iw2-category" style="display:flex;flex-wrap:wrap;gap:8px;">
+            <div class="iw2-chip active" data-val="Horror">👻 Horror</div>
+            <div class="iw2-chip" data-val="Thriller">🔪 Thriller</div>
+            <div class="iw2-chip" data-val="Mystery">🕵️ Mystery</div>
+            <div class="iw2-chip" data-val="Crime">🚔 Crime</div>
+            <div class="iw2-chip" data-val="Sci-Fi">🛸 Sci-Fi</div>
+          </div>
+        </div>
+
+        <!-- Duration -->
+        <div style="margin-bottom:18px;">
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Story Duration</label>
+          <div id="iw2-duration" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+            <div class="iw2-chip active" data-val="2">2 Min</div>
+            <div class="iw2-chip" data-val="5">5 Min</div>
+            <div class="iw2-chip" data-val="8">8 Min</div>
+            <div class="iw2-chip" data-val="10">10 Min</div>
+          </div>
+        </div>
+
+        <!-- Tone -->
+        <div style="margin-bottom:20px;">
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Story Tone</label>
+          <div id="iw2-tone" style="display:flex;flex-wrap:wrap;gap:8px;">
+            <div class="iw2-chip active" data-val="Dark">🌑 Dark</div>
+            <div class="iw2-chip" data-val="Psychological">🧠 Psychological</div>
+            <div class="iw2-chip" data-val="Supernatural">👁️ Supernatural</div>
+            <div class="iw2-chip" data-val="Emotional">💔 Emotional</div>
+            <div class="iw2-chip" data-val="Mystery">🌫️ Mystery</div>
+          </div>
+        </div>
+
+        <button id="iw2-gen-btn" style="width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🩸 Generate 10 Ideas</button>
+      </div>
+
+      <!-- Loading -->
+      <div id="iw2-loading" class="hidden" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:32px;margin-bottom:12px;animation:pulse 1.5s infinite;">💀</div>
+        <div style="color:var(--ember);font-size:13px;letter-spacing:.1em;">Bhoot Bulaa Rahe Hain...</div>
+      </div>
+
+      <!-- Ideas List -->
+      <div id="iw2-ideas-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ONE-CLICK PRODUCTION PAGE -->
+  <!-- ============================================================ -->
+  <div id="productionPage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
+    <div style="max-width:480px;margin:0 auto;padding:16px;">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
+        <button onclick="closePage('productionPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;" id="prod-project-label">No Project</div>
+          <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);letter-spacing:.08em;">🚀 One-Click Production</div>
+        </div>
+        <button id="prod-save-btn" onclick="saveProdToFirestore()" style="background:var(--blood-2);border:none;color:#fff;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700;cursor:pointer;display:none;">💾 Save</button>
+      </div>
+
+      <!-- Script Input (shown before generation) -->
+      <div id="prod-input-section" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;">
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Apni Script Paste Karo</label>
+        <textarea id="prod-script-input" style="width:100%;min-height:150px;padding:12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:12px;line-height:1.7;outline:none;box-sizing:border-box;resize:vertical;font-family:inherit;" placeholder="Yahan apni poori Hindi horror script paste karo..."></textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;margin-bottom:14px;">
+          <span id="prod-wc" style="font-size:10px;color:var(--ink-faint);">0 words</span>
+          <button onclick="document.getElementById('prod-script-input').value='';document.getElementById('prod-wc').textContent='0 words';" style="font-size:10px;color:var(--ink-faint);background:none;border:none;cursor:pointer;">🗑️ Clear</button>
+        </div>
+        <button id="prod-gen-btn" style="width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🚀 Generate Production Pack</button>
+      </div>
+
+      <!-- Loading -->
+      <div id="prod-loading" class="hidden" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:32px;margin-bottom:12px;animation:pulse 1.5s infinite;">🎬</div>
+        <div style="color:var(--ember);font-size:13px;letter-spacing:.1em;" id="prod-loading-text">Production Pack Taiyar Ho Raha Hai...</div>
+      </div>
+
+      <!-- Result Tabs -->
+      <div id="prod-result-section" class="hidden">
+        <div id="prod-tabs" style="display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px;">
+          <div class="prod-tab active" data-tab="overview">📋 Overview</div>
+          <div class="prod-tab" data-tab="story">📖 Story</div>
+          <div class="prod-tab" data-tab="scenes">🎬 Scenes</div>
+          <div class="prod-tab" data-tab="characters">👥 Characters</div>
+          <div class="prod-tab" data-tab="images">🖼️ Images</div>
+          <div class="prod-tab" data-tab="voice">🎙️ Voice</div>
+          <div class="prod-tab" data-tab="thumbnail">🖼️ Thumb</div>
+          <div class="prod-tab" data-tab="youtube">📺 YouTube</div>
+        </div>
+        <div id="prod-panel-overview" class="prod-panel"></div>
+        <div id="prod-panel-story" class="prod-panel hidden"></div>
+        <div id="prod-panel-scenes" class="prod-panel hidden"></div>
+        <div id="prod-panel-characters" class="prod-panel hidden"></div>
+        <div id="prod-panel-images" class="prod-panel hidden"></div>
+        <div id="prod-panel-voice" class="prod-panel hidden"></div>
+        <div id="prod-panel-thumbnail" class="prod-panel hidden"></div>
+        <div id="prod-panel-youtube" class="prod-panel hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SHARE PROJECT PAGE -->
+  <!-- ============================================================ -->
+  <div id="shareProjectPage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
+    <div style="max-width:480px;margin:0 auto;padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:8px;">
+        <button onclick="closePage('shareProjectPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <div>
+          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;">Project</div>
+          <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);">📤 Share Project</div>
+        </div>
+      </div>
+      <div id="share-no-project" style="text-align:center;padding:60px 20px;">
+        <div style="font-size:40px;margin-bottom:12px;">🔒</div>
+        <div style="color:var(--ink-dim);font-size:13px;">Pehle koi project kholo</div>
+      </div>
+      <div id="share-content" class="hidden">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:12px;">
+          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">Project Info</div>
+          <div id="share-project-name" style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px;"></div>
+          <div id="share-project-meta" style="font-size:12px;color:var(--ink-faint);"></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:12px;">
+          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">Share Options</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <button onclick="shareViaLink()" style="width:100%;padding:13px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">🔗 <span>Share Link Copy Karo</span></button>
+            <button onclick="generateQR()" style="width:100%;padding:13px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">📱 <span>QR Code Generate Karo</span></button>
+            <button onclick="copyReadOnlyLink()" style="width:100%;padding:13px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">👁️ <span>Read-Only Link</span></button>
+            <button onclick="duplicateProject()" style="width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">📋 <span>Project Duplicate Karo</span></button>
+          </div>
+        </div>
+        <div id="share-qr-wrap" class="hidden" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;margin-bottom:12px;">
+          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">QR Code</div>
+          <canvas id="share-qr-canvas" style="border-radius:8px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- AUTH SCREEN -->
   <div id="authScreen" class="auth-wrap">
     <div class="auth-card">
@@ -272,24 +496,8 @@ const WORDS_PER_MINUTE = 130;
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </div>
         <div class="avatar" id="userAvatar">U</div>
-        <div class="icon-btn" id="menuBtn" title="More" onclick="document.getElementById('sideDrawer').classList.toggle('hidden')" style="font-size:18px;font-weight:700;letter-spacing:1px;">≡</div><div id="sideDrawer" class="hidden" style="position:fixed;top:56px;right:12px;background:#1a0a0a;border:1px solid #332424;border-radius:12px;z-index:999;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:8px 0;"><div onclick="openFeature('ideas')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">💡 Idea Writer</div><div onclick="openFeature('production')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎬 One-Click Production</div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🩺 AI Script Doctor<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🎥 Director Mode<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;">🔗 Share Project<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div></div>
-<!-- FEATURE PROJECT SELECTOR MODAL -->
-<div id="featureModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;">
-<div style="background:#110808;border:1px solid #332424;border-radius:16px;width:100%;max-width:380px;max-height:80vh;overflow-y:auto;">
-<div id="featureModalHeader" style="padding:16px 20px;border-bottom:1px solid #332424;display:flex;align-items:center;justify-content:space-between;">
-<span style="font-size:14px;font-weight:700;color:#d98e3a;letter-spacing:.08em;" id="featureModalTitle">💡 Idea Writer</span>
-<span onclick="closeFeatureModal()" style="color:#6e5e58;font-size:20px;cursor:pointer;line-height:1;">✕</span>
-</div>
-<div style="padding:16px 20px;">
-<div style="font-size:11px;color:#8a5d27;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;">Project Select Karo</div>
-<div id="featureProjList" style="margin-bottom:12px;max-height:220px;overflow-y:auto;"></div>
-<div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin:12px 0;"></div>
-<div style="font-size:11px;color:#8a5d27;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">Ya Naya Project Banao</div>
-<input id="featureNewProjName" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="Project naam likho..."/>
-<button onclick="createAndOpenFeature()" style="width:100%;padding:11px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.08em;">🩸 Naya Project Banao & Kholo</button>
-</div>
-</div>
-</div>      </div>
+        <div class="icon-btn" id="menuBtn" title="More" onclick="document.getElementById('sideDrawer').classList.toggle('hidden')" style="font-size:18px;font-weight:700;letter-spacing:1px;">≡</div><div id="sideDrawer" class="hidden" style="position:fixed;top:56px;right:12px;background:#1a0a0a;border:1px solid #332424;border-radius:12px;z-index:999;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:8px 0;"><div onclick="openFeature('ideas')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">💡 Idea Writer</div><div onclick="openFeature('production')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎬 One-Click Production</div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🩺 AI Script Doctor<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🎥 Director Mode<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div onclick="openFeature('share')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;">📤 Share Project</div></div>
+      </div>
     </div>
 
     <div class="container">
@@ -390,32 +598,8 @@ const WORDS_PER_MINUTE = 130;
             <div class="empty-state"><div class="em-mark">🕯️</div><div>No version history yet.</div></div>
           </div>
         </div>
-        <!-- ONE-CLICK PRODUCTION PANEL -->
-        <div class="tab-panel hidden" id="panel-production">
-          <div class="card">
-            <div style="background:linear-gradient(135deg,#0c0a0a 0%,#1a0a0a 50%,#0a0c1a 100%);border-radius:12px;padding:1.5rem;">
-              <div style="text-align:center;font-size:16px;font-weight:700;letter-spacing:.12em;background:linear-gradient(90deg,#d98e3a,#b1272d,#d98e3a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.5rem;text-transform:uppercase;">🎬 One-Click Production</div>
-              <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8a5d27;margin-bottom:8px;display:block;">Apni Hindi Horror Script Yahan Paste Karo</span>
-              <textarea id="ocp-script-input" style="width:100%;min-height:160px;padding:12px 14px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:12px;line-height:1.7;outline:none;box-sizing:border-box;resize:vertical;font-family:inherit;" placeholder="Yahan apni poori script paste karo... AI timestamp-wise BGM, SFX, Thumbnail, Title, Description aur Hashtags generate karega."></textarea>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;margin-bottom:14px;">
-                <span id="ocp-word-count" style="font-size:10px;color:#6e5e58;">0 words</span>
-                <button onclick="document.getElementById('ocp-script-input').value='';document.getElementById('ocp-word-count').textContent='0 words';" style="font-size:10px;color:#6e5e58;background:none;border:none;cursor:pointer;">🗑️ Clear</button>
-              </div>
-              <button id="ocp-gen-btn" style="width:100%;padding:13px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🎬 Generate Production Pack</button>
-              <div id="ocp-result" style="margin-top:1.5rem;display:none;">
-                <div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin-bottom:1rem;"></div>
-                <div style="font-size:10px;color:#8a5d27;margin-bottom:12px;letter-spacing:.15em;text-transform:uppercase;text-align:center;">✦ AI Generated Production Pack ✦</div>
-                <div id="ocp-bgm" class="ocp-section"></div>
-                <div id="ocp-sfx" class="ocp-section"></div>
-                <div id="ocp-thumb" class="ocp-section"></div>
-                <div id="ocp-title" class="ocp-section"></div>
-                <div id="ocp-desc" class="ocp-section"></div>
-                <div id="ocp-tags" class="ocp-section"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="tab-panel hidden" id="panel-ideas"><div class="card"><div style="background:linear-gradient(135deg,#0c0a0a 0%,#1a0a0a 50%,#0a0c1a 100%);border-radius:12px;padding:1.5rem;"><div style="text-align:center;font-size:16px;font-weight:700;letter-spacing:.12em;background:linear-gradient(90deg,#d98e3a,#b1272d,#d98e3a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.5rem;text-transform:uppercase;">💡 Idea Writer</div><span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8a5d27;margin-bottom:8px;display:block;">Subject / Topic</span><input id="iw-subject" style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:13px;outline:none;box-sizing:border-box;" placeholder="e.g. Haunted school, cursed mirror..."/><div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin:1.25rem 0;"></div><span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8a5d27;margin-bottom:8px;display:block;">Duration</span><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="iw-dur-grid"><div class="iw-dur active" data-min="2">2 MIN</div><div class="iw-dur" data-min="5">5 MIN</div><div class="iw-dur" data-min="8">8 MIN</div><div class="iw-dur" data-min="10">10 MIN</div></div><button id="iw-gen-btn" style="width:100%;padding:13px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;margin-top:16px;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🩸 Generate 10 Ideas</button><div id="iw-ideas-section" style="margin-top:1.5rem;display:none;"><div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin-bottom:1rem;"></div><div style="font-size:10px;color:#8a5d27;margin-bottom:12px;letter-spacing:.15em;text-transform:uppercase;text-align:center;">✦ AI Generated Horror Ideas ✦</div><div id="iw-list"></div></div></div></div></div>
+
+
       </div>
     </div>
     <footer class="appfoot">GK HORROR TALES · NIGHTMARE STUDIO · सावधान — पीछे मत देखो</footer>
@@ -1035,200 +1219,400 @@ window.addEventListener("beforeunload",()=>{ if(currentProject) saveDraft(); });
 (function(){if(localStorage.getItem("ns_onboard_done"))return;const ov=document.getElementById("onboardOverlay");ov.classList.remove("hidden");let cur=0;function go(n){cur=n;document.getElementById("obSteps").style.transform=`translateX(-${cur*100}%)`;[0,1,2].forEach(i=>{const d=document.getElementById("ob"+i);d.className="onboard-dot"+(i===cur?" active":"");});document.getElementById("obNext").textContent=cur===2?"SHURU KARO 🔥":"AAGE BADHO";}document.getElementById("obNext").addEventListener("click",()=>{cur<2?go(cur+1):done();});document.getElementById("obSkip").addEventListener("click",done);function done(){localStorage.setItem("ns_onboard_done","1");ov.classList.add("hidden");}})();
 (function(){const iwColors=['c1','c2','c3','c4','c5'];const iwBadges=['Supernatural','Mystery','Psychological','Ghost','Thriller'];const iwStyles={c1:{bg:'linear-gradient(135deg,#04342C,#0F6E56)',border:'#1D9E75',num:'#5DCAA5',text:'#9FE1CB',badge:'rgba(29,158,117,.25)',badgeText:'#5DCAA5',badgeBorder:'rgba(29,158,117,.4)'},c2:{bg:'linear-gradient(135deg,#042C53,#185FA5)',border:'#378ADD',num:'#85B7EB',text:'#B5D4F4',badge:'rgba(24,95,165,.25)',badgeText:'#85B7EB',badgeBorder:'rgba(55,138,221,.4)'},c3:{bg:'linear-gradient(135deg,#412402,#854F0B)',border:'#d98e3a',num:'#EF9F27',text:'#FAC775',badge:'rgba(186,117,23,.25)',badgeText:'#EF9F27',badgeBorder:'rgba(217,142,58,.4)'},c4:{bg:'linear-gradient(135deg,#501313,#A32D2D)',border:'#b1272d',num:'#F09595',text:'#F7C1C1',badge:'rgba(163,45,45,.25)',badgeText:'#F09595',badgeBorder:'rgba(177,39,45,.4)'},c5:{bg:'linear-gradient(135deg,#26215C,#534AB7)',border:'#7F77DD',num:'#AFA9EC',text:'#CECBF6',badge:'rgba(83,74,183,.25)',badgeText:'#AFA9EC',badgeBorder:'rgba(127,119,221,.4)'}};document.querySelectorAll('.iw-dur').forEach(btn=>{btn.style.cssText='padding:10px 0;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#6e5e58;font-size:12px;font-weight:600;cursor:pointer;text-align:center;letter-spacing:.06em;';btn.addEventListener('click',function(){document.querySelectorAll('.iw-dur').forEach(b=>{b.classList.remove('active');b.style.cssText='padding:10px 0;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#6e5e58;font-size:12px;font-weight:600;cursor:pointer;text-align:center;letter-spacing:.06em;';});this.classList.add('active');const m=this.dataset.min;const styles={2:'border-color:#1D9E75;background:linear-gradient(135deg,#04342C,#0F6E56);color:#9FE1CB;box-shadow:0 0 12px rgba(29,158,117,.3);',5:'border-color:#185FA5;background:linear-gradient(135deg,#042C53,#185FA5);color:#B5D4F4;box-shadow:0 0 12px rgba(24,95,165,.3);',8:'border-color:#d98e3a;background:linear-gradient(135deg,#412402,#854F0B);color:#FAC775;box-shadow:0 0 12px rgba(217,142,58,.3);',10:'border-color:#b1272d;background:linear-gradient(135deg,#501313,#A32D2D);color:#F7C1C1;box-shadow:0 0 12px rgba(177,39,45,.3);'};this.style.cssText='padding:10px 0;border-radius:8px;cursor:pointer;text-align:center;font-size:12px;font-weight:600;letter-spacing:.06em;'+styles[m];});});document.getElementById('iw-gen-btn').addEventListener('click',async()=>{const btn=document.getElementById('iw-gen-btn');const subject=document.getElementById('iw-subject').value.trim()||'horror story';const dur=document.querySelector('.iw-dur.active').dataset.min;btn.textContent='Generating...';btn.disabled=true;try{const prompt=`Generate exactly 10 unique Hindi horror YouTube story ideas for the topic: "${subject}". Duration: ${dur} minutes. Format as JSON array: [{"idea":"story idea in Hindi/Hinglish","badge":"one of: Supernatural/Mystery/Psychological/Ghost/Thriller"}]. Return only valid JSON, no markdown.`;const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.9,responseMimeType:'application/json'}})});const data=await res.json();const text=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'[]';const ideas=JSON.parse(text.replace(/```json|```/g,'').trim());const list=document.getElementById('iw-list');list.innerHTML='';ideas.forEach((item,i)=>{const c=iwColors[i%5];const s=iwStyles[c];const d=document.createElement('div');d.style.cssText=`background:${s.bg};border:1px solid ${s.border};border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 4px 16px rgba(0,0,0,.3);`;d.innerHTML=`<span style="font-size:20px;font-weight:700;min-width:28px;color:${s.num};line-height:1;">${i+1}</span><div style="flex:1;"><p style="font-size:12px;line-height:1.6;margin:0 0 8px;color:${s.text};">${item.idea||item}</p><span style="display:inline-block;font-size:9px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:${s.badge};color:${s.badgeText};border:1px solid ${s.badgeBorder};">${item.badge||iwBadges[i%5]}</span></div>`;list.appendChild(d);});document.getElementById('iw-ideas-section').style.display='block';}catch(e){showToast('Error: '+e.message);}finally{btn.textContent='🩸 Generate 10 Ideas';btn.disabled=false;}});})();
 // ============================================================
-// FEATURE PROJECT SELECTOR
+// PAGE NAVIGATION
 // ============================================================
-let currentFeature = null;
-const featureLabels = {ideas:'💡 Idea Writer', production:'🎬 One-Click Production'};
-
-function openFeature(feature){
+function openPage(pageId){
   document.getElementById('sideDrawer').classList.add('hidden');
-  currentFeature = feature;
-  document.getElementById('featureModalTitle').textContent = featureLabels[feature]||feature;
-  document.getElementById('featureNewProjName').value = '';
-  // Agar project already open hai to seedha feature kholo
-  if(currentProject){
-    closeFeatureModal();
-    switchToFeaturePanel(feature);
-    return;
-  }
-  // Project list render karo
-  const list = document.getElementById('featureProjList');
-  list.innerHTML = '';
-  if(!projects || projects.length === 0){
-    list.innerHTML = '<div style="color:#6e5e58;font-size:12px;text-align:center;padding:12px 0;">Koi project nahi hai — naya banao!</div>';
-  } else {
-    projects.forEach(p => {
-      const d = document.createElement('div');
-      d.style.cssText = 'padding:10px 14px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:13px;cursor:pointer;margin-bottom:6px;';
-      d.textContent = p.projectName || 'Untitled Reel';
-      d.onmouseenter = ()=> d.style.borderColor='#b1272d';
-      d.onmouseleave = ()=> d.style.borderColor='#332424';
-      d.onclick = async()=>{
-        closeFeatureModal();
-        await openProject(p);
-        switchToFeaturePanel(feature);
-      };
-      list.appendChild(d);
+  document.getElementById(pageId).classList.remove('hidden');
+  document.getElementById(pageId).style.animation = 'slideUp .3s ease';
+}
+function closePage(pageId){
+  document.getElementById(pageId).classList.add('hidden');
+}
+
+// ============================================================
+// IDEA WRITER PAGE
+// ============================================================
+(function(){
+  // Chip selection logic
+  function setupChips(containerId){
+    const container = document.getElementById(containerId);
+    if(!container) return;
+    container.querySelectorAll('.iw2-chip').forEach(chip=>{
+      chip.addEventListener('click',()=>{
+        container.querySelectorAll('.iw2-chip').forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+      });
     });
   }
-  document.getElementById('featureModal').classList.remove('hidden');
-}
+  setupChips('iw2-category');
+  setupChips('iw2-duration');
+  setupChips('iw2-tone');
 
-function closeFeatureModal(){
-  document.getElementById('featureModal').classList.add('hidden');
-}
+  document.getElementById('iw2-gen-btn').addEventListener('click', async()=>{
+    const subject = document.getElementById('iw2-subject').value.trim() || 'horror story';
+    const category = document.querySelector('#iw2-category .iw2-chip.active')?.dataset.val || 'Horror';
+    const duration = document.querySelector('#iw2-duration .iw2-chip.active')?.dataset.val || '5';
+    const tone = document.querySelector('#iw2-tone .iw2-chip.active')?.dataset.val || 'Dark';
+    const btn = document.getElementById('iw2-gen-btn');
+    const loading = document.getElementById('iw2-loading');
+    const list = document.getElementById('iw2-ideas-list');
 
-async function createAndOpenFeature(){
-  const name = document.getElementById('featureNewProjName').value.trim() || 'Untitled Reel';
-  const ref = await db.collection('projects').add({
-    userId: currentUser.uid, projectName: name,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    bgCount:0, sceneCount:0
+    btn.disabled=true; btn.textContent='Generating...';
+    loading.classList.remove('hidden');
+    list.innerHTML='';
+
+    try{
+      const prompt = `Tu ek expert Hindi horror YouTube content creator hai.
+
+Topic: "${subject}"
+Category: ${category}
+Duration: ${duration} minutes
+Tone: ${tone}
+
+Exactly 10 unique Hindi/Hinglish horror story ideas generate karo.
+
+Return ONLY valid JSON array (no markdown):
+[
+  {
+    "title": "Story ka catchy Hindi/Hinglish title",
+    "summary": "2-3 line mein story ka overview Hindi/Hinglish mein",
+    "twist": "Ek line mein story ka twist",
+    "horror_level": 7,
+    "twist_level": 8
+  }
+]`;
+
+      const res = await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.9,responseMimeType:'application/json'}})});
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'[]';
+      const ideas = JSON.parse(text.replace(/```json|```/g,'').trim());
+
+      ideas.forEach((idea, i)=>{
+        const colors = ['#b1272d','#d98e3a','#5fae6f','#378ADD','#7F77DD'];
+        const c = colors[i%5];
+        const card = document.createElement('div');
+        card.className = 'idea-card';
+        card.style.animationDelay = (i*0.05)+'s';
+        card.innerHTML = `
+          <div class="idea-card-title">${i+1}. ${idea.title||'Untitled'}</div>
+          <div class="idea-card-summary">${idea.summary||''}</div>
+          <div style="font-size:11px;color:#8a5d27;margin-bottom:10px;font-style:italic;">🌀 Twist: ${idea.twist||''}</div>
+          <div class="idea-card-meta">
+            <span class="idea-badge" style="background:rgba(177,39,45,.2);color:#f09595;border:1px solid rgba(177,39,45,.3);">👻 Horror ${idea.horror_level||7}/10</span>
+            <span class="idea-badge" style="background:rgba(217,142,58,.15);color:#EF9F27;border:1px solid rgba(217,142,58,.3);">🌀 Twist ${idea.twist_level||7}/10</span>
+            <span class="idea-badge" style="background:rgba(95,174,111,.15);color:#5fae6f;border:1px solid rgba(95,174,111,.3);">${category}</span>
+          </div>
+          <div class="idea-card-actions">
+            <button onclick="previewIdea(${i})" style="flex:1;padding:9px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-dim);font-size:12px;cursor:pointer;">👁️ Preview</button>
+            <button onclick="selectIdea(${i})" style="flex:2;padding:9px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">✅ Select & Use</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+
+      // Store ideas globally
+      window._iw2Ideas = ideas;
+      window._iw2Meta = {subject, category, duration, tone};
+
+    }catch(e){ showToast('Error: '+e.message); }
+    finally{ btn.disabled=false; btn.textContent='🩸 Generate 10 Ideas'; loading.classList.add('hidden'); }
   });
-  const doc = await ref.get();
-  closeFeatureModal();
-  await loadProjects();
-  await openProject({id:ref.id,...doc.data()});
-  switchToFeaturePanel(currentFeature);
-}
+})();
 
-function switchToFeaturePanel(feature){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  const panel = document.getElementById('panel-'+feature);
-  if(panel) panel.classList.remove('hidden');
-}
+window.previewIdea = function(idx){
+  const idea = window._iw2Ideas?.[idx];
+  if(!idea) return;
+  showModal(`<div style="padding:4px 0;"><div style="font-size:16px;font-weight:700;color:#d98e3a;margin-bottom:10px;font-family:'Cinzel','Georgia',serif;">${idea.title}</div><div style="font-size:12px;color:#ece4dd;line-height:1.8;margin-bottom:10px;">${idea.summary}</div><div style="font-size:11px;color:#8a5d27;font-style:italic;margin-bottom:14px;">🌀 Twist: ${idea.twist}</div><div style="display:flex;gap:8px;"><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(177,39,45,.2);color:#f09595;border:1px solid rgba(177,39,45,.3);">👻 Horror ${idea.horror_level}/10</span><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(217,142,58,.15);color:#EF9F27;border:1px solid rgba(217,142,58,.3);">🌀 Twist ${idea.twist_level}/10</span></div><div style="margin-top:14px;display:flex;gap:8px;"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="closeModal();selectIdea(${idx})">✅ Select & Use</button></div></div>`);
+};
 
-// Modal bahar click karne pe band ho
-document.getElementById('featureModal').addEventListener('click', function(e){
-  if(e.target === this) closeFeatureModal();
-});
+window.selectIdea = async function(idx){
+  const idea = window._iw2Ideas?.[idx];
+  const meta = window._iw2Meta || {};
+  if(!idea) return;
 
-(function(){
-// Word count for ocp script
-const ocpInput = document.getElementById('ocp-script-input');
-const ocpWC = document.getElementById('ocp-word-count');
-if(ocpInput) ocpInput.addEventListener('input', ()=>{
-  const w = ocpInput.value.trim().split(/\s+/).filter(Boolean).length;
-  ocpWC.textContent = w + ' words · ~' + Math.round(w/130) + ' min';
-});
-
-function ocpCopyBtn(text){
-  const b=document.createElement('button');
-  b.textContent='Copy';
-  b.style.cssText='padding:4px 12px;border-radius:6px;border:1px solid #332424;background:#1a0a0a;color:#d98e3a;font-size:11px;cursor:pointer;flex-shrink:0;';
-  b.onclick=()=>{navigator.clipboard.writeText(text).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='Copy',1500);});};
-  return b;
-}
-
-function ocpSection(icon, title, content){
-  const wrap=document.createElement('div');
-  wrap.style.cssText='background:#110808;border:1px solid #332424;border-radius:10px;padding:14px 16px;margin-bottom:12px;';
-  const head=document.createElement('div');
-  head.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;';
-  const t=document.createElement('span');
-  t.style.cssText='font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a5d27;';
-  t.textContent=icon+' '+title;
-  head.appendChild(t);
-  head.appendChild(ocpCopyBtn(content));
-  wrap.appendChild(head);
-  const p=document.createElement('p');
-  p.style.cssText='font-size:12px;line-height:1.8;color:#ece4dd;margin:0;white-space:pre-wrap;';
-  p.textContent=content;
-  wrap.appendChild(p);
-  return wrap;
-}
-
-document.getElementById('ocp-gen-btn').addEventListener('click', async()=>{
-  const btn=document.getElementById('ocp-gen-btn');
-  const script=document.getElementById('ocp-script-input').value.trim();
-  if(!script){showToast('⚠️ Pehle script paste karo!');return;}
-  btn.textContent='Generating...';btn.disabled=true;
+  // Create new project with idea name
+  showToast('Project ban raha hai...');
   try{
-    const wordCount = script.split(/\s+/).filter(Boolean).length;
-    const estDuration = Math.round(wordCount/130);
-    const prompt = `Tu ek expert Hindi horror YouTube production designer hai.
+    const ref = await db.collection('projects').add({
+      userId: currentUser.uid,
+      projectName: idea.title,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      bgCount:0, sceneCount:0,
+      ideaMeta: meta,
+      ideaSummary: idea.summary,
+      ideaTwist: idea.twist
+    });
+    const doc = await ref.get();
+    await loadProjects();
+    currentProject = {id:ref.id,...doc.data()};
+    
+    // Pre-fill production page
+    closePage('ideaWriterPage');
+    
+    // Open production page with idea context
+    window._prodPrefilledIdea = idea;
+    const prodScript = `${idea.title}\n\n${idea.summary}\n\nTwist: ${idea.twist}`;
+    document.getElementById('prod-script-input').value = prodScript;
+    document.getElementById('prod-project-label').textContent = idea.title;
+    document.getElementById('prod-save-btn').style.display = 'block';
+    updateProdWC();
+    openPage('productionPage');
+    showToast('Project ready! Ab script generate karo 🔥');
+  }catch(e){ showToast('Error: '+e.message); }
+};
 
-Neeche ek Hindi horror script di gayi hai jo approximately ${estDuration} minute ki hai (${wordCount} words).
+// ============================================================
+// ONE-CLICK PRODUCTION PAGE
+// ============================================================
+function updateProdWC(){
+  const val = document.getElementById('prod-script-input').value;
+  const w = val.trim().split(/\s+/).filter(Boolean).length;
+  const m = Math.round(w/130);
+  document.getElementById('prod-wc').textContent = w + ' words · ~' + m + ' min';
+}
+document.getElementById('prod-script-input').addEventListener('input', updateProdWC);
 
-Script:
-${script.substring(0,3000)}
+document.getElementById('prod-gen-btn').addEventListener('click', async()=>{
+  const script = document.getElementById('prod-script-input').value.trim();
+  if(!script){ showToast('⚠️ Script paste karo pehle!'); return; }
+  
+  const btn = document.getElementById('prod-gen-btn');
+  const loading = document.getElementById('prod-loading');
+  const loadingText = document.getElementById('prod-loading-text');
+  const inputSection = document.getElementById('prod-input-section');
+  const resultSection = document.getElementById('prod-result-section');
+  
+  btn.disabled=true;
+  loading.classList.remove('hidden');
+  resultSection.classList.add('hidden');
 
-Is script ke liye ek complete production pack banao. Script ko dhyan se padho aur har jagah ka context samjho.
+  const steps = ['Story Blueprint taiyar ho raha hai...','Full story likh raha hai...','Scenes breakdown kar raha hai...','Characters create ho rahe hain...','Image prompts ban rahe hain...','Voice script taiyar ho raha hai...','Thumbnail aur YouTube details...'];
+  let si=0;
+  const stepTimer = setInterval(()=>{ if(si<steps.length){ loadingText.textContent=steps[si++]; } },3000);
 
-IMPORTANT: BGM aur SFX ke liye EXACT script ke sentences use karo — copy mat karo, script mein se actual lines lo.
+  try{
+    const wc = script.split(/\s+/).filter(Boolean).length;
+    const dur = Math.round(wc/130);
 
-Return ONLY this exact JSON (no markdown, no extra text):
+    const prompt = `Tu ek professional Hindi horror YouTube production expert hai.
+
+Script (${wc} words, ~${dur} min):
+${script.substring(0,4000)}
+
+Is script ke liye complete production pack banao.
+
+Return ONLY valid JSON (no markdown, no extra text):
 {
-  "bgm": [
-    {"from":"exact first sentence of this BGM section","to":"exact last sentence of this BGM section","mood":"mood description","track":"suggested track name","source":"YouTube Audio Library / Pixabay / Freesound"},
-    {"from":"...","to":"...","mood":"...","track":"...","source":"..."}
-  ],
-  "sfx": [
-    {"at":"exact sentence where this sound plays","sound":"sound effect description in Hindi/Hinglish","source":"Freesound / Pixabay / Zapsplat"},
-    {"at":"...","sound":"...","source":"..."}
-  ],
-  "thumbnail":"2D animated style thumbnail description in Hinglish — colors, characters, background, text overlay",
-  "title":{"hindi":"Hindi title","hinglish":"Hinglish title","english":"English title"},
-  "description":"150 word YouTube description in Hindi/Hinglish with emojis",
-  "hashtags":"#tag1 #tag2 #tag3 (15 horror Hindi YouTube tags)"
+  "blueprint": "Story ka 5-6 line overview/blueprint Hindi mein",
+  "full_story": "Complete story 300-400 words Hindi/Hinglish mein, dramatic aur engaging",
+  "scenes": [{"number":1,"title":"Scene title","description":"Scene description","mood":"mood","duration":"~X sec"}],
+  "characters": [{"name":"Name","role":"Hero/Villain/Supporting","description":"Physical + personality description","voice":"Voice style for narration"}],
+  "character_prompts": [{"name":"Name","prompt":"Detailed 2D animation style image prompt in English"}],
+  "background_prompts": [{"scene":"Scene title","prompt":"Detailed 2D horror background image prompt in English"}],
+  "image_prompts": [{"scene":"Scene title","prompt":"Full scene image prompt in English for AI image generation"}],
+  "thumbnail_prompt": "Detailed 2D animated thumbnail prompt in English — dark horror style, orange/red palette, Hindi text overlay suggestion",
+  "voiceover_script": "Complete voiceover script Hindi mein with [PAUSE], [DRAMATIC], [WHISPER] markers",
+  "bgm": [{"from":"exact starting line from script","to":"exact ending line","mood":"mood description","track":"track name suggestion","source":"YouTube Audio Library / Pixabay / Freesound"}],
+  "sfx": [{"at":"exact line from script","sound":"sound description Hindi mein","source":"Freesound / Pixabay / Zapsplat"}],
+  "youtube_title": {"hindi":"Hindi title","hinglish":"Hinglish title","english":"English title"},
+  "youtube_description": "150 words YouTube description Hindi/Hinglish with emojis",
+  "seo_keywords": "10-15 SEO keywords comma separated",
+  "hashtags": "#tag1 #tag2 #tag3 (15 tags)"
 }`;
 
-    const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,responseMimeType:'application/json'}})});
-    const data=await res.json();
-    const text=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'{}';
-    const d=JSON.parse(text.replace(/```json|```/g,'').trim());
+    const res = await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,responseMimeType:'application/json'}})});
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'{}';
+    const d = JSON.parse(text.replace(/```json|```/g,'').trim());
+    
+    window._prodData = d;
+    
+    // Render all tabs
+    renderProdTab('overview', d);
+    renderProdTab('story', d);
+    renderProdTab('scenes', d);
+    renderProdTab('characters', d);
+    renderProdTab('images', d);
+    renderProdTab('voice', d);
+    renderProdTab('thumbnail', d);
+    renderProdTab('youtube', d);
 
-    ['ocp-bgm','ocp-sfx','ocp-thumb','ocp-title','ocp-desc','ocp-tags'].forEach(id=>document.getElementById(id).innerHTML='');
+    loading.classList.add('hidden');
+    resultSection.classList.remove('hidden');
+    document.getElementById('prod-save-btn').style.display='block';
+    
+    // Auto save if project exists
+    if(currentProject) saveProdToFirestore();
 
-    // BGM sections
-    if(d.bgm && d.bgm.length){
-      let bgmText = '';
-      d.bgm.forEach((b,i)=>{
-        bgmText += `🎵 BGM ${i+1}\n`;
-        bgmText += `Shuru: "${b.from}"\n`;
-        bgmText += `Khatam: "${b.to}"\n`;
-        bgmText += `Mood: ${b.mood}\n`;
-        bgmText += `Track: ${b.track}\n`;
-        bgmText += `Source: ${b.source}\n\n`;
-      });
-      document.getElementById('ocp-bgm').appendChild(ocpSection('🎵','Background Music (Timestamp-wise)', bgmText.trim()));
-    }
-
-    // SFX sections
-    if(d.sfx && d.sfx.length){
-      let sfxText = '';
-      d.sfx.forEach((s,i)=>{
-        sfxText += `🔊 SFX ${i+1}\n`;
-        sfxText += `Is line pe: "${s.at}"\n`;
-        sfxText += `Sound: ${s.sound}\n`;
-        sfxText += `Source: ${s.source}\n\n`;
-      });
-      document.getElementById('ocp-sfx').appendChild(ocpSection('🔊','Sound Effects (Scene-wise)', sfxText.trim()));
-    }
-
-    // Thumbnail
-    document.getElementById('ocp-thumb').appendChild(ocpSection('🖼️','Thumbnail Idea (2D Style)', d.thumbnail||''));
-
-    // Title
-    const titleText = `Hindi: ${d.title?.hindi||''}\nHinglish: ${d.title?.hinglish||''}\nEnglish: ${d.title?.english||''}`;
-    document.getElementById('ocp-title').appendChild(ocpSection('📝','YouTube Title', titleText));
-
-    // Description
-    document.getElementById('ocp-desc').appendChild(ocpSection('📄','Description', d.description||''));
-
-    // Hashtags
-    document.getElementById('ocp-tags').appendChild(ocpSection('#️⃣','Hashtags', d.hashtags||''));
-
-    document.getElementById('ocp-result').style.display='block';
-
-  }catch(e){showToast('Error: '+e.message);}
-  finally{btn.textContent='🎬 Generate Production Pack';btn.disabled=false;}
+  }catch(e){ showToast('Error: '+e.message); loading.classList.add('hidden'); }
+  finally{ btn.disabled=false; clearInterval(stepTimer); }
 });
-})();
+
+function makeProdSection(icon, title, content){
+  const div = document.createElement('div');
+  div.className = 'prod-section';
+  div.innerHTML = `<div class="prod-section-head"><span class="prod-section-title">${icon} ${title}</span><button class="copy-btn" onclick="navigator.clipboard.writeText(${JSON.stringify(content)}).then(()=>showToast('Copied!'))">Copy</button></div><div class="prod-section-body">${content}</div>`;
+  return div;
+}
+
+function renderProdTab(tab, d){
+  const panel = document.getElementById('prod-panel-'+tab);
+  if(!panel) return;
+  panel.innerHTML='';
+  
+  if(tab==='overview'){
+    panel.appendChild(makeProdSection('📋','Story Blueprint', d.blueprint||''));
+    // BGM summary
+    if(d.bgm?.length){
+      let s=''; d.bgm.forEach((b,i)=>{ s+=`🎵 BGM ${i+1}: ${b.mood}\nShuru: "${b.from}"\nKhatam: "${b.to}"\nTrack: ${b.track}\nSource: ${b.source}\n\n`; });
+      panel.appendChild(makeProdSection('🎵','Background Music', s.trim()));
+    }
+    if(d.sfx?.length){
+      let s=''; d.sfx.forEach((sf,i)=>{ s+=`🔊 SFX ${i+1}\nIs line pe: "${sf.at}"\nSound: ${sf.sound}\nSource: ${sf.source}\n\n`; });
+      panel.appendChild(makeProdSection('🔊','Sound Effects', s.trim()));
+    }
+  }
+  else if(tab==='story'){
+    panel.appendChild(makeProdSection('📖','Full Story', d.full_story||''));
+  }
+  else if(tab==='scenes'){
+    if(d.scenes?.length){
+      let s=''; d.scenes.forEach(sc=>{ s+=`Scene ${sc.number}: ${sc.title}\nMood: ${sc.mood} | Duration: ${sc.duration}\n${sc.description}\n\n`; });
+      panel.appendChild(makeProdSection('🎬','Scene Breakdown', s.trim()));
+    }
+  }
+  else if(tab==='characters'){
+    if(d.characters?.length){
+      let s=''; d.characters.forEach(c=>{ s+=`${c.name} (${c.role})\n${c.description}\nVoice: ${c.voice}\n\n`; });
+      panel.appendChild(makeProdSection('👥','Characters', s.trim()));
+    }
+    if(d.character_prompts?.length){
+      let s=''; d.character_prompts.forEach(c=>{ s+=`${c.name}:\n${c.prompt}\n\n`; });
+      panel.appendChild(makeProdSection('🎨','Character Prompts', s.trim()));
+    }
+  }
+  else if(tab==='images'){
+    if(d.background_prompts?.length){
+      let s=''; d.background_prompts.forEach(b=>{ s+=`Scene: ${b.scene}\n${b.prompt}\n\n`; });
+      panel.appendChild(makeProdSection('🖼️','Background Prompts', s.trim()));
+    }
+    if(d.image_prompts?.length){
+      let s=''; d.image_prompts.forEach(b=>{ s+=`Scene: ${b.scene}\n${b.prompt}\n\n`; });
+      panel.appendChild(makeProdSection('🎨','Image Prompts', s.trim()));
+    }
+  }
+  else if(tab==='voice'){
+    panel.appendChild(makeProdSection('🎙️','Voice Over Script', d.voiceover_script||''));
+  }
+  else if(tab==='thumbnail'){
+    panel.appendChild(makeProdSection('🖼️','Thumbnail Prompt (2D Style)', d.thumbnail_prompt||''));
+  }
+  else if(tab==='youtube'){
+    const titles = `Hindi: ${d.youtube_title?.hindi||''}\nHinglish: ${d.youtube_title?.hinglish||''}\nEnglish: ${d.youtube_title?.english||''}`;
+    panel.appendChild(makeProdSection('📝','YouTube Title', titles));
+    panel.appendChild(makeProdSection('📄','Description', d.youtube_description||''));
+    panel.appendChild(makeProdSection('🔍','SEO Keywords', d.seo_keywords||''));
+    panel.appendChild(makeProdSection('#️⃣','Hashtags', d.hashtags||''));
+  }
+}
+
+// Production tab switching
+document.getElementById('prod-tabs').addEventListener('click', e=>{
+  const tab = e.target.closest('.prod-tab');
+  if(!tab) return;
+  document.querySelectorAll('.prod-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.prod-panel').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('prod-panel-'+tab.dataset.tab).classList.remove('hidden');
+});
+
+window.saveProdToFirestore = async function(){
+  if(!currentProject || !window._prodData) return;
+  try{
+    await db.collection('projects').doc(currentProject.id).update({
+      productionPack: window._prodData,
+      prodScript: document.getElementById('prod-script-input').value,
+      prodUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast('✅ Saved to project!');
+  }catch(e){ showToast('Save error: '+e.message); }
+};
+
+// ============================================================
+// SHARE PROJECT PAGE
+// ============================================================
+window.openSharePage = function(){
+  document.getElementById('sideDrawer').classList.add('hidden');
+  if(!currentProject){
+    document.getElementById('share-no-project').classList.remove('hidden');
+    document.getElementById('share-content').classList.add('hidden');
+  } else {
+    document.getElementById('share-no-project').classList.add('hidden');
+    document.getElementById('share-content').classList.remove('hidden');
+    document.getElementById('share-project-name').textContent = currentProject.projectName||'Untitled';
+    document.getElementById('share-project-meta').textContent = 'Project ID: '+currentProject.id;
+    document.getElementById('share-qr-wrap').classList.add('hidden');
+  }
+  openPage('shareProjectPage');
+};
+
+window.shareViaLink = function(){
+  const url = window.location.href.split('?')[0]+'?project='+currentProject.id;
+  navigator.clipboard.writeText(url).then(()=>showToast('🔗 Link copied!'));
+};
+
+window.copyReadOnlyLink = function(){
+  const url = window.location.href.split('?')[0]+'?project='+currentProject.id+'&readonly=1';
+  navigator.clipboard.writeText(url).then(()=>showToast('👁️ Read-only link copied!'));
+};
+
+window.generateQR = function(){
+  const url = window.location.href.split('?')[0]+'?project='+currentProject.id;
+  const canvas = document.getElementById('share-qr-canvas');
+  const wrap = document.getElementById('share-qr-wrap');
+  // Simple QR via API
+  const img = new Image();
+  img.crossOrigin='anonymous';
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(url)+'&bgcolor=110808&color=d98e3a';
+  img.onload = ()=>{
+    canvas.width=200; canvas.height=200;
+    canvas.getContext('2d').drawImage(img,0,0);
+    wrap.classList.remove('hidden');
+    showToast('📱 QR Code ready!');
+  };
+};
+
+window.duplicateProject = async function(){
+  if(!currentProject) return;
+  try{
+    showToast('Duplicate ban raha hai...');
+    const ref = await db.collection('projects').add({
+      ...currentProject,
+      projectName: (currentProject.projectName||'Project')+' (Copy)',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    await loadProjects();
+    showToast('✅ Project duplicate ho gaya!');
+    closePage('shareProjectPage');
+  }catch(e){ showToast('Error: '+e.message); }
+};
+
+// ============================================================
+// MENU - openFeature updated
+// ============================================================
+function openFeature(feature){
+  document.getElementById('sideDrawer').classList.add('hidden');
+  if(feature==='ideas') openPage('ideaWriterPage');
+  else if(feature==='production'){
+    if(currentProject) document.getElementById('prod-project-label').textContent = currentProject.projectName||'Project';
+    openPage('productionPage');
+  }
+  else if(feature==='share') openSharePage();
+}
+
 </script>
-<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");</script>
-</body>
-</html>
