@@ -1245,9 +1245,11 @@ function closePage(pageId){
       });
     });
   }
-  setupChips('iw2-category');
-  setupChips('iw2-duration');
-  setupChips('iw2-tone');
+  setTimeout(()=>{
+    setupChips('iw2-category');
+    setupChips('iw2-duration');
+    setupChips('iw2-tone');
+  }, 300);
 
   document.getElementById('iw2-gen-btn').addEventListener('click', async()=>{
     const subject = document.getElementById('iw2-subject').value.trim() || 'horror story';
