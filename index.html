@@ -390,7 +390,31 @@ const WORDS_PER_MINUTE = 130;
             <div class="empty-state"><div class="em-mark">🕯️</div><div>No version history yet.</div></div>
           </div>
         </div>
-        <div class="tab-panel hidden" id="panel-production"><div class="card"><div style="background:linear-gradient(135deg,#0c0a0a 0%,#1a0a0a 50%,#0a0c1a 100%);border-radius:12px;padding:1.5rem;"><div style="text-align:center;font-size:16px;font-weight:700;letter-spacing:.12em;background:linear-gradient(90deg,#d98e3a,#b1272d,#d98e3a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.5rem;text-transform:uppercase;">🎬 One-Click Production</div><button id="ocp-gen-btn" style="width:100%;padding:13px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🎬 Generate Production Pack</button><div id="ocp-result" style="margin-top:1.5rem;display:none;"><div id="ocp-bgm" class="ocp-section"></div><div id="ocp-sfx" class="ocp-section"></div><div id="ocp-thumb" class="ocp-section"></div><div id="ocp-title" class="ocp-section"></div><div id="ocp-desc" class="ocp-section"></div><div id="ocp-tags" class="ocp-section"></div></div></div></div></div>
+        <!-- ONE-CLICK PRODUCTION PANEL -->
+        <div class="tab-panel hidden" id="panel-production">
+          <div class="card">
+            <div style="background:linear-gradient(135deg,#0c0a0a 0%,#1a0a0a 50%,#0a0c1a 100%);border-radius:12px;padding:1.5rem;">
+              <div style="text-align:center;font-size:16px;font-weight:700;letter-spacing:.12em;background:linear-gradient(90deg,#d98e3a,#b1272d,#d98e3a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.5rem;text-transform:uppercase;">🎬 One-Click Production</div>
+              <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8a5d27;margin-bottom:8px;display:block;">Apni Hindi Horror Script Yahan Paste Karo</span>
+              <textarea id="ocp-script-input" style="width:100%;min-height:160px;padding:12px 14px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:12px;line-height:1.7;outline:none;box-sizing:border-box;resize:vertical;font-family:inherit;" placeholder="Yahan apni poori script paste karo... AI timestamp-wise BGM, SFX, Thumbnail, Title, Description aur Hashtags generate karega."></textarea>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;margin-bottom:14px;">
+                <span id="ocp-word-count" style="font-size:10px;color:#6e5e58;">0 words</span>
+                <button onclick="document.getElementById('ocp-script-input').value='';document.getElementById('ocp-word-count').textContent='0 words';" style="font-size:10px;color:#6e5e58;background:none;border:none;cursor:pointer;">🗑️ Clear</button>
+              </div>
+              <button id="ocp-gen-btn" style="width:100%;padding:13px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🎬 Generate Production Pack</button>
+              <div id="ocp-result" style="margin-top:1.5rem;display:none;">
+                <div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin-bottom:1rem;"></div>
+                <div style="font-size:10px;color:#8a5d27;margin-bottom:12px;letter-spacing:.15em;text-transform:uppercase;text-align:center;">✦ AI Generated Production Pack ✦</div>
+                <div id="ocp-bgm" class="ocp-section"></div>
+                <div id="ocp-sfx" class="ocp-section"></div>
+                <div id="ocp-thumb" class="ocp-section"></div>
+                <div id="ocp-title" class="ocp-section"></div>
+                <div id="ocp-desc" class="ocp-section"></div>
+                <div id="ocp-tags" class="ocp-section"></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="tab-panel hidden" id="panel-ideas"><div class="card"><div style="background:linear-gradient(135deg,#0c0a0a 0%,#1a0a0a 50%,#0a0c1a 100%);border-radius:12px;padding:1.5rem;"><div style="text-align:center;font-size:16px;font-weight:700;letter-spacing:.12em;background:linear-gradient(90deg,#d98e3a,#b1272d,#d98e3a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1.5rem;text-transform:uppercase;">💡 Idea Writer</div><span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8a5d27;margin-bottom:8px;display:block;">Subject / Topic</span><input id="iw-subject" style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid #332424;background:#0c0808;color:#ece4dd;font-size:13px;outline:none;box-sizing:border-box;" placeholder="e.g. Haunted school, cursed mirror..."/><div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin:1.25rem 0;"></div><span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8a5d27;margin-bottom:8px;display:block;">Duration</span><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="iw-dur-grid"><div class="iw-dur active" data-min="2">2 MIN</div><div class="iw-dur" data-min="5">5 MIN</div><div class="iw-dur" data-min="8">8 MIN</div><div class="iw-dur" data-min="10">10 MIN</div></div><button id="iw-gen-btn" style="width:100%;padding:13px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;margin-top:16px;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🩸 Generate 10 Ideas</button><div id="iw-ideas-section" style="margin-top:1.5rem;display:none;"><div style="height:1px;background:linear-gradient(90deg,transparent,#332424,transparent);margin-bottom:1rem;"></div><div style="font-size:10px;color:#8a5d27;margin-bottom:12px;letter-spacing:.15em;text-transform:uppercase;text-align:center;">✦ AI Generated Horror Ideas ✦</div><div id="iw-list"></div></div></div></div></div>
       </div>
     </div>
@@ -1082,7 +1106,128 @@ document.getElementById('featureModal').addEventListener('click', function(e){
   if(e.target === this) closeFeatureModal();
 });
 
-(function(){function ocpCopyBtn(id,text){const b=document.createElement('button');b.textContent='Copy';b.style.cssText='padding:4px 12px;border-radius:6px;border:1px solid #332424;background:#1a0a0a;color:#d98e3a;font-size:11px;cursor:pointer;float:right;';b.onclick=()=>{navigator.clipboard.writeText(text).then(()=>{b.textContent='✓ Copied';setTimeout(()=>b.textContent='Copy',1500);});};return b;}function ocpSection(icon,title,content){const wrap=document.createElement('div');wrap.style.cssText='background:#110808;border:1px solid #332424;border-radius:10px;padding:14px 16px;margin-bottom:12px;';const head=document.createElement('div');head.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;';const t=document.createElement('span');t.style.cssText='font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a5d27;';t.textContent=icon+' '+title;head.appendChild(t);head.appendChild(ocpCopyBtn(title,content));wrap.appendChild(head);const p=document.createElement('p');p.style.cssText='font-size:12px;line-height:1.7;color:#ece4dd;margin:0;white-space:pre-wrap;';p.textContent=content;wrap.appendChild(p);return wrap;}document.getElementById('ocp-gen-btn').addEventListener('click',async()=>{const btn=document.getElementById('ocp-gen-btn');const script=document.getElementById('scriptInput').value.trim();if(!script){showToast('⚠️ Pehle script paste karo!');return;}btn.textContent='Generating...';btn.disabled=true;try{const prompt=`You are a Hindi horror YouTube production expert. Based on this script, generate a complete production pack in JSON format.\n\nScript:\n${script.substring(0,2000)}\n\nReturn ONLY valid JSON (no markdown):\n{"bgm":{"mood":"string","suggestions":["track1","track2","track3"],"sources":"string"},"sfx":["scene: sound effect description (3-5 items)"],"thumbnail":"detailed thumbnail visual description in Hinglish","title":{"hindi":"Hindi title","hinglish":"Hinglish title","english":"English title"},"description":"YouTube description 150 words Hindi/Hinglish with emojis","hashtags":"#tag1 #tag2 #tag3 ... (15 tags)"}`;const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,responseMimeType:'application/json'}})});const data=await res.json();const text=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'{}';const d=JSON.parse(text.replace(/```json|```/g,'').trim());const result=document.getElementById('ocp-result');['ocp-bgm','ocp-sfx','ocp-thumb','ocp-title','ocp-desc','ocp-tags'].forEach(id=>document.getElementById(id).innerHTML='');const bgmText=`Mood: ${d.bgm?.mood||''}\n\nSuggested Tracks:\n${(d.bgm?.suggestions||[]).join('\n')}\n\nSources: ${d.bgm?.sources||'YouTube Audio Library, Pixabay'}`;document.getElementById('ocp-bgm').appendChild(ocpSection('🎵','Background Music',bgmText));const sfxText=(d.sfx||[]).join('\n');document.getElementById('ocp-sfx').appendChild(ocpSection('🔊','Sound Effects',sfxText));document.getElementById('ocp-thumb').appendChild(ocpSection('🖼️','Thumbnail Idea',d.thumbnail||''));const titleText=`Hindi: ${d.title?.hindi||''}\nHinglish: ${d.title?.hinglish||''}\nEnglish: ${d.title?.english||''}`;document.getElementById('ocp-title').appendChild(ocpSection('📝','YouTube Title',titleText));document.getElementById('ocp-desc').appendChild(ocpSection('📄','Description',d.description||''));document.getElementById('ocp-tags').appendChild(ocpSection('#️⃣','Hashtags',d.hashtags||''));result.style.display='block';}catch(e){showToast('Error: '+e.message);}finally{btn.textContent='🎬 Generate Production Pack';btn.disabled=false;}});})();
+(function(){
+// Word count for ocp script
+const ocpInput = document.getElementById('ocp-script-input');
+const ocpWC = document.getElementById('ocp-word-count');
+if(ocpInput) ocpInput.addEventListener('input', ()=>{
+  const w = ocpInput.value.trim().split(/\s+/).filter(Boolean).length;
+  ocpWC.textContent = w + ' words · ~' + Math.round(w/130) + ' min';
+});
+
+function ocpCopyBtn(text){
+  const b=document.createElement('button');
+  b.textContent='Copy';
+  b.style.cssText='padding:4px 12px;border-radius:6px;border:1px solid #332424;background:#1a0a0a;color:#d98e3a;font-size:11px;cursor:pointer;flex-shrink:0;';
+  b.onclick=()=>{navigator.clipboard.writeText(text).then(()=>{b.textContent='✓';setTimeout(()=>b.textContent='Copy',1500);});};
+  return b;
+}
+
+function ocpSection(icon, title, content){
+  const wrap=document.createElement('div');
+  wrap.style.cssText='background:#110808;border:1px solid #332424;border-radius:10px;padding:14px 16px;margin-bottom:12px;';
+  const head=document.createElement('div');
+  head.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;';
+  const t=document.createElement('span');
+  t.style.cssText='font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a5d27;';
+  t.textContent=icon+' '+title;
+  head.appendChild(t);
+  head.appendChild(ocpCopyBtn(content));
+  wrap.appendChild(head);
+  const p=document.createElement('p');
+  p.style.cssText='font-size:12px;line-height:1.8;color:#ece4dd;margin:0;white-space:pre-wrap;';
+  p.textContent=content;
+  wrap.appendChild(p);
+  return wrap;
+}
+
+document.getElementById('ocp-gen-btn').addEventListener('click', async()=>{
+  const btn=document.getElementById('ocp-gen-btn');
+  const script=document.getElementById('ocp-script-input').value.trim();
+  if(!script){showToast('⚠️ Pehle script paste karo!');return;}
+  btn.textContent='Generating...';btn.disabled=true;
+  try{
+    const wordCount = script.split(/\s+/).filter(Boolean).length;
+    const estDuration = Math.round(wordCount/130);
+    const prompt = `Tu ek expert Hindi horror YouTube production designer hai.
+
+Neeche ek Hindi horror script di gayi hai jo approximately ${estDuration} minute ki hai (${wordCount} words).
+
+Script:
+${script.substring(0,3000)}
+
+Is script ke liye ek complete production pack banao. Script ko dhyan se padho aur har jagah ka context samjho.
+
+IMPORTANT: BGM aur SFX ke liye EXACT script ke sentences use karo — copy mat karo, script mein se actual lines lo.
+
+Return ONLY this exact JSON (no markdown, no extra text):
+{
+  "bgm": [
+    {"from":"exact first sentence of this BGM section","to":"exact last sentence of this BGM section","mood":"mood description","track":"suggested track name","source":"YouTube Audio Library / Pixabay / Freesound"},
+    {"from":"...","to":"...","mood":"...","track":"...","source":"..."}
+  ],
+  "sfx": [
+    {"at":"exact sentence where this sound plays","sound":"sound effect description in Hindi/Hinglish","source":"Freesound / Pixabay / Zapsplat"},
+    {"at":"...","sound":"...","source":"..."}
+  ],
+  "thumbnail":"2D animated style thumbnail description in Hinglish — colors, characters, background, text overlay",
+  "title":{"hindi":"Hindi title","hinglish":"Hinglish title","english":"English title"},
+  "description":"150 word YouTube description in Hindi/Hinglish with emojis",
+  "hashtags":"#tag1 #tag2 #tag3 (15 horror Hindi YouTube tags)"
+}`;
+
+    const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,responseMimeType:'application/json'}})});
+    const data=await res.json();
+    const text=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'{}';
+    const d=JSON.parse(text.replace(/```json|```/g,'').trim());
+
+    ['ocp-bgm','ocp-sfx','ocp-thumb','ocp-title','ocp-desc','ocp-tags'].forEach(id=>document.getElementById(id).innerHTML='');
+
+    // BGM sections
+    if(d.bgm && d.bgm.length){
+      let bgmText = '';
+      d.bgm.forEach((b,i)=>{
+        bgmText += `🎵 BGM ${i+1}\n`;
+        bgmText += `Shuru: "${b.from}"\n`;
+        bgmText += `Khatam: "${b.to}"\n`;
+        bgmText += `Mood: ${b.mood}\n`;
+        bgmText += `Track: ${b.track}\n`;
+        bgmText += `Source: ${b.source}\n\n`;
+      });
+      document.getElementById('ocp-bgm').appendChild(ocpSection('🎵','Background Music (Timestamp-wise)', bgmText.trim()));
+    }
+
+    // SFX sections
+    if(d.sfx && d.sfx.length){
+      let sfxText = '';
+      d.sfx.forEach((s,i)=>{
+        sfxText += `🔊 SFX ${i+1}\n`;
+        sfxText += `Is line pe: "${s.at}"\n`;
+        sfxText += `Sound: ${s.sound}\n`;
+        sfxText += `Source: ${s.source}\n\n`;
+      });
+      document.getElementById('ocp-sfx').appendChild(ocpSection('🔊','Sound Effects (Scene-wise)', sfxText.trim()));
+    }
+
+    // Thumbnail
+    document.getElementById('ocp-thumb').appendChild(ocpSection('🖼️','Thumbnail Idea (2D Style)', d.thumbnail||''));
+
+    // Title
+    const titleText = `Hindi: ${d.title?.hindi||''}\nHinglish: ${d.title?.hinglish||''}\nEnglish: ${d.title?.english||''}`;
+    document.getElementById('ocp-title').appendChild(ocpSection('📝','YouTube Title', titleText));
+
+    // Description
+    document.getElementById('ocp-desc').appendChild(ocpSection('📄','Description', d.description||''));
+
+    // Hashtags
+    document.getElementById('ocp-tags').appendChild(ocpSection('#️⃣','Hashtags', d.hashtags||''));
+
+    document.getElementById('ocp-result').style.display='block';
+
+  }catch(e){showToast('Error: '+e.message);}
+  finally{btn.textContent='🎬 Generate Production Pack';btn.disabled=false;}
+});
+})();
 </script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");</script>
 </body>
