@@ -1497,13 +1497,12 @@ Return ONLY valid JSON array (no markdown):
       const activeProj = featureActiveProject['ideas'];
       if(activeProj){
         try{
-          await db.collection('projects').doc(activeProj.id).update({
+          await db.collection('ideaProjects').doc(activeProj.id).update({
             ideaData: {ideas, meta:{subject,category,duration,tone}},
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-          await loadProjects();
-          // refresh featureActiveProject reference
-          featureActiveProject['ideas'] = projects.find(p=>p.id===activeProj.id) || activeProj;
+          const updatedDoc = await db.collection('ideaProjects').doc(activeProj.id).get();
+          featureActiveProject['ideas'] = {id:activeProj.id, ...updatedDoc.data()};
           showToast('💾 Ideas project mein save ho gayi!');
         }catch(e){ console.error('Save error:', e); }
       }
@@ -1721,13 +1720,13 @@ window.saveProdToFirestore = async function(){
   const proj = featureActiveProject['production'];
   if(!proj || !window._prodData){ showToast('⚠️ Project select karo pehle!'); return; }
   try{
-    await db.collection('projects').doc(proj.id).update({
+    await db.collection('productionProjects').doc(proj.id).update({
       productionPack: window._prodData,
       prodScript: document.getElementById('prod-script-input').value,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    await loadProjects();
-    featureActiveProject['production'] = projects.find(p=>p.id===proj.id) || proj;
+    const updatedDoc = await db.collection('productionProjects').doc(proj.id).get();
+    featureActiveProject['production'] = {id:proj.id, ...updatedDoc.data()};
     showToast('✅ Saved to project!');
   }catch(e){ showToast('Save error: '+e.message); }
 };
@@ -1833,9 +1832,14 @@ async function featureRenderProjectList(feature){
   const listEl = document.getElementById(cfg.projList);
   listEl.innerHTML = '<div style="color:var(--ink-faint);font-size:12px;text-align:center;padding:16px 0;">Loading...</div>';
   try{
-    const snap = await db.collection(cfg.collection).where('userId','==',currentUser.uid).orderBy('updatedAt','desc').get();
+    const snap = await db.collection(cfg.collection).where('userId','==',currentUser.uid).get();
     const list = [];
     snap.forEach(doc=>list.push({id:doc.id, ...doc.data()}));
+    list.sort((a,b)=>{
+      const at = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
+      const bt = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
+      return bt - at;
+    });
     featureProjectsCache[feature] = list;
 
     listEl.innerHTML = '';
@@ -2082,13 +2086,13 @@ Minimum 3, maximum 10 problems dhundho. Agar script genuinely achi hai to low se
       const activeProj = featureActiveProject['doctor'];
       if(activeProj){
         try{
-          await db.collection('projects').doc(activeProj.id).update({
+          await db.collection('doctorProjects').doc(activeProj.id).update({
             doctorData: d,
             doctorScript: script,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-          await loadProjects();
-          featureActiveProject['doctor'] = projects.find(p=>p.id===activeProj.id) || activeProj;
+          const updatedDoc = await db.collection('doctorProjects').doc(activeProj.id).get();
+          featureActiveProject['doctor'] = {id:activeProj.id, ...updatedDoc.data()};
           showToast('💾 Diagnosis project mein save ho gayi!');
         }catch(e){ console.error('Save error:', e); }
       } else {
@@ -2221,13 +2225,13 @@ Minimum 6, maximum 15 shots dho.`;
       const activeProj = featureActiveProject['director'];
       if(activeProj){
         try{
-          await db.collection('projects').doc(activeProj.id).update({
+          await db.collection('directorProjects').doc(activeProj.id).update({
             directorData: d,
             directorScript: script,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-          await loadProjects();
-          featureActiveProject['director'] = projects.find(p=>p.id===activeProj.id) || activeProj;
+          const updatedDoc = await db.collection('directorProjects').doc(activeProj.id).get();
+          featureActiveProject['director'] = {id:activeProj.id, ...updatedDoc.data()};
           showToast('\ud83d\udcbe Camera shots project mein save ho gaye!');
         }catch(e){ console.error('Save error:', e); }
       } else {
