@@ -306,6 +306,27 @@ const WORDS_PER_MINUTE = 130;
         </div>
       </div>
 
+      <!-- PROJECT PICKER -->
+      <div id="iw2-picker" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;">
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Naya Project Banao</label>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input id="iw2-new-proj-name" style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;" placeholder="Project naam likho..."/>
+          <button onclick="featureCreateProject('ideas')" style="padding:10px 16px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Banao</button>
+        </div>
+        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin-bottom:14px;"></div>
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Ya Purana Project Kholo</label>
+        <div id="iw2-proj-list" style="max-height:220px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- ACTIVE PROJECT BAR -->
+      <div id="iw2-active-bar" class="hidden" style="background:rgba(217,142,58,.1);border:1px solid rgba(217,142,58,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:12px;color:var(--ember);font-weight:600;">📂 <span id="iw2-active-name"></span></span>
+        <button onclick="featureSwitchProject('ideas')" style="font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;">Switch Karo</button>
+      </div>
+
+      <!-- IDEA WRITER FORM (hidden until project selected) -->
+      <div id="iw2-form-section" class="hidden">
+
       <!-- Form Card -->
       <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;">
         
@@ -361,6 +382,14 @@ const WORDS_PER_MINUTE = 130;
 
       <!-- Ideas List -->
       <div id="iw2-ideas-list"></div>
+
+      <!-- Previously Generated Ideas (loaded from saved project) -->
+      <div id="iw2-saved-ideas" class="hidden">
+        <div style="font-size:10px;color:var(--ember-dim);margin:18px 0 12px;letter-spacing:.15em;text-transform:uppercase;text-align:center;">✦ Pehle Generated Ideas ✦</div>
+        <div id="iw2-saved-ideas-list"></div>
+      </div>
+
+      </div><!-- /iw2-form-section -->
     </div>
   </div>
 
@@ -378,6 +407,27 @@ const WORDS_PER_MINUTE = 130;
         </div>
         <button id="prod-save-btn" onclick="saveProdToFirestore()" style="background:var(--blood-2);border:none;color:#fff;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700;cursor:pointer;display:none;">💾 Save</button>
       </div>
+
+      <!-- PROJECT PICKER -->
+      <div id="prod-picker" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;">
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Naya Project Banao</label>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input id="prod-new-proj-name" style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;" placeholder="Project naam likho..."/>
+          <button onclick="featureCreateProject('production')" style="padding:10px 16px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Banao</button>
+        </div>
+        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin-bottom:14px;"></div>
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Ya Purana Project Kholo</label>
+        <div id="prod-proj-list" style="max-height:220px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- ACTIVE PROJECT BAR -->
+      <div id="prod-active-bar" class="hidden" style="background:rgba(217,142,58,.1);border:1px solid rgba(217,142,58,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:12px;color:var(--ember);font-weight:600;">📂 <span id="prod-active-name"></span></span>
+        <button onclick="featureSwitchProject('production')" style="font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;">Switch Karo</button>
+      </div>
+
+      <div id="prod-form-section" class="hidden">
+
 
       <!-- Script Input (shown before generation) -->
       <div id="prod-input-section" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;">
@@ -417,6 +467,7 @@ const WORDS_PER_MINUTE = 130;
         <div id="prod-panel-thumbnail" class="prod-panel hidden"></div>
         <div id="prod-panel-youtube" class="prod-panel hidden"></div>
       </div>
+      </div><!-- /prod-form-section -->
     </div>
   </div>
 
@@ -473,6 +524,26 @@ const WORDS_PER_MINUTE = 130;
         </div>
       </div>
 
+      <!-- PROJECT PICKER -->
+      <div id="sd-picker" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;">
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Naya Project Banao</label>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input id="sd-new-proj-name" style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;" placeholder="Project naam likho..."/>
+          <button onclick="featureCreateProject('doctor')" style="padding:10px 16px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Banao</button>
+        </div>
+        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin-bottom:14px;"></div>
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Ya Purana Project Kholo</label>
+        <div id="sd-proj-list" style="max-height:220px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- ACTIVE PROJECT BAR -->
+      <div id="sd-active-bar" class="hidden" style="background:rgba(217,142,58,.1);border:1px solid rgba(217,142,58,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:12px;color:var(--ember);font-weight:600;">📂 <span id="sd-active-name"></span></span>
+        <button onclick="featureSwitchProject('doctor')" style="font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;">Switch Karo</button>
+      </div>
+
+      <div id="sd-form-section" class="hidden">
+
       <!-- Input Card -->
       <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;">
         <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Apni Script Paste Karo</label>
@@ -505,10 +576,66 @@ const WORDS_PER_MINUTE = 130;
         <div style="color:#5fae6f;font-size:14px;font-weight:700;margin-bottom:6px;">Script Bilkul Sahi Hai!</div>
         <div style="color:var(--ink-dim);font-size:12px;">Koi bada issue nahi mila. Publish karo!</div>
       </div>
+      </div><!-- /sd-form-section -->
     </div>
   </div>
 
-  <!-- AUTH SCREEN -->
+  <!-- ============================================================ -->
+  <!-- DIRECTOR MODE PAGE -->
+  <!-- ============================================================ -->
+  <div id="directorModePage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
+    <div style="max-width:480px;margin:0 auto;padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
+        <button onclick="closePage('directorModePage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;">GK Horror Tales</div>
+          <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);letter-spacing:.08em;">🎥 Director Mode</div>
+        </div>
+      </div>
+
+      <!-- PROJECT PICKER -->
+      <div id="dm-picker" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;">
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Naya Project Banao</label>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input id="dm-new-proj-name" style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;" placeholder="Project naam likho..."/>
+          <button onclick="featureCreateProject('director')" style="padding:10px 16px;border-radius:8px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Banao</button>
+        </div>
+        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin-bottom:14px;"></div>
+        <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Ya Purana Project Kholo</label>
+        <div id="dm-proj-list" style="max-height:220px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- ACTIVE PROJECT BAR -->
+      <div id="dm-active-bar" class="hidden" style="background:rgba(217,142,58,.1);border:1px solid rgba(217,142,58,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:12px;color:var(--ember);font-weight:600;">📂 <span id="dm-active-name"></span></span>
+        <button onclick="featureSwitchProject('director')" style="font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;">Switch Karo</button>
+      </div>
+
+      <div id="dm-form-section" class="hidden">
+        <!-- Input Card -->
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;">
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:8px;">Apni Script Paste Karo</label>
+          <textarea id="dm-script-input" style="width:100%;min-height:160px;padding:12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:12px;line-height:1.7;outline:none;box-sizing:border-box;resize:vertical;font-family:inherit;" placeholder="Apni Hindi horror script yahan paste karo — AI har scene ke liye camera shots suggest karega..."></textarea>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;margin-bottom:14px;">
+            <span id="dm-wc" style="font-size:10px;color:var(--ink-faint);">0 words</span>
+            <button onclick="document.getElementById('dm-script-input').value='';document.getElementById('dm-wc').textContent='0 words';" style="font-size:10px;color:var(--ink-faint);background:none;border:none;cursor:pointer;">🗑️ Clear</button>
+          </div>
+          <button id="dm-gen-btn" style="width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 20px rgba(177,39,45,.4);">🎥 Camera Shots Generate Karo</button>
+        </div>
+
+        <!-- Loading -->
+        <div id="dm-loading" class="hidden" style="text-align:center;padding:40px 20px;">
+          <div style="font-size:32px;margin-bottom:12px;animation:pulse 1.5s infinite;">🎬</div>
+          <div style="color:var(--ember);font-size:13px;letter-spacing:.1em;">Director Apna Kaam Kar Raha Hai...</div>
+        </div>
+
+        <!-- Shots List -->
+        <div id="dm-shots-list"></div>
+      </div>
+    </div>
+  </div>
+
+
   <div id="authScreen" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-mark"></div>
@@ -545,7 +672,7 @@ const WORDS_PER_MINUTE = 130;
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </div>
         <div class="avatar" id="userAvatar">U</div>
-        <div class="icon-btn" id="menuBtn" title="More" onclick="document.getElementById('sideDrawer').classList.toggle('hidden')" style="font-size:18px;font-weight:700;letter-spacing:1px;">≡</div><div id="sideDrawer" class="hidden" style="position:fixed;top:56px;right:12px;background:#1a0a0a;border:1px solid #332424;border-radius:12px;z-index:999;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:8px 0;"><div onclick="openFeature('ideas')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">💡 Idea Writer</div><div onclick="openFeature('production')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎬 One-Click Production</div><div onclick="openFeature('doctor')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🩺 AI Script Doctor</div><div style="padding:14px 20px;color:#6e5e58;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1010;">🎥 Director Mode<span style="font-size:9px;background:#332424;padding:2px 6px;border-radius:4px;margin-left:auto;">SOON</span></div><div onclick="openFeature('share')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;">📤 Share Project</div></div>
+        <div class="icon-btn" id="menuBtn" title="More" onclick="document.getElementById('sideDrawer').classList.toggle('hidden')" style="font-size:18px;font-weight:700;letter-spacing:1px;">≡</div><div id="sideDrawer" class="hidden" style="position:fixed;top:56px;right:12px;background:#1a0a0a;border:1px solid #332424;border-radius:12px;z-index:999;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:8px 0;"><div onclick="openFeature('ideas')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">💡 Idea Writer</div><div onclick="openFeature('production')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎬 One-Click Production</div><div onclick="openFeature('doctor')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🩺 AI Script Doctor</div><div onclick="openFeature('director')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎥 Director Mode</div><div onclick="openFeature('share')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;">📤 Share Project</div></div>
       </div>
     </div>
 
@@ -1366,6 +1493,21 @@ Return ONLY valid JSON array (no markdown):
       window._iw2Ideas = ideas;
       window._iw2Meta = {subject, category, duration, tone};
 
+      // Auto-save to active project if one is selected
+      const activeProj = featureActiveProject['ideas'];
+      if(activeProj){
+        try{
+          await db.collection('projects').doc(activeProj.id).update({
+            ideaData: {ideas, meta:{subject,category,duration,tone}},
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          await loadProjects();
+          // refresh featureActiveProject reference
+          featureActiveProject['ideas'] = projects.find(p=>p.id===activeProj.id) || activeProj;
+          showToast('💾 Ideas project mein save ho gayi!');
+        }catch(e){ console.error('Save error:', e); }
+      }
+
     }catch(e){ showToast('Error: '+e.message); }
     finally{ btn.disabled=false; btn.textContent='🩸 Generate 10 Ideas'; loading.classList.add('hidden'); }
   });
@@ -1379,39 +1521,47 @@ window.previewIdea = function(idx){
 
 window.selectIdea = async function(idx){
   const idea = window._iw2Ideas?.[idx];
-  const meta = window._iw2Meta || {};
   if(!idea) return;
 
-  // Create new project with idea name
-  showToast('Project ban raha hai...');
   try{
-    const ref = await db.collection('projects').add({
-      userId: currentUser.uid,
-      projectName: idea.title,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      bgCount:0, sceneCount:0,
-      ideaMeta: meta,
-      ideaSummary: idea.summary,
-      ideaTwist: idea.twist
-    });
-    const doc = await ref.get();
-    await loadProjects();
-    currentProject = {id:ref.id,...doc.data()};
-    
-    // Pre-fill production page
-    closePage('ideaWriterPage');
-    
-    // Open production page with idea context
-    window._prodPrefilledIdea = idea;
+    let targetProject = featureActiveProject['ideas'];
+
+    // Agar koi project active nahi hai, naya banao
+    if(!targetProject){
+      showToast('Project ban raha hai...');
+      const ref = await db.collection('projects').add({
+        userId: currentUser.uid, projectName: idea.title,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        bgCount:0, sceneCount:0
+      });
+      const doc = await ref.get();
+      targetProject = {id:ref.id, ...doc.data()};
+      await loadProjects();
+    }
+
+    // Pre-fill production script with idea
     const prodScript = `${idea.title}\n\n${idea.summary}\n\nTwist: ${idea.twist}`;
+
+    await db.collection('projects').doc(targetProject.id).update({
+      prodScript: prodScript,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await loadProjects();
+    targetProject = projects.find(p=>p.id===targetProject.id) || targetProject;
+
+    closePage('ideaWriterPage');
+    featureActiveProject['production'] = targetProject;
+    document.getElementById('prod-picker').classList.add('hidden');
+    document.getElementById('prod-active-bar').classList.remove('hidden');
+    document.getElementById('prod-active-name').textContent = targetProject.projectName||'Untitled';
+    document.getElementById('prod-form-section').classList.remove('hidden');
     document.getElementById('prod-script-input').value = prodScript;
-    document.getElementById('prod-project-label').textContent = idea.title;
-    document.getElementById('prod-save-btn').style.display = 'block';
     updateProdWC();
+    document.getElementById('prod-result-section').classList.add('hidden');
     openPage('productionPage');
-    showToast('Project ready! Ab script generate karo 🔥');
+    showToast('Project ready! Ab Production Pack generate karo 🔥');
   }catch(e){ showToast('Error: '+e.message); }
 };
 
@@ -1495,8 +1645,9 @@ Return ONLY valid JSON (no markdown, no extra text):
     resultSection.classList.remove('hidden');
     document.getElementById('prod-save-btn').style.display='block';
     
-    // Auto save if project exists
-    if(currentProject) saveProdToFirestore();
+    // Auto save to active project
+    if(featureActiveProject['production']) await saveProdToFirestore();
+    else showToast('⚠️ Project select karo pehle save karne ke liye');
 
   }catch(e){ showToast('Error: '+e.message); loading.classList.add('hidden'); }
   finally{ btn.disabled=false; clearInterval(stepTimer); }
@@ -1581,13 +1732,16 @@ document.getElementById('prod-tabs').addEventListener('click', e=>{
 });
 
 window.saveProdToFirestore = async function(){
-  if(!currentProject || !window._prodData) return;
+  const proj = featureActiveProject['production'];
+  if(!proj || !window._prodData){ showToast('⚠️ Project select karo pehle!'); return; }
   try{
-    await db.collection('projects').doc(currentProject.id).update({
+    await db.collection('projects').doc(proj.id).update({
       productionPack: window._prodData,
       prodScript: document.getElementById('prod-script-input').value,
-      prodUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    await loadProjects();
+    featureActiveProject['production'] = projects.find(p=>p.id===proj.id) || proj;
     showToast('✅ Saved to project!');
   }catch(e){ showToast('Save error: '+e.message); }
 };
@@ -1656,16 +1810,218 @@ window.duplicateProject = async function(){
 // ============================================================
 // MENU - openFeature updated
 // ============================================================
+// ============================================================
+// FEATURE PROJECT MANAGEMENT SYSTEM
+// (Idea Writer / Production / Script Doctor / Director Mode)
+// ============================================================
+const featurePageMap = {
+  ideas: {page:'ideaWriterPage', picker:'iw2-picker', activeBar:'iw2-active-bar', activeName:'iw2-active-name', formSection:'iw2-form-section', projList:'iw2-proj-list', newNameInput:'iw2-new-proj-name', dataField:'ideaData'},
+  production: {page:'productionPage', picker:'prod-picker', activeBar:'prod-active-bar', activeName:'prod-active-name', formSection:'prod-form-section', projList:'prod-proj-list', newNameInput:'prod-new-proj-name', dataField:'productionPack'},
+  doctor: {page:'scriptDoctorPage', picker:'sd-picker', activeBar:'sd-active-bar', activeName:'sd-active-name', formSection:'sd-form-section', projList:'sd-proj-list', newNameInput:'sd-new-proj-name', dataField:'doctorData'},
+  director: {page:'directorModePage', picker:'dm-picker', activeBar:'dm-active-bar', activeName:'dm-active-name', formSection:'dm-form-section', projList:'dm-proj-list', newNameInput:'dm-new-proj-name', dataField:'directorData'},
+};
+
+let featureActiveProject = {ideas:null, production:null, doctor:null, director:null};
+
 function openFeature(feature){
   document.getElementById('sideDrawer').classList.add('hidden');
-  if(feature==='ideas') openPage('ideaWriterPage');
-  else if(feature==='production'){
-    if(currentProject) document.getElementById('prod-project-label').textContent = currentProject.projectName||'Project';
-    openPage('productionPage');
+  if(feature==='share'){ openSharePage(); return; }
+  const cfg = featurePageMap[feature];
+  if(!cfg) return;
+  openPage(cfg.page);
+  featureRenderProjectList(feature);
+  // If a project was already active for this feature, show it
+  if(featureActiveProject[feature]){
+    featureShowActiveProject(feature, featureActiveProject[feature]);
+  } else {
+    document.getElementById(cfg.picker).classList.remove('hidden');
+    document.getElementById(cfg.activeBar).classList.add('hidden');
+    document.getElementById(cfg.formSection).classList.add('hidden');
   }
-  else if(feature==='share') openSharePage();
-  else if(feature==='doctor') openPage('scriptDoctorPage');
 }
+
+async function featureRenderProjectList(feature){
+  const cfg = featurePageMap[feature];
+  const listEl = document.getElementById(cfg.projList);
+  listEl.innerHTML = '';
+  if(!projects || projects.length === 0){
+    listEl.innerHTML = '<div style="color:var(--ink-faint);font-size:12px;text-align:center;padding:16px 0;">Koi project nahi hai abhi tak</div>';
+    return;
+  }
+  projects.forEach(p=>{
+    const hasData = p[cfg.dataField] ? true : false;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);margin-bottom:6px;cursor:pointer;';
+    row.innerHTML = `
+      <div style="flex:1;min-width:0;" onclick="featureSelectProject('${feature}','${p.id}')">
+        <div style="font-size:13px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.projectName||'Untitled')}</div>
+        <div style="font-size:10px;color:var(--ink-faint);margin-top:2px;">${hasData ? '✅ Pehle se generated hai' : '⚪ Khali project'}</div>
+      </div>
+      <button onclick="event.stopPropagation();featureDeleteProject('${feature}','${p.id}')" style="background:none;border:none;color:#b1272d;font-size:16px;cursor:pointer;padding:4px 8px;flex-shrink:0;">🗑️</button>
+    `;
+    listEl.appendChild(row);
+  });
+}
+
+async function featureCreateProject(feature){
+  const cfg = featurePageMap[feature];
+  const nameInput = document.getElementById(cfg.newNameInput);
+  const name = nameInput.value.trim() || 'Untitled Reel';
+  try{
+    const ref = await db.collection('projects').add({
+      userId: currentUser.uid, projectName: name,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      bgCount:0, sceneCount:0
+    });
+    const doc = await ref.get();
+    const newProj = {id:ref.id, ...doc.data()};
+    await loadProjects();
+    nameInput.value='';
+    featureShowActiveProject(feature, newProj);
+    showToast('✅ Project ban gaya!');
+  }catch(e){ showToast('Error: '+e.message); }
+}
+
+function featureSelectProject(feature, projectId){
+  const p = projects.find(pr=>pr.id===projectId);
+  if(!p) return;
+  featureShowActiveProject(feature, p);
+}
+
+function featureShowActiveProject(feature, project){
+  const cfg = featurePageMap[feature];
+  featureActiveProject[feature] = project;
+  document.getElementById(cfg.picker).classList.add('hidden');
+  document.getElementById(cfg.activeBar).classList.remove('hidden');
+  document.getElementById(cfg.activeName).textContent = project.projectName||'Untitled';
+  document.getElementById(cfg.formSection).classList.remove('hidden');
+
+  // Load saved data for this feature if exists
+  if(feature==='ideas') featureLoadIdeasData(project);
+  else if(feature==='production') featureLoadProductionData(project);
+  else if(feature==='doctor') featureLoadDoctorData(project);
+  else if(feature==='director') featureLoadDirectorData(project);
+}
+
+function featureSwitchProject(feature){
+  const cfg = featurePageMap[feature];
+  featureActiveProject[feature] = null;
+  document.getElementById(cfg.picker).classList.remove('hidden');
+  document.getElementById(cfg.activeBar).classList.add('hidden');
+  document.getElementById(cfg.formSection).classList.add('hidden');
+  featureRenderProjectList(feature);
+}
+
+async function featureDeleteProject(feature, projectId){
+  const p = projects.find(pr=>pr.id===projectId);
+  if(!p) return;
+  openModal(`<h3>Delete?</h3><p style="font-size:13px;color:var(--ink-dim);">"${escapeHtml(p.projectName||'')}" permanently delete hoga — saara data (ideas, production, scenes) chala jayega.</p>
+  <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="featureDelConfirm">Delete</button></div>`);
+  document.getElementById('featureDelConfirm').onclick = async()=>{
+    try{
+      const bgSnap = await db.collection('backgrounds').where('projectId','==',projectId).get();
+      const batch = db.batch();
+      bgSnap.forEach(doc=>batch.delete(doc.ref));
+      const scriptSnap = await db.collection('scripts').where('projectId','==',projectId).get();
+      scriptSnap.forEach(doc=>batch.delete(doc.ref));
+      batch.delete(db.collection('projects').doc(projectId));
+      await batch.commit();
+      closeModal();
+      // If this was the active project for any feature, clear it
+      Object.keys(featureActiveProject).forEach(f=>{
+        if(featureActiveProject[f]?.id===projectId) featureActiveProject[f]=null;
+      });
+      await loadProjects();
+      featureRenderProjectList(feature);
+      showToast('🗑️ Project delete ho gaya');
+    }catch(e){ showToast('Error: '+e.message); }
+  };
+}
+
+// ============================================================
+// IDEA WRITER - Load saved data
+// ============================================================
+function featureLoadIdeasData(project){
+  const savedWrap = document.getElementById('iw2-saved-ideas');
+  const savedList = document.getElementById('iw2-saved-ideas-list');
+  if(project.ideaData && project.ideaData.ideas && project.ideaData.ideas.length){
+    savedList.innerHTML = '';
+    project.ideaData.ideas.forEach((idea,i)=>{
+      const card = document.createElement('div');
+      card.className = 'idea-card';
+      card.innerHTML = `
+        <div class="idea-card-title">${i+1}. ${idea.title||'Untitled'}</div>
+        <div class="idea-card-summary">${idea.summary||''}</div>
+        <div style="font-size:11px;color:#8a5d27;margin-bottom:10px;font-style:italic;">🌀 Twist: ${idea.twist||''}</div>
+        <div class="idea-card-meta">
+          <span class="idea-badge" style="background:rgba(177,39,45,.2);color:#f09595;border:1px solid rgba(177,39,45,.3);">👻 Horror ${idea.horror_level||7}/10</span>
+          <span class="idea-badge" style="background:rgba(217,142,58,.15);color:#EF9F27;border:1px solid rgba(217,142,58,.3);">🌀 Twist ${idea.twist_level||7}/10</span>
+        </div>
+      `;
+      savedList.appendChild(card);
+    });
+    savedWrap.classList.remove('hidden');
+  } else {
+    savedWrap.classList.add('hidden');
+  }
+  document.getElementById('iw2-ideas-list').innerHTML='';
+}
+
+// ============================================================
+// PRODUCTION - Load saved data
+// ============================================================
+function featureLoadProductionData(project){
+  document.getElementById('prod-script-input').value = project.prodScript || '';
+  updateProdWC();
+  if(project.productionPack){
+    window._prodData = project.productionPack;
+    renderProdTab('overview', project.productionPack);
+    renderProdTab('story', project.productionPack);
+    renderProdTab('scenes', project.productionPack);
+    renderProdTab('characters', project.productionPack);
+    renderProdTab('images', project.productionPack);
+    renderProdTab('voice', project.productionPack);
+    renderProdTab('thumbnail', project.productionPack);
+    renderProdTab('youtube', project.productionPack);
+    document.getElementById('prod-result-section').classList.remove('hidden');
+    document.getElementById('prod-save-btn').style.display='block';
+  } else {
+    document.getElementById('prod-result-section').classList.add('hidden');
+    document.getElementById('prod-save-btn').style.display='none';
+  }
+}
+
+// ============================================================
+// SCRIPT DOCTOR - Load saved data
+// ============================================================
+function featureLoadDoctorData(project){
+  document.getElementById('sd-script-input').value = project.doctorScript || '';
+  const w = (project.doctorScript||'').trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('sd-wc').textContent = w + ' words · ~' + Math.round(w/130) + ' min';
+  document.getElementById('sd-summary').classList.add('hidden');
+  document.getElementById('sd-healthy').classList.add('hidden');
+  document.getElementById('sd-problems-list').innerHTML='';
+  if(project.doctorData){
+    renderDoctorResults(project.doctorData);
+  }
+}
+
+// ============================================================
+// DIRECTOR MODE - Load saved data
+// ============================================================
+function featureLoadDirectorData(project){
+  document.getElementById('dm-script-input').value = project.directorScript || '';
+  const w = (project.directorScript||'').trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('dm-wc').textContent = w + ' words · ~' + Math.round(w/130) + ' min';
+  document.getElementById('dm-shots-list').innerHTML='';
+  if(project.directorData && project.directorData.shots){
+    renderDirectorShots(project.directorData.shots);
+  }
+}
+
+
 
 
 // ============================================================
@@ -1677,18 +2033,6 @@ function openFeature(feature){
     const w = document.getElementById('sd-script-input').value.trim().split(/\s+/).filter(Boolean).length;
     document.getElementById('sd-wc').textContent = w + ' words · ~' + Math.round(w/130) + ' min';
   });
-
-  const severityConfig = {
-    'High':   {bg:'rgba(177,39,45,.15)',  border:'rgba(177,39,45,.4)',  text:'#f09595', icon:'🔴'},
-    'Medium': {bg:'rgba(217,142,58,.12)', border:'rgba(217,142,58,.35)',text:'#EF9F27', icon:'🟡'},
-    'Low':    {bg:'rgba(95,174,111,.12)', border:'rgba(95,174,111,.3)', text:'#5fae6f', icon:'🟢'},
-  };
-
-  const categoryIcons = {
-    'Plot Hole':'🕳️','Weak Scene':'😴','Pacing':'⏱️',
-    'Character':'👥','Repetition':'🔄','Dialogue':'💬',
-    'Climax':'🎭','Logic':'🧠','Emotion':'💔','Other':'⚠️'
-  };
 
   document.getElementById('sd-analyze-btn').addEventListener('click', async()=>{
     const script = document.getElementById('sd-script-input').value.trim();
@@ -1739,62 +2083,205 @@ Minimum 3, maximum 10 problems dhundho. Agar script genuinely achi hai to low se
       const text = data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'{}';
       const d = JSON.parse(text.replace(/```json|```/g,'').trim());
 
-      const problems = d.problems || [];
+      renderDoctorResults(d);
 
-      if(problems.length === 0){
-        document.getElementById('sd-healthy').classList.remove('hidden');
-        return;
+      // Auto-save to active project
+      const activeProj = featureActiveProject['doctor'];
+      if(activeProj){
+        try{
+          await db.collection('projects').doc(activeProj.id).update({
+            doctorData: d,
+            doctorScript: script,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          await loadProjects();
+          featureActiveProject['doctor'] = projects.find(p=>p.id===activeProj.id) || activeProj;
+          showToast('💾 Diagnosis project mein save ho gayi!');
+        }catch(e){ console.error('Save error:', e); }
+      } else {
+        showToast('⚠️ Project select karo save karne ke liye');
       }
-
-      // Summary pills
-      const summaryEl = document.getElementById('sd-summary');
-      const pillsEl = document.getElementById('sd-summary-pills');
-      pillsEl.innerHTML='';
-
-      // Score pill
-      const score = d.overall_score || 7;
-      const scoreColor = score>=8?'#5fae6f':score>=5?'#d98e3a':'#b1272d';
-      pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(0,0,0,.3);border:1px solid ${scoreColor};color:${scoreColor};">⭐ Score: ${score}/10</span>`;
-
-      const counts = {High:0,Medium:0,Low:0};
-      problems.forEach(p=>{ if(counts[p.severity]!==undefined) counts[p.severity]++; });
-      if(counts.High)   pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(177,39,45,.15);border:1px solid rgba(177,39,45,.4);color:#f09595;">🔴 High: ${counts.High}</span>`;
-      if(counts.Medium) pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(217,142,58,.12);border:1px solid rgba(217,142,58,.35);color:#EF9F27;">🟡 Medium: ${counts.Medium}</span>`;
-      if(counts.Low)    pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(95,174,111,.12);border:1px solid rgba(95,174,111,.3);color:#5fae6f;">🟢 Low: ${counts.Low}</span>`;
-
-      if(d.overall_verdict){
-        pillsEl.innerHTML += `<div style="width:100%;font-size:12px;color:var(--ink-dim);margin-top:8px;font-style:italic;">"${d.overall_verdict}"</div>`;
-      }
-      summaryEl.classList.remove('hidden');
-
-      // Problem cards
-      const list = document.getElementById('sd-problems-list');
-      list.innerHTML='';
-      problems.forEach((p,i)=>{
-        const sc = severityConfig[p.severity] || severityConfig['Low'];
-        const catIcon = categoryIcons[p.type] || '⚠️';
-        const card = document.createElement('div');
-        card.style.cssText = `background:${sc.bg};border:1px solid ${sc.border};border-radius:12px;padding:16px;margin-bottom:12px;animation:slideUp .3s ease forwards;animation-delay:${i*0.06}s;opacity:0;`;
-        card.innerHTML = `
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-            <span style="font-size:16px;">${catIcon}</span>
-            <span style="font-size:13px;font-weight:700;color:${sc.text};flex:1;">${p.title||p.type}</span>
-            <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${sc.bg};border:1px solid ${sc.border};color:${sc.text};">${sc.icon} ${p.severity}</span>
-            <span style="padding:3px 10px;border-radius:20px;font-size:10px;background:rgba(255,255,255,.05);color:var(--ink-faint);">${p.type}</span>
-          </div>
-          ${p.scene_line ? `<div style="font-size:11px;color:var(--ink-faint);background:rgba(0,0,0,.3);padding:8px 10px;border-radius:6px;margin-bottom:10px;font-style:italic;border-left:2px solid ${sc.border};">"${p.scene_line}"</div>` : ''}
-          <div style="font-size:12px;color:var(--ink);line-height:1.7;margin-bottom:10px;">${p.problem}</div>
-          <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;">
-            <div style="font-size:10px;color:var(--ember-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">💡 Fix Suggestion</div>
-            <div style="font-size:12px;color:var(--ink-dim);line-height:1.6;">${p.fix}</div>
-          </div>
-        `;
-        list.appendChild(card);
-      });
 
     }catch(e){ showToast('Error: '+e.message); }
     finally{ btn.disabled=false; btn.textContent='🩺 Script Diagnose Karo'; loading.classList.add('hidden'); }
   });
 })();
+
+function renderDoctorResults(d){
+  const severityConfig = {
+    'High':   {bg:'rgba(177,39,45,.15)',  border:'rgba(177,39,45,.4)',  text:'#f09595', icon:'🔴'},
+    'Medium': {bg:'rgba(217,142,58,.12)', border:'rgba(217,142,58,.35)',text:'#EF9F27', icon:'🟡'},
+    'Low':    {bg:'rgba(95,174,111,.12)', border:'rgba(95,174,111,.3)', text:'#5fae6f', icon:'🟢'},
+  };
+  const categoryIcons = {
+    'Plot Hole':'🕳️','Weak Scene':'😴','Pacing':'⏱️',
+    'Character':'👥','Repetition':'🔄','Dialogue':'💬',
+    'Climax':'🎭','Logic':'🧠','Emotion':'💔','Other':'⚠️'
+  };
+
+  const problems = d.problems || [];
+  document.getElementById('sd-problems-list').innerHTML='';
+  document.getElementById('sd-summary').classList.add('hidden');
+  document.getElementById('sd-healthy').classList.add('hidden');
+
+  if(problems.length === 0){
+    document.getElementById('sd-healthy').classList.remove('hidden');
+    return;
+  }
+
+  // Summary pills
+  const summaryEl = document.getElementById('sd-summary');
+  const pillsEl = document.getElementById('sd-summary-pills');
+  pillsEl.innerHTML='';
+
+  const score = d.overall_score || 7;
+  const scoreColor = score>=8?'#5fae6f':score>=5?'#d98e3a':'#b1272d';
+  pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(0,0,0,.3);border:1px solid ${scoreColor};color:${scoreColor};">⭐ Score: ${score}/10</span>`;
+
+  const counts = {High:0,Medium:0,Low:0};
+  problems.forEach(p=>{ if(counts[p.severity]!==undefined) counts[p.severity]++; });
+  if(counts.High)   pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(177,39,45,.15);border:1px solid rgba(177,39,45,.4);color:#f09595;">🔴 High: ${counts.High}</span>`;
+  if(counts.Medium) pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(217,142,58,.12);border:1px solid rgba(217,142,58,.35);color:#EF9F27;">🟡 Medium: ${counts.Medium}</span>`;
+  if(counts.Low)    pillsEl.innerHTML += `<span style="padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(95,174,111,.12);border:1px solid rgba(95,174,111,.3);color:#5fae6f;">🟢 Low: ${counts.Low}</span>`;
+
+  if(d.overall_verdict){
+    pillsEl.innerHTML += `<div style="width:100%;font-size:12px;color:var(--ink-dim);margin-top:8px;font-style:italic;">"${d.overall_verdict}"</div>`;
+  }
+  summaryEl.classList.remove('hidden');
+
+  // Problem cards
+  const list = document.getElementById('sd-problems-list');
+  list.innerHTML='';
+  problems.forEach((p,i)=>{
+    const sc = severityConfig[p.severity] || severityConfig['Low'];
+    const catIcon = categoryIcons[p.type] || '⚠️';
+    const card = document.createElement('div');
+    card.style.cssText = `background:${sc.bg};border:1px solid ${sc.border};border-radius:12px;padding:16px;margin-bottom:12px;animation:slideUp .3s ease forwards;animation-delay:${i*0.06}s;opacity:0;`;
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-size:16px;">${catIcon}</span>
+        <span style="font-size:13px;font-weight:700;color:${sc.text};flex:1;">${p.title||p.type}</span>
+        <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${sc.bg};border:1px solid ${sc.border};color:${sc.text};">${sc.icon} ${p.severity}</span>
+        <span style="padding:3px 10px;border-radius:20px;font-size:10px;background:rgba(255,255,255,.05);color:var(--ink-faint);">${p.type}</span>
+      </div>
+      ${p.scene_line ? `<div style="font-size:11px;color:var(--ink-faint);background:rgba(0,0,0,.3);padding:8px 10px;border-radius:6px;margin-bottom:10px;font-style:italic;border-left:2px solid ${sc.border};">"${p.scene_line}"</div>` : ''}
+      <div style="font-size:12px;color:var(--ink);line-height:1.7;margin-bottom:10px;">${p.problem}</div>
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:10px;color:var(--ember-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">💡 Fix Suggestion</div>
+        <div style="font-size:12px;color:var(--ink-dim);line-height:1.6;">${p.fix}</div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+
+// ============================================================
+// DIRECTOR MODE
+// ============================================================
+(function(){
+  document.getElementById('dm-script-input').addEventListener('input', ()=>{
+    const w = document.getElementById('dm-script-input').value.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('dm-wc').textContent = w + ' words \u00b7 ~' + Math.round(w/130) + ' min';
+  });
+
+  document.getElementById('dm-gen-btn').addEventListener('click', async()=>{
+    const script = document.getElementById('dm-script-input').value.trim();
+    if(!script){ showToast('\u26a0\ufe0f Script paste karo pehle!'); return; }
+
+    const btn = document.getElementById('dm-gen-btn');
+    const loading = document.getElementById('dm-loading');
+    btn.disabled=true; btn.textContent='Generating...';
+    loading.classList.remove('hidden');
+    document.getElementById('dm-shots-list').innerHTML='';
+
+    try{
+      const prompt = `Tu ek professional Hindi horror film director hai.
+
+Script:
+${script.substring(0,4000)}
+
+Har important scene ke liye camera shot suggest karo. Shot types: Wide Shot, Close Up, Extreme Close Up, Drone Shot, POV Shot, Tracking Shot, Over-the-Shoulder, Low Angle, High Angle, Dutch Angle.
+
+Return ONLY valid JSON (no markdown):
+{
+  "shots": [
+    {
+      "scene_line": "exact line/scene from script",
+      "shot_type": "Wide Shot / Close Up / Drone / POV / Tracking / etc",
+      "camera_movement": "Static / Pan / Tilt / Zoom / Dolly / Handheld",
+      "reasoning": "Kyun ye shot effective hoga Hindi mein",
+      "mood": "Tension / Reveal / Calm / Horror / Action"
+    }
+  ]
+}
+
+Minimum 6, maximum 15 shots dho.`;
+
+      const res = await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.7,responseMimeType:'application/json'}})});
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'{}';
+      const d = JSON.parse(text.replace(/```json|```/g,'').trim());
+
+      renderDirectorShots(d.shots || []);
+
+      const activeProj = featureActiveProject['director'];
+      if(activeProj){
+        try{
+          await db.collection('projects').doc(activeProj.id).update({
+            directorData: d,
+            directorScript: script,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          await loadProjects();
+          featureActiveProject['director'] = projects.find(p=>p.id===activeProj.id) || activeProj;
+          showToast('\ud83d\udcbe Camera shots project mein save ho gaye!');
+        }catch(e){ console.error('Save error:', e); }
+      } else {
+        showToast('\u26a0\ufe0f Project select karo save karne ke liye');
+      }
+
+    }catch(e){ showToast('Error: '+e.message); }
+    finally{ btn.disabled=false; btn.textContent='\ud83c\udfa5 Camera Shots Generate Karo'; loading.classList.add('hidden'); }
+  });
+})();
+
+const shotIcons = {
+  'Wide Shot':'\ud83c\udf04','Close Up':'\ud83d\udd0d','Extreme Close Up':'\ud83d\udc41\ufe0f','Drone Shot':'\ud83d\ude81',
+  'Drone':'\ud83d\ude81','POV Shot':'\ud83d\udc64','POV':'\ud83d\udc64','Tracking Shot':'\ud83c\udfaf','Tracking':'\ud83c\udfaf',
+  'Over-the-Shoulder':'\ud83d\udc65','Low Angle':'\u2b06\ufe0f','High Angle':'\u2b07\ufe0f','Dutch Angle':'\u2197\ufe0f'
+};
+
+function renderDirectorShots(shots){
+  const list = document.getElementById('dm-shots-list');
+  list.innerHTML='';
+  if(!shots.length) return;
+
+  const moodColors = {
+    'Tension':{bg:'rgba(177,39,45,.15)',border:'rgba(177,39,45,.4)',text:'#f09595'},
+    'Reveal':{bg:'rgba(217,142,58,.12)',border:'rgba(217,142,58,.35)',text:'#EF9F27'},
+    'Calm':{bg:'rgba(95,174,111,.12)',border:'rgba(95,174,111,.3)',text:'#5fae6f'},
+    'Horror':{bg:'rgba(127,119,221,.12)',border:'rgba(127,119,221,.35)',text:'#AFA9EC'},
+    'Action':{bg:'rgba(55,138,221,.12)',border:'rgba(55,138,221,.35)',text:'#85B7EB'},
+  };
+
+  shots.forEach((s,i)=>{
+    const mc = moodColors[s.mood] || moodColors['Tension'];
+    const icon = shotIcons[s.shot_type] || '\ud83c\udfa5';
+    const card = document.createElement('div');
+    card.style.cssText = `background:${mc.bg};border:1px solid ${mc.border};border-radius:12px;padding:16px;margin-bottom:12px;animation:slideUp .3s ease forwards;animation-delay:${i*0.06}s;opacity:0;`;
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-size:18px;">${icon}</span>
+        <span style="font-size:13px;font-weight:700;color:${mc.text};flex:1;">${s.shot_type||'Shot'} ${i+1}</span>
+        <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${mc.bg};border:1px solid ${mc.border};color:${mc.text};">${s.mood||''}</span>
+      </div>
+      ${s.scene_line ? `<div style="font-size:11px;color:var(--ink-faint);background:rgba(0,0,0,.3);padding:8px 10px;border-radius:6px;margin-bottom:10px;font-style:italic;border-left:2px solid ${mc.border};">"${s.scene_line}"</div>` : ''}
+      <div style="font-size:11px;color:var(--ember-dim);margin-bottom:6px;"><strong>Movement:</strong> ${s.camera_movement||'Static'}</div>
+      <div style="font-size:12px;color:var(--ink-dim);line-height:1.6;">${s.reasoning||''}</div>
+    `;
+    list.appendChild(card);
+  });
+}
 
 </script>
