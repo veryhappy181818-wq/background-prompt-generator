@@ -1524,32 +1524,18 @@ window.selectIdea = async function(idx){
   if(!idea) return;
 
   try{
-    let targetProject = featureActiveProject['ideas'];
-
-    // Agar koi project active nahi hai, naya banao
-    if(!targetProject){
-      showToast('Project ban raha hai...');
-      const ref = await db.collection('projects').add({
-        userId: currentUser.uid, projectName: idea.title,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        bgCount:0, sceneCount:0
-      });
-      const doc = await ref.get();
-      targetProject = {id:ref.id, ...doc.data()};
-      await loadProjects();
-    }
-
-    // Pre-fill production script with idea
+    showToast('Production project ban raha hai...');
     const prodScript = `${idea.title}\n\n${idea.summary}\n\nTwist: ${idea.twist}`;
 
-    await db.collection('projects').doc(targetProject.id).update({
-      prodScript: prodScript,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    // Always create a NEW project in productionProjects collection (separate from ideaProjects)
+    const ref = await db.collection('productionProjects').add({
+      userId: currentUser.uid, projectName: idea.title,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      prodScript: prodScript
     });
-    await loadProjects();
-    targetProject = projects.find(p=>p.id===targetProject.id) || targetProject;
+    const doc = await ref.get();
+    const targetProject = {id:ref.id, ...doc.data()};
 
     closePage('ideaWriterPage');
     featureActiveProject['production'] = targetProject;
@@ -1561,7 +1547,7 @@ window.selectIdea = async function(idx){
     updateProdWC();
     document.getElementById('prod-result-section').classList.add('hidden');
     openPage('productionPage');
-    showToast('Project ready! Ab Production Pack generate karo 🔥');
+    showToast('Naya production project ready! Ab Generate karo 🔥');
   }catch(e){ showToast('Error: '+e.message); }
 };
 
@@ -1815,10 +1801,10 @@ window.duplicateProject = async function(){
 // (Idea Writer / Production / Script Doctor / Director Mode)
 // ============================================================
 const featurePageMap = {
-  ideas: {page:'ideaWriterPage', picker:'iw2-picker', activeBar:'iw2-active-bar', activeName:'iw2-active-name', formSection:'iw2-form-section', projList:'iw2-proj-list', newNameInput:'iw2-new-proj-name', dataField:'ideaData'},
-  production: {page:'productionPage', picker:'prod-picker', activeBar:'prod-active-bar', activeName:'prod-active-name', formSection:'prod-form-section', projList:'prod-proj-list', newNameInput:'prod-new-proj-name', dataField:'productionPack'},
-  doctor: {page:'scriptDoctorPage', picker:'sd-picker', activeBar:'sd-active-bar', activeName:'sd-active-name', formSection:'sd-form-section', projList:'sd-proj-list', newNameInput:'sd-new-proj-name', dataField:'doctorData'},
-  director: {page:'directorModePage', picker:'dm-picker', activeBar:'dm-active-bar', activeName:'dm-active-name', formSection:'dm-form-section', projList:'dm-proj-list', newNameInput:'dm-new-proj-name', dataField:'directorData'},
+  ideas: {page:'ideaWriterPage', picker:'iw2-picker', activeBar:'iw2-active-bar', activeName:'iw2-active-name', formSection:'iw2-form-section', projList:'iw2-proj-list', newNameInput:'iw2-new-proj-name', dataField:'ideaData', collection:'ideaProjects'},
+  production: {page:'productionPage', picker:'prod-picker', activeBar:'prod-active-bar', activeName:'prod-active-name', formSection:'prod-form-section', projList:'prod-proj-list', newNameInput:'prod-new-proj-name', dataField:'productionPack', collection:'productionProjects'},
+  doctor: {page:'scriptDoctorPage', picker:'sd-picker', activeBar:'sd-active-bar', activeName:'sd-active-name', formSection:'sd-form-section', projList:'sd-proj-list', newNameInput:'sd-new-proj-name', dataField:'doctorData', collection:'doctorProjects'},
+  director: {page:'directorModePage', picker:'dm-picker', activeBar:'dm-active-bar', activeName:'dm-active-name', formSection:'dm-form-section', projList:'dm-proj-list', newNameInput:'dm-new-proj-name', dataField:'directorData', collection:'directorProjects'},
 };
 
 let featureActiveProject = {ideas:null, production:null, doctor:null, director:null};
@@ -1840,27 +1826,40 @@ function openFeature(feature){
   }
 }
 
+let featureProjectsCache = {ideas:[], production:[], doctor:[], director:[]};
+
 async function featureRenderProjectList(feature){
   const cfg = featurePageMap[feature];
   const listEl = document.getElementById(cfg.projList);
-  listEl.innerHTML = '';
-  if(!projects || projects.length === 0){
-    listEl.innerHTML = '<div style="color:var(--ink-faint);font-size:12px;text-align:center;padding:16px 0;">Koi project nahi hai abhi tak</div>';
-    return;
+  listEl.innerHTML = '<div style="color:var(--ink-faint);font-size:12px;text-align:center;padding:16px 0;">Loading...</div>';
+  try{
+    const snap = await db.collection(cfg.collection).where('userId','==',currentUser.uid).orderBy('updatedAt','desc').get();
+    const list = [];
+    snap.forEach(doc=>list.push({id:doc.id, ...doc.data()}));
+    featureProjectsCache[feature] = list;
+
+    listEl.innerHTML = '';
+    if(list.length === 0){
+      listEl.innerHTML = '<div style="color:var(--ink-faint);font-size:12px;text-align:center;padding:16px 0;">Koi project nahi hai abhi tak</div>';
+      return;
+    }
+    list.forEach(p=>{
+      const hasData = p[cfg.dataField] ? true : false;
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);margin-bottom:6px;cursor:pointer;';
+      row.innerHTML = `
+        <div style="flex:1;min-width:0;" onclick="featureSelectProject('${feature}','${p.id}')">
+          <div style="font-size:13px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.projectName||'Untitled')}</div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-top:2px;">${hasData ? '✅ Pehle se generated hai' : '⚪ Khali project'}</div>
+        </div>
+        <button onclick="event.stopPropagation();featureDeleteProject('${feature}','${p.id}')" style="background:none;border:none;color:#b1272d;font-size:16px;cursor:pointer;padding:4px 8px;flex-shrink:0;">🗑️</button>
+      `;
+      listEl.appendChild(row);
+    });
+  }catch(e){
+    listEl.innerHTML = '<div style="color:#f09595;font-size:12px;text-align:center;padding:16px 0;">Error loading projects</div>';
+    console.error(e);
   }
-  projects.forEach(p=>{
-    const hasData = p[cfg.dataField] ? true : false;
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);margin-bottom:6px;cursor:pointer;';
-    row.innerHTML = `
-      <div style="flex:1;min-width:0;" onclick="featureSelectProject('${feature}','${p.id}')">
-        <div style="font-size:13px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.projectName||'Untitled')}</div>
-        <div style="font-size:10px;color:var(--ink-faint);margin-top:2px;">${hasData ? '✅ Pehle se generated hai' : '⚪ Khali project'}</div>
-      </div>
-      <button onclick="event.stopPropagation();featureDeleteProject('${feature}','${p.id}')" style="background:none;border:none;color:#b1272d;font-size:16px;cursor:pointer;padding:4px 8px;flex-shrink:0;">🗑️</button>
-    `;
-    listEl.appendChild(row);
-  });
 }
 
 async function featureCreateProject(feature){
@@ -1868,16 +1867,13 @@ async function featureCreateProject(feature){
   const nameInput = document.getElementById(cfg.newNameInput);
   const name = nameInput.value.trim() || 'Untitled Reel';
   try{
-    const ref = await db.collection('projects').add({
+    const ref = await db.collection(cfg.collection).add({
       userId: currentUser.uid, projectName: name,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      bgCount:0, sceneCount:0
     });
     const doc = await ref.get();
     const newProj = {id:ref.id, ...doc.data()};
-    await loadProjects();
     nameInput.value='';
     featureShowActiveProject(feature, newProj);
     showToast('✅ Project ban gaya!');
@@ -1885,7 +1881,7 @@ async function featureCreateProject(feature){
 }
 
 function featureSelectProject(feature, projectId){
-  const p = projects.find(pr=>pr.id===projectId);
+  const p = featureProjectsCache[feature].find(pr=>pr.id===projectId);
   if(!p) return;
   featureShowActiveProject(feature, p);
 }
@@ -1915,26 +1911,23 @@ function featureSwitchProject(feature){
 }
 
 async function featureDeleteProject(feature, projectId){
-  const p = projects.find(pr=>pr.id===projectId);
+  const cfg = featurePageMap[feature];
+  const p = featureProjectsCache[feature].find(pr=>pr.id===projectId);
   if(!p) return;
-  openModal(`<h3>Delete?</h3><p style="font-size:13px;color:var(--ink-dim);">"${escapeHtml(p.projectName||'')}" permanently delete hoga — saara data (ideas, production, scenes) chala jayega.</p>
+  openModal(`<h3>Delete?</h3><p style="font-size:13px;color:var(--ink-dim);">"${escapeHtml(p.projectName||'')}" permanently delete hoga — sirf isi feature ka data jayega.</p>
   <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="featureDelConfirm">Delete</button></div>`);
   document.getElementById('featureDelConfirm').onclick = async()=>{
     try{
-      const bgSnap = await db.collection('backgrounds').where('projectId','==',projectId).get();
-      const batch = db.batch();
-      bgSnap.forEach(doc=>batch.delete(doc.ref));
-      const scriptSnap = await db.collection('scripts').where('projectId','==',projectId).get();
-      scriptSnap.forEach(doc=>batch.delete(doc.ref));
-      batch.delete(db.collection('projects').doc(projectId));
-      await batch.commit();
+      await db.collection(cfg.collection).doc(projectId).delete();
       closeModal();
-      // If this was the active project for any feature, clear it
-      Object.keys(featureActiveProject).forEach(f=>{
-        if(featureActiveProject[f]?.id===projectId) featureActiveProject[f]=null;
-      });
-      await loadProjects();
+      if(featureActiveProject[feature]?.id===projectId) featureActiveProject[feature]=null;
       featureRenderProjectList(feature);
+      // If currently showing this project's data, reset to picker
+      if(featureActiveProject[feature]===null){
+        document.getElementById(cfg.picker).classList.remove('hidden');
+        document.getElementById(cfg.activeBar).classList.add('hidden');
+        document.getElementById(cfg.formSection).classList.add('hidden');
+      }
       showToast('🗑️ Project delete ho gaya');
     }catch(e){ showToast('Error: '+e.message); }
   };
