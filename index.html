@@ -1515,7 +1515,18 @@ Return ONLY valid JSON array (no markdown):
 window.previewIdea = function(idx){
   const idea = window._iw2Ideas?.[idx];
   if(!idea) return;
-  showModal(`<div style="padding:4px 0;"><div style="font-size:16px;font-weight:700;color:#d98e3a;margin-bottom:10px;font-family:'Cinzel','Georgia',serif;">${idea.title}</div><div style="font-size:12px;color:#ece4dd;line-height:1.8;margin-bottom:10px;">${idea.summary}</div><div style="font-size:11px;color:#8a5d27;font-style:italic;margin-bottom:14px;">🌀 Twist: ${idea.twist}</div><div style="display:flex;gap:8px;"><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(177,39,45,.2);color:#f09595;border:1px solid rgba(177,39,45,.3);">👻 Horror ${idea.horror_level}/10</span><span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(217,142,58,.15);color:#EF9F27;border:1px solid rgba(217,142,58,.3);">🌀 Twist ${idea.twist_level}/10</span></div><div style="margin-top:14px;display:flex;gap:8px;"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="closeModal();selectIdea(${idx})">✅ Select & Use</button></div></div>`);
+  const html = '<div style="padding:4px 0;">'
+    + '<div style="font-size:16px;font-weight:700;color:#d98e3a;margin-bottom:10px;font-family:Cinzel,Georgia,serif;">' + escapeHtml(idea.title||'') + '</div>'
+    + '<div style="font-size:12px;color:#ece4dd;line-height:1.8;margin-bottom:10px;">' + escapeHtml(idea.summary||'') + '</div>'
+    + '<div style="font-size:11px;color:#8a5d27;font-style:italic;margin-bottom:14px;">🌀 Twist: ' + escapeHtml(idea.twist||'') + '</div>'
+    + '<div style="display:flex;gap:8px;margin-bottom:14px;">'
+    + '<span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(177,39,45,.2);color:#f09595;border:1px solid rgba(177,39,45,.3);">👻 Horror ' + (idea.horror_level||7) + '/10</span>'
+    + '<span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(217,142,58,.15);color:#EF9F27;border:1px solid rgba(217,142,58,.3);">🌀 Twist ' + (idea.twist_level||7) + '/10</span>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="previewSelectBtn">✅ Select & Use</button></div>'
+    + '</div>';
+  openModal(html);
+  document.getElementById('previewSelectBtn').onclick = function(){ closeModal(); selectIdea(idx); };
 };
 
 window.selectIdea = async function(idx){
@@ -1641,7 +1652,27 @@ Return ONLY valid JSON (no markdown, no extra text):
 function makeProdSection(icon, title, content){
   const div = document.createElement('div');
   div.className = 'prod-section';
-  div.innerHTML = `<div class="prod-section-head"><span class="prod-section-title">${icon} ${title}</span><button class="copy-btn" onclick="navigator.clipboard.writeText(${JSON.stringify(content)}).then(()=>showToast('Copied!'))">Copy</button></div><div class="prod-section-body">${content}</div>`;
+  const head = document.createElement('div');
+  head.className = 'prod-section-head';
+  const titleEl = document.createElement('span');
+  titleEl.className = 'prod-section-title';
+  titleEl.textContent = icon + ' ' + title;
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.textContent = 'Copy';
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(content).then(() => {
+      copyBtn.textContent = '✓';
+      setTimeout(() => copyBtn.textContent = 'Copy', 1500);
+    });
+  };
+  head.appendChild(titleEl);
+  head.appendChild(copyBtn);
+  const body = document.createElement('div');
+  body.className = 'prod-section-body';
+  body.textContent = content;
+  div.appendChild(head);
+  div.appendChild(body);
   return div;
 }
 
@@ -2154,20 +2185,40 @@ function renderDoctorResults(d){
     const catIcon = categoryIcons[p.type] || '⚠️';
     const card = document.createElement('div');
     card.style.cssText = `background:${sc.bg};border:1px solid ${sc.border};border-radius:12px;padding:16px;margin-bottom:12px;animation:slideUp .3s ease forwards;animation-delay:${i*0.06}s;opacity:0;`;
-    card.innerHTML = `
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-        <span style="font-size:16px;">${catIcon}</span>
-        <span style="font-size:13px;font-weight:700;color:${sc.text};flex:1;">${p.title||p.type}</span>
-        <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${sc.bg};border:1px solid ${sc.border};color:${sc.text};">${sc.icon} ${p.severity}</span>
-        <span style="padding:3px 10px;border-radius:20px;font-size:10px;background:rgba(255,255,255,.05);color:var(--ink-faint);">${p.type}</span>
-      </div>
-      ${p.scene_line ? `<div style="font-size:11px;color:var(--ink-faint);background:rgba(0,0,0,.3);padding:8px 10px;border-radius:6px;margin-bottom:10px;font-style:italic;border-left:2px solid ${sc.border};">"${p.scene_line}"</div>` : ''}
-      <div style="font-size:12px;color:var(--ink);line-height:1.7;margin-bottom:10px;">${p.problem}</div>
-      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;">
-        <div style="font-size:10px;color:var(--ember-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;">💡 Fix Suggestion</div>
-        <div style="font-size:12px;color:var(--ink-dim);line-height:1.6;">${p.fix}</div>
-      </div>
-    `;
+    const copyText = `${p.title||p.type}\nProblem: ${p.problem}\nFix: ${p.fix}`;
+    const copyBtn = document.createElement('button');
+    copyBtn.style.cssText = 'padding:3px 10px;border-radius:6px;border:1px solid '+sc.border+';background:rgba(0,0,0,.2);color:'+sc.text+';font-size:10px;cursor:pointer;flex-shrink:0;';
+    copyBtn.textContent = 'Copy';
+    copyBtn.onclick = () => { navigator.clipboard.writeText(copyText).then(()=>{ copyBtn.textContent='✓'; setTimeout(()=>copyBtn.textContent='Copy',1500); }); };
+
+    const headEl = document.createElement('div');
+    headEl.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;';
+    headEl.innerHTML = `<span style="font-size:16px;">${catIcon}</span><span style="font-size:13px;font-weight:700;color:${sc.text};flex:1;">${p.title||p.type}</span><span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${sc.bg};border:1px solid ${sc.border};color:${sc.text};">${sc.icon} ${p.severity}</span><span style="padding:3px 10px;border-radius:20px;font-size:10px;background:rgba(255,255,255,.05);color:var(--ink-faint);">${p.type}</span>`;
+    headEl.appendChild(copyBtn);
+    card.appendChild(headEl);
+
+    if(p.scene_line){
+      const sl = document.createElement('div');
+      sl.style.cssText = 'font-size:11px;color:var(--ink-faint);background:rgba(0,0,0,.3);padding:8px 10px;border-radius:6px;margin-bottom:10px;font-style:italic;border-left:2px solid '+sc.border+';';
+      sl.textContent = '"' + p.scene_line + '"';
+      card.appendChild(sl);
+    }
+    const probEl = document.createElement('div');
+    probEl.style.cssText = 'font-size:12px;color:var(--ink);line-height:1.7;margin-bottom:10px;';
+    probEl.textContent = p.problem;
+    card.appendChild(probEl);
+
+    const fixWrap = document.createElement('div');
+    fixWrap.style.cssText = 'background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;';
+    const fixLabel = document.createElement('div');
+    fixLabel.style.cssText = 'font-size:10px;color:var(--ember-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;';
+    fixLabel.textContent = '💡 Fix Suggestion';
+    const fixText = document.createElement('div');
+    fixText.style.cssText = 'font-size:12px;color:var(--ink-dim);line-height:1.6;';
+    fixText.textContent = p.fix;
+    fixWrap.appendChild(fixLabel);
+    fixWrap.appendChild(fixText);
+    card.appendChild(fixWrap);
     list.appendChild(card);
   });
 }
@@ -2267,16 +2318,39 @@ function renderDirectorShots(shots){
     const icon = shotIcons[s.shot_type] || '\ud83c\udfa5';
     const card = document.createElement('div');
     card.style.cssText = `background:${mc.bg};border:1px solid ${mc.border};border-radius:12px;padding:16px;margin-bottom:12px;animation:slideUp .3s ease forwards;animation-delay:${i*0.06}s;opacity:0;`;
-    card.innerHTML = `
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-        <span style="font-size:18px;">${icon}</span>
-        <span style="font-size:13px;font-weight:700;color:${mc.text};flex:1;">${s.shot_type||'Shot'} ${i+1}</span>
-        <span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:${mc.bg};border:1px solid ${mc.border};color:${mc.text};">${s.mood||''}</span>
-      </div>
-      ${s.scene_line ? `<div style="font-size:11px;color:var(--ink-faint);background:rgba(0,0,0,.3);padding:8px 10px;border-radius:6px;margin-bottom:10px;font-style:italic;border-left:2px solid ${mc.border};">"${s.scene_line}"</div>` : ''}
-      <div style="font-size:11px;color:var(--ember-dim);margin-bottom:6px;"><strong>Movement:</strong> ${s.camera_movement||'Static'}</div>
-      <div style="font-size:12px;color:var(--ink-dim);line-height:1.6;">${s.reasoning||''}</div>
-    `;
+    const copyText = `${s.shot_type||'Shot'} ${i+1}\nMovement: ${s.camera_movement||'Static'}\nMood: ${s.mood||''}\nScene: ${s.scene_line||''}\nReasoning: ${s.reasoning||''}`;
+    const cb = document.createElement('button');
+    cb.style.cssText = 'padding:3px 10px;border-radius:6px;border:1px solid '+mc.border+';background:rgba(0,0,0,.2);color:'+mc.text+';font-size:10px;cursor:pointer;flex-shrink:0;';
+    cb.textContent = 'Copy';
+    cb.onclick = () => { navigator.clipboard.writeText(copyText).then(()=>{ cb.textContent='✓'; setTimeout(()=>cb.textContent='Copy',1500); }); };
+
+    const headEl = document.createElement('div');
+    headEl.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;';
+    const iconEl = document.createElement('span');
+    iconEl.style.fontSize='18px'; iconEl.textContent=icon;
+    const titleEl = document.createElement('span');
+    titleEl.style.cssText='font-size:13px;font-weight:700;color:'+mc.text+';flex:1;';
+    titleEl.textContent=(s.shot_type||'Shot')+' '+(i+1);
+    const moodEl = document.createElement('span');
+    moodEl.style.cssText='padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:'+mc.bg+';border:1px solid '+mc.border+';color:'+mc.text+';';
+    moodEl.textContent=s.mood||'';
+    headEl.appendChild(iconEl); headEl.appendChild(titleEl); headEl.appendChild(moodEl); headEl.appendChild(cb);
+    card.appendChild(headEl);
+
+    if(s.scene_line){
+      const sl = document.createElement('div');
+      sl.style.cssText='font-size:11px;color:var(--ink-faint);background:rgba(0,0,0,.3);padding:8px 10px;border-radius:6px;margin-bottom:10px;font-style:italic;border-left:2px solid '+mc.border+';';
+      sl.textContent='"'+s.scene_line+'"';
+      card.appendChild(sl);
+    }
+    const mvEl = document.createElement('div');
+    mvEl.style.cssText='font-size:11px;color:var(--ember-dim);margin-bottom:6px;';
+    mvEl.innerHTML='<strong>Movement:</strong> '+(s.camera_movement||'Static');
+    card.appendChild(mvEl);
+    const rsEl = document.createElement('div');
+    rsEl.style.cssText='font-size:12px;color:var(--ink-dim);line-height:1.6;';
+    rsEl.textContent=s.reasoning||'';
+    card.appendChild(rsEl);
     list.appendChild(card);
   });
 }
