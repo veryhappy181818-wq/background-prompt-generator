@@ -299,9 +299,8 @@ const WORDS_PER_MINUTE = 130;
     <div style="max-width:480px;margin:0 auto;padding:16px;">
       <!-- Header -->
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:8px;">
-        <button onclick="closePage('ideaWriterPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <button onclick="iwHandleBack()" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
         <div style="flex:1;">
-          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;">GK Horror Tales</div>
           <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);letter-spacing:.08em;">💡 Idea Writer</div>
         </div>
       </div>
@@ -400,7 +399,7 @@ const WORDS_PER_MINUTE = 130;
     <div style="max-width:480px;margin:0 auto;padding:16px;">
       <!-- Header -->
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
-        <button onclick="closePage('productionPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <button onclick="prodHandleBack()" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
         <div style="flex:1;">
           <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;" id="prod-project-label">No Project</div>
           <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);letter-spacing:.08em;">🚀 One-Click Production</div>
@@ -517,9 +516,8 @@ const WORDS_PER_MINUTE = 130;
     <div style="max-width:480px;margin:0 auto;padding:16px;">
       <!-- Header -->
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
-        <button onclick="closePage('scriptDoctorPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <button onclick="sdHandleBack()" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
         <div style="flex:1;">
-          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;">GK Horror Tales</div>
           <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);letter-spacing:.08em;">🩺 AI Script Doctor</div>
         </div>
       </div>
@@ -586,9 +584,8 @@ const WORDS_PER_MINUTE = 130;
   <div id="directorModePage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
     <div style="max-width:480px;margin:0 auto;padding:16px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
-        <button onclick="closePage('directorModePage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
+        <button onclick="dmHandleBack()" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">← Back</button>
         <div style="flex:1;">
-          <div style="font-size:11px;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;">GK Horror Tales</div>
           <div style="font-size:17px;font-weight:700;color:var(--ember);font-family:var(--font-display);letter-spacing:.08em;">🎥 Director Mode</div>
         </div>
       </div>
@@ -1394,6 +1391,26 @@ function statCard(num,label){ return `<div class="stat-card"><div class="stat-nu
 window.addEventListener("beforeunload",()=>{ if(currentProject) saveDraft(); });
 (function(){if(localStorage.getItem("ns_onboard_done"))return;const ov=document.getElementById("onboardOverlay");ov.classList.remove("hidden");let cur=0;function go(n){cur=n;document.getElementById("obSteps").style.transform=`translateX(-${cur*100}%)`;[0,1,2].forEach(i=>{const d=document.getElementById("ob"+i);d.className="onboard-dot"+(i===cur?" active":"");});document.getElementById("obNext").textContent=cur===2?"SHURU KARO 🔥":"AAGE BADHO";}document.getElementById("obNext").addEventListener("click",()=>{cur<2?go(cur+1):done();});document.getElementById("obSkip").addEventListener("click",done);function done(){localStorage.setItem("ns_onboard_done","1");ov.classList.add("hidden");}})();
 
+
+// ============================================================
+// 2-STEP BACK NAVIGATION FOR FEATURE PAGES
+// ============================================================
+function featureHandleBack(feature){
+  const cfg = featurePageMap[feature];
+  // Step 1: If inside a project (form visible), go back to picker
+  const formSection = document.getElementById(cfg.formSection);
+  if(formSection && !formSection.classList.contains('hidden')){
+    featureSwitchProject(feature);
+    return;
+  }
+  // Step 2: Close the feature page entirely
+  closePage(cfg.page);
+}
+function iwHandleBack(){ featureHandleBack('ideas'); }
+function prodHandleBack(){ featureHandleBack('production'); }
+function sdHandleBack(){ featureHandleBack('doctor'); }
+function dmHandleBack(){ featureHandleBack('director'); }
+
 // ============================================================
 // PAGE NAVIGATION
 // ============================================================
@@ -1910,8 +1927,9 @@ async function featureCreateProject(feature){
     const doc = await ref.get();
     const newProj = {id:ref.id, ...doc.data()};
     nameInput.value='';
-    featureShowActiveProject(feature, newProj);
-    showToast('✅ Project ban gaya!');
+    // Don't auto-open project — show picker with updated list
+    await featureRenderProjectList(feature);
+    showToast('✅ Project ban gaya! Ab list mein click karo.');
   }catch(e){ showToast('Error: '+e.message); }
 }
 
