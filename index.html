@@ -355,6 +355,83 @@ button[onclick*="HandleBack"]:hover, button[onclick*="closePage"]:hover {
   border-color: #b1272d !important;
   transition: all .2s;
 }
+
+/* ============================================================ */
+/* MAIN PAGE UI IMPROVEMENTS */
+/* ============================================================ */
+
+/* Brand mark icon */
+.brand-mark img {
+  transition: transform .3s ease;
+}
+.brand-mark:hover img {
+  transform: scale(1.08);
+}
+
+/* Project grid cards - better UI */
+.card-item {
+  position: relative;
+  overflow: hidden;
+}
+.card-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #b1272d, #d98e3a);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.card-item:hover::before {
+  opacity: 1;
+}
+
+/* New project card */
+.new-card {
+  border: 1.5px dashed var(--line);
+  transition: all .25s ease;
+}
+.new-card:hover {
+  border-color: #b1272d;
+  background: rgba(177,39,45,.06);
+  transform: translateY(-2px);
+}
+.new-card .plus {
+  font-size: 28px;
+  color: var(--ember);
+  transition: transform .2s;
+}
+.new-card:hover .plus {
+  transform: rotate(90deg) scale(1.2);
+}
+
+/* Dashboard header */
+.section-head {
+  position: relative;
+}
+.section-head::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, #b1272d, transparent);
+  margin-top: 12px;
+  opacity: .4;
+}
+
+/* Menu drawer items */
+#sideDrawer > div {
+  transition: background .15s, padding-left .15s;
+}
+#sideDrawer > div:hover {
+  background: rgba(177,39,45,.12);
+  padding-left: 24px;
+}
+
+/* Topbar */
+.topbar {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 </style>
 <link rel="manifest" href="manifest.json">
 </head>
@@ -756,7 +833,7 @@ const WORDS_PER_MINUTE = 130;
   <div id="mainScreen" class="hidden">
     <div class="topbar">
       <div class="brand">
-        <div class="brand-mark"></div>
+        <div class="brand-mark" style="background:none;box-shadow:none;overflow:hidden;border-radius:8px;"><img src="icon-512.png" style="width:34px;height:34px;border-radius:8px;object-fit:cover;" alt="GK"/></div>
         <div class="brand-text">
           <span class="t1">NIGHTMARE STUDIO</span>
           <span class="t2">Background Prompt Generator</span>
@@ -766,7 +843,7 @@ const WORDS_PER_MINUTE = 130;
         <div class="icon-btn" id="themeBtn" title="Toggle theme">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </div>
-        <div class="avatar" id="userAvatar" style="background:linear-gradient(135deg,#b1272d,#d98e3a);font-size:11px;font-weight:900;letter-spacing:.05em;">GK</div>
+        <div class="avatar" id="userAvatar">U</div>
         <div class="icon-btn" id="menuBtn" title="More" onclick="document.getElementById('sideDrawer').classList.toggle('hidden')" style="font-size:18px;font-weight:700;letter-spacing:1px;">≡</div><div id="sideDrawer" class="hidden" style="position:fixed;top:56px;right:12px;background:#1a0a0a;border:1px solid #332424;border-radius:12px;z-index:999;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:8px 0;"><div onclick="openFeature('ideas')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">💡 Idea Writer</div><div onclick="openFeature('production')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎬 One-Click Production</div><div onclick="openFeature('doctor')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🩺 AI Script Doctor</div><div onclick="openFeature('director')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #332424;">🎥 Director Mode</div><div onclick="openFeature('share')" style="padding:14px 20px;color:#d98e3a;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;">📤 Share Project</div></div>
       </div>
     </div>
@@ -987,7 +1064,7 @@ auth.onAuthStateChanged(async(user)=>{
     currentUser=user;
     $("authScreen").classList.add("hidden");
     $("mainScreen").classList.remove("hidden");
-    $("userAvatar").textContent="GK";
+    $("userAvatar").textContent=(user.displayName||user.email||"U")[0].toUpperCase();
     await ensureUserDoc(user);
 
     // Show worker setup if not set
@@ -1151,8 +1228,8 @@ function openProjectMenu(p){
   };
   $("m_del").onclick=()=>{
     closeModal();
-    openModal(`<p style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:16px;">Deleting project...</p><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="featureDelConfirm">Delete</button></div>`);
-    $("confirmDel").onclick=async()=>{
+    openModal(`<p style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:16px;">Delete this project?</p><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="delConfirmBtn">Delete</button></div>`);
+    $("delConfirmBtn").onclick=async()=>{
       const bgSnap=await db.collection("backgrounds").where("projectId","==",p.id).get();
       const batch=db.batch();
       bgSnap.forEach(doc=>batch.delete(doc.ref));
