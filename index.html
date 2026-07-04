@@ -808,7 +808,20 @@ const WORDS_PER_MINUTE = 130;
   </div>
 
 
-  <div id="authScreen" class="auth-wrap">
+  
+  <!-- ============================================================ -->
+  <!-- CINEMATIC INTRO ANIMATION -->
+  <!-- ============================================================ -->
+  <div id="introOverlay" class="hidden" style="position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+    <canvas id="introCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+    <div id="introLogo" style="position:relative;z-index:2;opacity:0;transform:scale(0.1);transition:none;">
+      <img src="file_0000000090c872079807bfcdd0984dfd.png" id="introLogoImg" style="width:200px;height:200px;border-radius:50%;object-fit:cover;filter:drop-shadow(0 0 30px #b1272d) drop-shadow(0 0 60px #d98e3a);"/>
+    </div>
+    <div id="introText" style="position:relative;z-index:2;margin-top:32px;font-family:'Cinzel','Georgia',serif;font-size:18px;font-weight:700;letter-spacing:.25em;color:#b1272d;text-shadow:0 0 20px #b1272d,0 0 40px #b1272d;opacity:0;text-transform:uppercase;text-align:center;"></div>
+    <button id="introSkip" style="position:absolute;top:20px;right:20px;z-index:3;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.1em;">SKIP</button>
+  </div>
+
+  <!-- AUTH SCREEN --> class="auth-wrap">
     <div class="auth-card">
       <div class="auth-mark"></div>
       <div class="auth-title">NIGHTMARE STUDIO</div>
@@ -1062,9 +1075,19 @@ auth.onAuthStateChanged(async(user)=>{
       await auth.signOut(); return;
     }
     currentUser=user;
-    $("authScreen").classList.add("hidden");
-    $("mainScreen").classList.remove("hidden");
     $("userAvatar").textContent=(user.displayName||user.email||"U")[0].toUpperCase();
+    // Show intro on first sign-up/login
+    const introKey = "ns_intro_done_" + user.uid;
+    if(!localStorage.getItem(introKey)){
+      $("authScreen").classList.add("hidden");
+      playIntroAnimation(()=>{
+        localStorage.setItem(introKey,"1");
+        $("mainScreen").classList.remove("hidden");
+      });
+    } else {
+      $("authScreen").classList.add("hidden");
+      $("mainScreen").classList.remove("hidden");
+    }
     await ensureUserDoc(user);
 
     // Show worker setup if not set
@@ -2548,6 +2571,223 @@ function renderDirectorShots(shots){
     card.appendChild(rsEl);
     list.appendChild(card);
   });
+}
+
+
+// ============================================================
+// CINEMATIC INTRO ANIMATION
+// ============================================================
+function playIntroAnimation(onComplete) {
+  const overlay = document.getElementById('introOverlay');
+  const canvas = document.getElementById('introCanvas');
+  const logo = document.getElementById('introLogo');
+  const textEl = document.getElementById('introText');
+  const skipBtn = document.getElementById('introSkip');
+
+  overlay.classList.remove('hidden');
+  overlay.style.display = 'flex';
+
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // ── Particles (embers) ──
+  const particles = [];
+  for (let i = 0; i < 120; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight + window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: -(Math.random() * 1.5 + 0.5),
+      size: Math.random() * 3 + 1,
+      alpha: Math.random(),
+      color: Math.random() > 0.5 ? '#ff4422' : '#d98e3a',
+      life: Math.random()
+    });
+  }
+
+  // ── Explosion particles ──
+  const explodeParticles = [];
+  let exploded = false;
+
+  function triggerExplosion() {
+    if (exploded) return;
+    exploded = true;
+    for (let i = 0; i < 80; i++) {
+      const angle = (Math.PI * 2 * i) / 80;
+      const speed = Math.random() * 8 + 4;
+      explodeParticles.push({
+        x: W / 2, y: H / 2,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: Math.random() * 5 + 2,
+        alpha: 1,
+        color: Math.random() > 0.5 ? '#ff2200' : '#d98e3a',
+        life: 1
+      });
+    }
+  }
+
+  let animFrame;
+  let phase = 0; // 0=embers, 1=logoin, 2=explode, 3=rebuild, 4=text, 5=done
+  let phaseTime = 0;
+  let startTime = null;
+  let finished = false;
+
+  function finish() {
+    if (finished) return;
+    finished = true;
+    cancelAnimationFrame(animFrame);
+    window.removeEventListener('resize', resize);
+    overlay.style.transition = 'opacity .8s ease';
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+      overlay.style.opacity = '1';
+      overlay.style.display = 'none';
+      onComplete && onComplete();
+    }, 800);
+  }
+
+  skipBtn.onclick = finish;
+
+  const MESSAGE = "THE GATE HAS OPENED";
+  let revealedChars = 0;
+  let lastCharTime = 0;
+
+  function draw(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = (ts - startTime) / 1000; // seconds
+
+    ctx.clearRect(0, 0, W, H);
+
+    // BG gradient
+    const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
+    grad.addColorStop(0, 'rgba(20,0,0,1)');
+    grad.addColorStop(1, 'rgba(0,0,0,1)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── EMBERS ──
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.003;
+      if (p.life <= 0 || p.y < -10) {
+        p.x = Math.random() * W;
+        p.y = H + 10;
+        p.life = 0.8 + Math.random() * 0.2;
+        p.alpha = Math.random();
+      }
+      ctx.save();
+      ctx.globalAlpha = p.life * 0.8;
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // ── EXPLOSION PARTICLES ──
+    explodeParticles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.15;
+      p.life -= 0.025;
+      if (p.life <= 0) return;
+      ctx.save();
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // ── SHOCKWAVE ──
+    if (elapsed > 3 && elapsed < 4.5) {
+      const sw = (elapsed - 3) / 1.5;
+      ctx.save();
+      ctx.strokeStyle = `rgba(177,39,45,${1 - sw})`;
+      ctx.lineWidth = 3;
+      ctx.shadowColor = '#b1272d';
+      ctx.shadowBlur = 20;
+      ctx.beginPath();
+      ctx.arc(W/2, H/2, sw * W * 0.8, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── LOGO ANIMATION ──
+    // Phase: 0-1s dark, 1-3s logo flies in, 3-4s explode, 4-6s rebuild, 6-8s text
+    if (elapsed >= 1 && elapsed < 3) {
+      // Logo fly in
+      const t = (elapsed - 1) / 2; // 0→1
+      const ease = 1 - Math.pow(1 - t, 3);
+      const scale = 0.05 + ease * 0.95;
+      const opacity = Math.min(t * 3, 1);
+      logo.style.opacity = opacity;
+      logo.style.transform = `scale(${scale})`;
+    } else if (elapsed >= 3 && elapsed < 3.2) {
+      // White flash + explosion
+      triggerExplosion();
+      const flash = 1 - (elapsed - 3) / 0.2;
+      ctx.fillStyle = `rgba(255,255,255,${flash * 0.9})`;
+      ctx.fillRect(0, 0, W, H);
+      logo.style.opacity = '0';
+      logo.style.transform = 'scale(1.5)';
+    } else if (elapsed >= 3.2 && elapsed < 4) {
+      logo.style.opacity = '0';
+    } else if (elapsed >= 4 && elapsed < 6) {
+      // Rebuild - logo comes back with pulse
+      const t = (elapsed - 4) / 2;
+      const ease = 1 - Math.pow(1 - t, 2);
+      logo.style.opacity = ease;
+      logo.style.transform = `scale(${ease})`;
+      // Pulse glow
+      const glowIntensity = 20 + Math.sin(elapsed * 8) * 15;
+      document.getElementById('introLogoImg').style.filter =
+        `drop-shadow(0 0 ${glowIntensity}px #b1272d) drop-shadow(0 0 ${glowIntensity*2}px #d98e3a)`;
+    } else if (elapsed >= 6) {
+      logo.style.opacity = '1';
+      logo.style.transform = 'scale(1)';
+    }
+
+    // ── TEXT REVEAL ──
+    if (elapsed >= 6 && elapsed < 8) {
+      if (ts - lastCharTime > 120 && revealedChars < MESSAGE.length) {
+        revealedChars++;
+        lastCharTime = ts;
+        textEl.textContent = MESSAGE.substring(0, revealedChars);
+        textEl.style.opacity = '1';
+      }
+    }
+
+    // ── FINAL GLOW & END ──
+    if (elapsed >= 8.5) {
+      const t = Math.min((elapsed - 8.5) / 1.5, 1);
+      ctx.fillStyle = `rgba(177,39,45,${t * 0.85})`;
+      ctx.fillRect(0, 0, W, H);
+      if (t >= 1) { finish(); return; }
+    }
+
+    if (elapsed < 11) {
+      animFrame = requestAnimationFrame(draw);
+    } else {
+      finish();
+    }
+  }
+
+  animFrame = requestAnimationFrame(draw);
 }
 
 </script>
