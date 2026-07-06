@@ -39,7 +39,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 /* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--surface),var(--bg));position:sticky;top:0;z-index:50;}
 .brand{display:flex;align-items:center;gap:10px;}
-.brand-mark{width:34px;height:34px;border-radius:8px;flex:none;overflow:hidden;}
+.brand-mark{width:34px;height:34px;border-radius:50%;flex:none;overflow:hidden;}
 .brand-text{display:flex;flex-direction:column;line-height:1.1;}
 .brand-text .t1{font-family:var(--font-display);font-size:17px;letter-spacing:.08em;font-weight:700;color:var(--ink);}
 .brand-text .t2{font-size:10px;letter-spacing:.25em;color:var(--ember);text-transform:uppercase;}
@@ -457,7 +457,7 @@ const firebaseConfig = {
 // ============================================================
 let WORKER_URL = "https://withered-field-2311.veryhappy181818.workers.dev";
 
-const ALLOWED_EMAIL = "veryhappy181818@gmail.com";
+const ALLOWED_EMAIL = ""; // Open for all users
 const DAILY_LIMIT = parseInt(localStorage.getItem("ns_daily_limit")||"3");
 const MAX_SCRIPT_MINUTES = 10;
 const WORDS_PER_MINUTE = 130;
@@ -815,9 +815,9 @@ const WORDS_PER_MINUTE = 130;
   <div id="introOverlay" class="hidden" style="position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
     <canvas id="introCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
     <div id="introLogo" style="position:relative;z-index:2;opacity:0;transform:scale(0.1);transition:none;">
-      <img src="file_0000000090c872079807bfcdd0984dfd.png" id="introLogoImg" style="width:200px;height:200px;border-radius:50%;object-fit:cover;filter:drop-shadow(0 0 30px #b1272d) drop-shadow(0 0 60px #d98e3a);"/>
+      <img src="file_0000000090c872079807bfcdd0984dfd.png" id="introLogoImg" style="width:240px;height:240px;border-radius:50%;object-fit:cover;image-rendering:high-quality;"/>
     </div>
-    <div id="introText" style="position:relative;z-index:2;margin-top:32px;font-family:'Cinzel','Georgia',serif;font-size:18px;font-weight:700;letter-spacing:.25em;color:#b1272d;text-shadow:0 0 20px #b1272d,0 0 40px #b1272d;opacity:0;text-transform:uppercase;text-align:center;"></div>
+    <div id="introText" style="position:relative;z-index:2;margin-top:28px;font-family:'Cinzel','Georgia',serif;font-size:20px;font-weight:700;letter-spacing:.3em;color:#cc2200;text-shadow:0 0 15px #ff3300,0 0 30px #b1272d,0 0 60px rgba(177,39,45,0.5);opacity:0;text-transform:uppercase;text-align:center;padding-bottom:4px;"></div>
     <button id="introSkip" style="position:absolute;top:20px;right:20px;z-index:3;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.1em;">SKIP</button>
   </div>
 
@@ -847,7 +847,7 @@ const WORDS_PER_MINUTE = 130;
   <div id="mainScreen" class="hidden">
     <div class="topbar">
       <div class="brand">
-        <div class="brand-mark" style="background:none;box-shadow:none;overflow:hidden;border-radius:8px;"><img src="icon-512.png" style="width:34px;height:34px;border-radius:8px;object-fit:cover;" alt="GK"/></div>
+        <div class="brand-mark" style="background:none;box-shadow:none;overflow:hidden;border-radius:50%;"><img src="file_0000000090c872079807bfcdd0984dfd.png" style="width:34px;height:34px;border-radius:50%;object-fit:cover;" alt="GK"/></div>
         <div class="brand-text">
           <span class="t1">NIGHTMARE STUDIO</span>
           <span class="t2">Background Prompt Generator</span>
@@ -1071,10 +1071,7 @@ $("userAvatar").addEventListener("click",()=>{
 // ============================================================
 auth.onAuthStateChanged(async(user)=>{
   if(user){
-    if(ALLOWED_EMAIL&&user.email!==ALLOWED_EMAIL){
-      setAuthError("🔒 Access denied. Sirf authorized user access kar sakta hai.");
-      await auth.signOut(); return;
-    }
+    // All users allowed
     currentUser=user;
     $("userAvatar").textContent=(user.displayName||user.email||"U")[0].toUpperCase();
     // Show intro on first sign-up/login
@@ -2576,7 +2573,7 @@ function renderDirectorShots(shots){
 
 
 // ============================================================
-// CINEMATIC INTRO ANIMATION
+// CINEMATIC INTRO ANIMATION - ENHANCED
 // ============================================================
 function playIntroAnimation(onComplete) {
   const overlay = document.getElementById('introOverlay');
@@ -2590,202 +2587,224 @@ function playIntroAnimation(onComplete) {
 
   const ctx = canvas.getContext('2d');
   let W, H;
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   resize();
   window.addEventListener('resize', resize);
 
-  // ── Particles (embers) ──
-  const particles = [];
-  for (let i = 0; i < 120; i++) {
-    particles.push({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight + window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: -(Math.random() * 1.5 + 0.5),
-      size: Math.random() * 3 + 1,
-      alpha: Math.random(),
-      color: Math.random() > 0.5 ? '#ff4422' : '#d98e3a',
-      life: Math.random()
-    });
-  }
+  // ── EMBERS ──
+  const embers = Array.from({length:180}, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight + window.innerHeight,
+    vx: (Math.random()-.5)*1.2,
+    vy: -(Math.random()*2+0.8),
+    size: Math.random()*4+1,
+    alpha: Math.random(),
+    color: Math.random()>.6?'#ff5500':Math.random()>.5?'#ff2200':'#ffaa00',
+    life: Math.random()
+  }));
 
-  // ── Explosion particles ──
-  const explodeParticles = [];
+  // ── EXPLOSION PARTICLES ──
+  const explParts = [];
   let exploded = false;
 
   function triggerExplosion() {
     if (exploded) return;
     exploded = true;
-    for (let i = 0; i < 80; i++) {
-      const angle = (Math.PI * 2 * i) / 80;
-      const speed = Math.random() * 8 + 4;
-      explodeParticles.push({
-        x: W / 2, y: H / 2,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        size: Math.random() * 5 + 2,
-        alpha: 1,
-        color: Math.random() > 0.5 ? '#ff2200' : '#d98e3a',
-        life: 1
+    for (let i = 0; i < 120; i++) {
+      const angle = (Math.PI*2*i)/120 + Math.random()*0.3;
+      const speed = Math.random()*12+5;
+      explParts.push({
+        x:W/2, y:H/2,
+        vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
+        size:Math.random()*6+2,
+        alpha:1, life:1,
+        color:Math.random()>.5?'#ff3300':Math.random()>.5?'#d98e3a':'#ffcc00',
+        rot:Math.random()*360, rotV:(Math.random()-.5)*8
       });
     }
   }
 
+  // ── GLOW RINGS ──
+  function drawGlowRing(x, y, r, alpha, color){
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 30;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   let animFrame;
-  let phase = 0; // 0=embers, 1=logoin, 2=explode, 3=rebuild, 4=text, 5=done
-  let phaseTime = 0;
   let startTime = null;
   let finished = false;
+  let revealedChars = 0;
+  let lastCharTime = 0;
+  const MESSAGE = "THE GATE HAS OPENED";
 
   function finish() {
     if (finished) return;
     finished = true;
     cancelAnimationFrame(animFrame);
     window.removeEventListener('resize', resize);
-    overlay.style.transition = 'opacity .8s ease';
+    overlay.style.transition = 'opacity 1s ease';
     overlay.style.opacity = '0';
     setTimeout(() => {
       overlay.classList.add('hidden');
       overlay.style.opacity = '1';
       overlay.style.display = 'none';
       onComplete && onComplete();
-    }, 800);
+    }, 1000);
   }
 
   skipBtn.onclick = finish;
 
-  const MESSAGE = "THE GATE HAS OPENED";
-  let revealedChars = 0;
-  let lastCharTime = 0;
-
   function draw(ts) {
     if (!startTime) startTime = ts;
-    const elapsed = (ts - startTime) / 1000; // seconds
+    const elapsed = (ts - startTime) / 1000;
 
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0,0,W,H);
 
-    // BG gradient
-    const grad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
-    grad.addColorStop(0, 'rgba(20,0,0,1)');
-    grad.addColorStop(1, 'rgba(0,0,0,1)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
+    // ── BACKGROUND ──
+    const bgGrad = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H));
+    bgGrad.addColorStop(0,'rgba(15,0,0,1)');
+    bgGrad.addColorStop(0.5,'rgba(8,0,0,1)');
+    bgGrad.addColorStop(1,'rgba(0,0,0,1)');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0,0,W,H);
 
     // ── EMBERS ──
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= 0.003;
-      if (p.life <= 0 || p.y < -10) {
-        p.x = Math.random() * W;
-        p.y = H + 10;
-        p.life = 0.8 + Math.random() * 0.2;
-        p.alpha = Math.random();
-      }
+    embers.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy; p.life-=0.002;
+      if(p.life<=0||p.y<-20){ p.x=Math.random()*W; p.y=H+10; p.life=0.7+Math.random()*0.3; }
       ctx.save();
-      ctx.globalAlpha = p.life * 0.8;
+      ctx.globalAlpha = p.life*0.9;
       ctx.fillStyle = p.color;
       ctx.shadowColor = p.color;
-      ctx.shadowBlur = 6;
+      ctx.shadowBlur = 8;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
       ctx.fill();
       ctx.restore();
     });
 
     // ── EXPLOSION PARTICLES ──
-    explodeParticles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      p.vy += 0.15;
-      p.life -= 0.025;
-      if (p.life <= 0) return;
+    explParts.forEach(p => {
+      // SLOW MOTION explosion
+      p.x+=p.vx*0.4; p.y+=p.vy*0.4; p.vy+=0.08;
+      p.rot+=p.rotV; p.life-=0.012; p.alpha=p.life;
+      if(p.life<=0) return;
       ctx.save();
-      ctx.globalAlpha = p.life;
+      ctx.globalAlpha = p.alpha;
       ctx.fillStyle = p.color;
       ctx.shadowColor = p.color;
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.shadowBlur = 15;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      const s = p.size*p.life;
+      ctx.fillRect(-s/2,-s/2,s,s);
       ctx.restore();
     });
 
-    // ── SHOCKWAVE ──
-    if (elapsed > 3 && elapsed < 4.5) {
-      const sw = (elapsed - 3) / 1.5;
-      ctx.save();
-      ctx.strokeStyle = `rgba(177,39,45,${1 - sw})`;
-      ctx.lineWidth = 3;
-      ctx.shadowColor = '#b1272d';
-      ctx.shadowBlur = 20;
-      ctx.beginPath();
-      ctx.arc(W/2, H/2, sw * W * 0.8, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
+    // ── GROUND GLOW ──
+    if(elapsed > 0.5){
+      const gg = ctx.createRadialGradient(W/2,H*0.75,0,W/2,H*0.75,W*0.4);
+      gg.addColorStop(0,`rgba(177,39,45,${Math.min(elapsed*0.06,0.15)})`);
+      gg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=gg;
+      ctx.fillRect(0,0,W,H);
+    }
+
+    // ── SHOCKWAVE RINGS ──
+    if(elapsed>3 && elapsed<6){
+      const sw = (elapsed-3)/3;
+      [0.3,0.6,1].forEach((offset,i) => {
+        const prog = Math.max(0, sw-offset*0.3);
+        if(prog<=0) return;
+        const r = prog*Math.min(W,H)*0.7;
+        const a = Math.max(0, 1-prog*1.5);
+        drawGlowRing(W/2,H/2,r,a*0.8,'rgba(177,39,45,1)');
+      });
     }
 
     // ── LOGO ANIMATION ──
-    // Phase: 0-1s dark, 1-3s logo flies in, 3-4s explode, 4-6s rebuild, 6-8s text
-    if (elapsed >= 1 && elapsed < 3) {
-      // Logo fly in
-      const t = (elapsed - 1) / 2; // 0→1
-      const ease = 1 - Math.pow(1 - t, 3);
-      const scale = 0.05 + ease * 0.95;
-      const opacity = Math.min(t * 3, 1);
+    // 0-1.5s: darkness
+    // 1.5-4s: logo flies in SLOWLY (slow-mo)
+    // 4-4.3s: flash + explosion
+    // 4.3-7s: fragments rebuild slowly
+    // 7-9s: text reveal
+    // 9-10.5s: final glow
+
+    if(elapsed >= 1.5 && elapsed < 4){
+      const t = (elapsed-1.5)/2.5;
+      const ease = 1 - Math.pow(1-t,4); // stronger ease
+      const scale = 0.04 + ease*0.96;
+      const opacity = Math.min(t*2, 1);
       logo.style.opacity = opacity;
       logo.style.transform = `scale(${scale})`;
-    } else if (elapsed >= 3 && elapsed < 3.2) {
-      // White flash + explosion
-      triggerExplosion();
-      const flash = 1 - (elapsed - 3) / 0.2;
-      ctx.fillStyle = `rgba(255,255,255,${flash * 0.9})`;
-      ctx.fillRect(0, 0, W, H);
-      logo.style.opacity = '0';
-      logo.style.transform = 'scale(1.5)';
-    } else if (elapsed >= 3.2 && elapsed < 4) {
-      logo.style.opacity = '0';
-    } else if (elapsed >= 4 && elapsed < 6) {
-      // Rebuild - logo comes back with pulse
-      const t = (elapsed - 4) / 2;
-      const ease = 1 - Math.pow(1 - t, 2);
-      logo.style.opacity = ease;
-      logo.style.transform = `scale(${ease})`;
-      // Pulse glow
-      const glowIntensity = 20 + Math.sin(elapsed * 8) * 15;
+      // Rotating glow while approaching
+      const glowSize = 20 + ease*60;
       document.getElementById('introLogoImg').style.filter =
-        `drop-shadow(0 0 ${glowIntensity}px #b1272d) drop-shadow(0 0 ${glowIntensity*2}px #d98e3a)`;
-    } else if (elapsed >= 6) {
+        `drop-shadow(0 0 ${glowSize}px rgba(177,39,45,${0.5+ease*0.5})) drop-shadow(0 0 ${glowSize*0.5}px rgba(217,142,58,0.8))`;
+    } else if(elapsed >= 4 && elapsed < 4.3){
+      // WHITE FLASH
+      triggerExplosion();
+      const flash = 1-(elapsed-4)/0.3;
+      ctx.fillStyle = `rgba(255,255,255,${flash})`;
+      ctx.fillRect(0,0,W,H);
+      logo.style.opacity = '0';
+    } else if(elapsed >= 4.3 && elapsed < 5){
+      logo.style.opacity = '0';
+    } else if(elapsed >= 5 && elapsed < 7.5){
+      // REBUILD - slow fragments converging
+      const t = (elapsed-5)/2.5;
+      const ease = 1 - Math.pow(1-t,3);
+      logo.style.opacity = (ease*ease);
+      logo.style.transform = `scale(${0.6+ease*0.4})`;
+      // Pulsing glow on rebuild
+      const pulse = Math.sin(elapsed*6)*0.3+0.7;
+      const glow = 30 + ease*50;
+      document.getElementById('introLogoImg').style.filter =
+        `drop-shadow(0 0 ${glow*pulse}px rgba(177,39,45,0.9)) drop-shadow(0 0 ${glow*0.5}px rgba(217,142,58,0.8)) drop-shadow(0 0 ${glow*0.3}px rgba(255,200,0,0.5))`;
+      // Draw converging ring
+      if(ease < 0.95){
+        drawGlowRing(W/2, H/2, (1-ease)*Math.min(W,H)*0.5, (1-ease)*0.8, '#d98e3a');
+      }
+    } else if(elapsed >= 7.5){
       logo.style.opacity = '1';
       logo.style.transform = 'scale(1)';
+      // Steady glow
+      const steadyPulse = Math.sin(elapsed*3)*0.2+0.8;
+      document.getElementById('introLogoImg').style.filter =
+        `drop-shadow(0 0 ${40*steadyPulse}px rgba(177,39,45,0.9)) drop-shadow(0 0 20px rgba(217,142,58,0.7))`;
     }
 
-    // ── TEXT REVEAL ──
-    if (elapsed >= 6 && elapsed < 8) {
-      if (ts - lastCharTime > 120 && revealedChars < MESSAGE.length) {
+    // ── TEXT REVEAL (7.5s onward) ──
+    if(elapsed >= 7.5 && elapsed < 9.5){
+      if(ts - lastCharTime > 100 && revealedChars < MESSAGE.length){
         revealedChars++;
         lastCharTime = ts;
-        textEl.textContent = MESSAGE.substring(0, revealedChars);
-        textEl.style.opacity = '1';
       }
+      textEl.textContent = MESSAGE.substring(0, revealedChars);
+      textEl.style.opacity = '1';
+      // Blood drip effect - red underline grows
+      textEl.style.borderBottom = `2px solid rgba(177,39,45,${revealedChars/MESSAGE.length})`;
     }
 
-    // ── FINAL GLOW & END ──
-    if (elapsed >= 8.5) {
-      const t = Math.min((elapsed - 8.5) / 1.5, 1);
-      ctx.fillStyle = `rgba(177,39,45,${t * 0.85})`;
-      ctx.fillRect(0, 0, W, H);
-      if (t >= 1) { finish(); return; }
+    // ── FINAL BLOOD FILL ──
+    if(elapsed >= 9.8){
+      const t = Math.min((elapsed-9.8)/1.2, 1);
+      const easedT = t*t*(3-2*t);
+      ctx.fillStyle = `rgba(100,0,0,${easedT*0.9})`;
+      ctx.fillRect(0,0,W,H);
+      if(easedT >= 0.95){ finish(); return; }
     }
 
-    if (elapsed < 11) {
-      animFrame = requestAnimationFrame(draw);
-    } else {
-      finish();
-    }
+    if(elapsed < 12){ animFrame = requestAnimationFrame(draw); }
+    else { finish(); }
   }
 
   animFrame = requestAnimationFrame(draw);
