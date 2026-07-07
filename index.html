@@ -39,7 +39,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 /* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--surface),var(--bg));position:sticky;top:0;z-index:50;}
 .brand{display:flex;align-items:center;gap:10px;}
-.brand-mark{width:34px;height:34px;border-radius:50%;flex:none;overflow:hidden;}
+.brand-mark{width:46px;height:46px;border-radius:50%;flex:none;overflow:hidden;box-shadow:0 0 12px rgba(177,39,45,.5);}
 .brand-text{display:flex;flex-direction:column;line-height:1.1;}
 .brand-text .t1{font-family:var(--font-display);font-size:17px;letter-spacing:.08em;font-weight:700;color:var(--ink);}
 .brand-text .t2{font-size:10px;letter-spacing:.25em;color:var(--ember);text-transform:uppercase;}
@@ -432,6 +432,59 @@ button[onclick*="HandleBack"]:hover, button[onclick*="closePage"]:hover {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
+
+/* ============================================================ */
+/* INTRO ORBIT ANIMATION */
+/* ============================================================ */
+.orbit-btn {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a0505, #2d0a0a);
+  border: 2px solid #b1272d;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 0 20px rgba(177,39,45,.5), inset 0 0 10px rgba(177,39,45,.2);
+  transition: transform .2s, box-shadow .2s;
+  z-index: 4;
+  text-shadow: 0 0 8px rgba(255,100,100,.8);
+}
+.orbit-btn span {
+  font-size: 9px;
+  letter-spacing: .1em;
+  color: #d98e3a;
+}
+.orbit-btn:hover {
+  box-shadow: 0 0 35px rgba(177,39,45,.9), inset 0 0 15px rgba(177,39,45,.4);
+  transform: scale(1.15) !important;
+}
+.orbit-btn:nth-child(2) { border-color: #d98e3a; box-shadow: 0 0 20px rgba(217,142,58,.5); }
+.orbit-btn:nth-child(3) { border-color: #5fae6f; box-shadow: 0 0 20px rgba(95,174,111,.5); }
+
+@keyframes orbitSpin {
+  from { transform: rotate(0deg) translateX(130px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(130px) rotate(-360deg); }
+}
+@keyframes orbitPop {
+  0%   { transform: scale(0) rotate(0deg) translateX(0px); opacity:0; }
+  60%  { transform: scale(1.2) rotate(120deg) translateX(110px); opacity:1; }
+  100% { transform: rotate(var(--orbit-angle)) translateX(130px) rotate(calc(-1 * var(--orbit-angle))); opacity:1; }
+}
+
+@keyframes glow-blue {
+  0%,100% { box-shadow:0 4px 20px rgba(41,128,212,.4); }
+  50%      { box-shadow:0 4px 35px rgba(41,128,212,.9), 0 0 60px rgba(41,128,212,.3); }
+}
 </style>
 <link rel="manifest" href="manifest.json">
 </head>
@@ -814,11 +867,106 @@ const WORDS_PER_MINUTE = 130;
   <!-- ============================================================ -->
   <div id="introOverlay" class="hidden" style="position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
     <canvas id="introCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
-    <div id="introLogo" style="position:relative;z-index:2;opacity:0;transform:scale(0.1);transition:none;">
-      <img src="file_0000000090c872079807bfcdd0984dfd.png" id="introLogoImg" style="width:240px;height:240px;border-radius:50%;object-fit:cover;image-rendering:high-quality;"/>
+
+    <!-- ORBIT CONTAINER -->
+    <div id="introOrbitWrap" style="position:relative;z-index:2;display:flex;align-items:center;justify-content:center;width:320px;height:320px;">
+      <!-- Logo in center -->
+      <div id="introLogo" style="position:absolute;z-index:3;opacity:0;transform:scale(0.1);transition:none;cursor:pointer;" onclick="introLogoClick()">
+        <img src="file_0000000090c872079807bfcdd0984dfd.png" id="introLogoImg" style="width:180px;height:180px;border-radius:50%;object-fit:cover;image-rendering:high-quality;"/>
+        <div id="introClickHint" style="display:none;position:absolute;bottom:-36px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;color:#d98e3a;letter-spacing:.15em;text-shadow:0 0 10px #d98e3a;font-family:Cinzel,Georgia,serif;animation:pulse 1.5s infinite;">✨ CLICK FOR OPTIONS</div>
+      </div>
+
+      <!-- 3 Orbit Buttons -->
+      <div id="orbitBtn0" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(0)">👤<span>Profile</span></div>
+      <div id="orbitBtn1" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(1)">🌐<span>Language</span></div>
+      <div id="orbitBtn2" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(2)">📋<span>App Details</span></div>
     </div>
-    <div id="introText" style="position:relative;z-index:2;margin-top:28px;font-family:'Cinzel','Georgia',serif;font-size:20px;font-weight:700;letter-spacing:.3em;color:#cc2200;text-shadow:0 0 15px #ff3300,0 0 30px #b1272d,0 0 60px rgba(177,39,45,0.5);opacity:0;text-transform:uppercase;text-align:center;padding-bottom:4px;"></div>
-    <button id="introSkip" style="position:absolute;top:20px;right:20px;z-index:3;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.1em;">SKIP</button>
+
+    <div id="introText" style="position:relative;z-index:2;margin-top:16px;font-family:'Cinzel','Georgia',serif;font-size:18px;font-weight:700;letter-spacing:.3em;color:#cc2200;text-shadow:0 0 15px #ff3300,0 0 30px #b1272d,0 0 60px rgba(177,39,45,0.5);opacity:0;text-transform:uppercase;text-align:center;padding-bottom:4px;"></div>
+    <button id="introSkip" style="position:absolute;top:20px;right:20px;z-index:10;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.1em;">SKIP</button>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- PROFILE PAGE -->
+  <!-- ============================================================ -->
+  <div id="profilePage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
+    <div style="max-width:420px;margin:0 auto;padding:20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-top:8px;">
+        <button onclick="closePage('profilePage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">← Back</button>
+        <div style="font-size:18px;font-weight:700;color:var(--ember);font-family:var(--font-display);">👤 Profile</div>
+      </div>
+
+      <!-- Profile Picture -->
+      <div style="text-align:center;margin-bottom:28px;">
+        <div id="profilePicWrap" style="position:relative;display:inline-block;cursor:pointer;" onclick="document.getElementById('profilePicInput').click()">
+          <div id="profilePicCircle" style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#1a0505,#2d0a0a);border:3px solid #b1272d;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 0 20px rgba(177,39,45,.4);">
+            <img id="profilePicImg" src="" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:50%;"/>
+            <span id="profilePicPlaceholder" style="font-size:36px;">👤</span>
+          </div>
+          <div style="position:absolute;bottom:2px;right:2px;background:#b1272d;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.4);">📷</div>
+        </div>
+        <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePic(this)"/>
+        <div style="font-size:11px;color:var(--ink-faint);margin-top:8px;letter-spacing:.1em;">TAP TO CHANGE PHOTO</div>
+      </div>
+
+      <!-- Form Fields -->
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:6px;">Username</label>
+          <input id="profileUsername" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;box-sizing:border-box;" placeholder="Apna naam likho..."/>
+        </div>
+        <div>
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:6px;">Date of Birth</label>
+          <input type="date" id="profileDob" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;box-sizing:border-box;"/>
+        </div>
+        <div>
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;">Gender</label>
+          <div style="display:flex;gap:10px;">
+            <div class="iw2-chip" data-gender="male" onclick="selectGender('male')" style="flex:1;text-align:center;">👦 Male</div>
+            <div class="iw2-chip" data-gender="female" onclick="selectGender('female')" style="flex:1;text-align:center;">👧 Female</div>
+            <div class="iw2-chip" data-gender="other" onclick="selectGender('other')" style="flex:1;text-align:center;">🌈 Other</div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="saveProfile()" style="width:100%;padding:14px;border-radius:10px;margin-top:20px;background:linear-gradient(135deg,#1a6bb5,#2980d4);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.1em;box-shadow:0 4px 20px rgba(41,128,212,.4);animation:glow-blue 2s infinite;">✅ DONE</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LANGUAGE PAGE -->
+  <!-- ============================================================ -->
+  <div id="languagePage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
+    <div style="max-width:420px;margin:0 auto;padding:20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:8px;">
+        <button onclick="closePage('languagePage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">← Back</button>
+        <div style="font-size:18px;font-weight:700;color:var(--ember);font-family:var(--font-display);">🌐 Language</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;">
+        <input id="langSearch" oninput="filterLanguages(this.value)" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;box-sizing:border-box;" placeholder="🔍 Search language..."/>
+      </div>
+      <div id="langList" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- APP DETAILS PAGE -->
+  <!-- ============================================================ -->
+  <div id="appDetailsPage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
+    <div style="max-width:480px;margin:0 auto;padding:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;padding-top:8px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button onclick="closePage('appDetailsPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">← Back</button>
+          <div style="font-size:18px;font-weight:700;color:var(--ember);font-family:var(--font-display);">📋 App Details</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="setAppDetailsLang('hi')" id="adLangHi" style="padding:5px 12px;border-radius:20px;border:1px solid var(--line);background:var(--blood-2);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">Hindi</button>
+          <button onclick="setAppDetailsLang('en')" id="adLangEn" style="padding:5px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink-dim);font-size:11px;font-weight:700;cursor:pointer;">English</button>
+        </div>
+      </div>
+      <div id="appDetailsContent"></div>
+    </div>
   </div>
 
   <!-- AUTH SCREEN -->
@@ -847,7 +995,7 @@ const WORDS_PER_MINUTE = 130;
   <div id="mainScreen" class="hidden">
     <div class="topbar">
       <div class="brand">
-        <div class="brand-mark" style="background:none;box-shadow:none;overflow:hidden;border-radius:50%;"><img src="file_0000000090c872079807bfcdd0984dfd.png" style="width:34px;height:34px;border-radius:50%;object-fit:cover;" alt="GK"/></div>
+        <div class="brand-mark" style="background:none;overflow:hidden;border-radius:50%;"><img src="file_0000000090c872079807bfcdd0984dfd.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;" alt="GK"/></div>
         <div class="brand-text">
           <span class="t1">NIGHTMARE STUDIO</span>
           <span class="t2">Background Prompt Generator</span>
@@ -2780,6 +2928,12 @@ function playIntroAnimation(onComplete) {
       const steadyPulse = Math.sin(elapsed*3)*0.2+0.8;
       document.getElementById('introLogoImg').style.filter =
         `drop-shadow(0 0 ${40*steadyPulse}px rgba(177,39,45,0.9)) drop-shadow(0 0 20px rgba(217,142,58,0.7))`;
+      // Show click hint
+      if(!introShowClickHint){
+        introShowClickHint = true;
+        const hint = document.getElementById('introClickHint');
+        if(hint){ hint.style.display = 'block'; hint.style.animation = 'pulse 1.5s infinite'; }
+      }
     }
 
     // ── TEXT REVEAL (7.5s onward) ──
@@ -2812,6 +2966,325 @@ function playIntroAnimation(onComplete) {
 
 </script>
 
-<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");</script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");
+// ============================================================
+// INTRO ORBIT - 3 Features around logo
+// ============================================================
+let orbitActive = false;
+let orbitAnimFrame = null;
+let orbitAngle = 0;
+
+function introLogoClick(){
+  if(orbitActive) return;
+  orbitActive = true;
+  document.getElementById('introClickHint').style.display = 'none';
+
+  // Show 3 orbit buttons with staggered pop
+  const btns = [
+    {id:'orbitBtn0', angle: -90},
+    {id:'orbitBtn1', angle:  30},
+    {id:'orbitBtn2', angle: 150},
+  ];
+
+  btns.forEach((b, i) => {
+    const el = document.getElementById(b.id);
+    el.style.display = 'flex';
+    el.style.setProperty('--orbit-angle', b.angle + 'deg');
+    el.style.opacity = '0';
+    el.style.transform = 'scale(0)';
+
+    setTimeout(() => {
+      el.style.transition = 'all .5s cubic-bezier(.34,1.56,.64,1)';
+      el.style.opacity = '1';
+      // Position on circle
+      const rad = (b.angle - 90) * Math.PI / 180;
+      const r = 130;
+      el.style.left = (160 + r * Math.cos(rad) - 36) + 'px';
+      el.style.top  = (160 + r * Math.sin(rad) - 36) + 'px';
+      el.style.transform = 'scale(1)';
+    }, i * 180);
+  });
+
+  // Start slow orbit rotation after pop
+  setTimeout(() => startOrbitRotation(btns), 800);
+}
+
+function startOrbitRotation(btns){
+  let angle = 0;
+  function rotateOrbit(){
+    angle += 0.3; // slow rotation degrees per frame
+    btns.forEach((b, i) => {
+      const el = document.getElementById(b.id);
+      const baseAngle = b.angle + angle;
+      const rad = (baseAngle - 90) * Math.PI / 180;
+      const r = 130;
+      const cx = 160 + r * Math.cos(rad) - 36;
+      const cy = 160 + r * Math.sin(rad) - 36;
+      el.style.left = cx + 'px';
+      el.style.top  = cy + 'px';
+      // Counter-rotate button text to stay upright
+      el.style.transform = `rotate(${-angle}deg) scale(1)`;
+    });
+    orbitAnimFrame = requestAnimationFrame(rotateOrbit);
+  }
+  orbitAnimFrame = requestAnimationFrame(rotateOrbit);
+}
+
+function orbitFeatureClick(idx){
+  // Stop orbit
+  if(orbitAnimFrame) cancelAnimationFrame(orbitAnimFrame);
+
+  // Flash effect on click
+  const btn = document.getElementById('orbitBtn' + idx);
+  btn.style.transition = 'all .1s';
+  btn.style.boxShadow = '0 0 60px #fff, 0 0 30px #fff';
+  btn.style.transform += ' scale(1.3)';
+
+  setTimeout(() => {
+    // Hide intro
+    const overlay = document.getElementById('introOverlay');
+    overlay.style.transition = 'opacity .6s ease';
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+      overlay.style.opacity = '1';
+      overlay.style.display = 'none';
+      // Open feature
+      if(idx === 0) openPage('profilePage');
+      else if(idx === 1) openPage('languagePage');
+      else if(idx === 2) openPage('appDetailsPage');
+    }, 600);
+  }, 200);
+}
+
+// Modify playIntroAnimation to show click hint after rebuild
+// (injected at the right time inside the draw loop via flag)
+let introShowClickHint = false;
+
+// ============================================================
+// PROFILE PAGE
+// ============================================================
+// ============================================================
+// LANGUAGE PAGE
+// ============================================================
+// ============================================================
+// APP DETAILS PAGE
+// ============================================================
+
+
+// ============================================================
+// PROFILE PAGE JS
+// ============================================================
+let selectedGender = '';
+
+function selectGender(g){
+  selectedGender = g;
+  document.querySelectorAll('[data-gender]').forEach(el=>{
+    el.classList.toggle('active', el.dataset.gender === g);
+  });
+}
+
+function handleProfilePic(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('profilePicImg');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    document.getElementById('profilePicPlaceholder').style.display = 'none';
+    localStorage.setItem('ns_profile_pic', e.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveProfile(){
+  const username = document.getElementById('profileUsername').value.trim();
+  const dob = document.getElementById('profileDob').value;
+  if(!username){ showToast('⚠️ Naam likho pehle!'); return; }
+  try{
+    if(currentUser){
+      await db.collection('users').doc(currentUser.uid).set({
+        username, dob, gender: selectedGender,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, {merge:true});
+    }
+    localStorage.setItem('ns_profile', JSON.stringify({username, dob, gender:selectedGender}));
+    showToast('✅ Profile save ho gayi!');
+    closePage('profilePage');
+  }catch(e){ showToast('Error: '+e.message); }
+}
+
+function loadProfile(){
+  const saved = localStorage.getItem('ns_profile');
+  if(saved){
+    const p = JSON.parse(saved);
+    if(p.username) document.getElementById('profileUsername').value = p.username;
+    if(p.dob) document.getElementById('profileDob').value = p.dob;
+    if(p.gender) selectGender(p.gender);
+  }
+  const pic = localStorage.getItem('ns_profile_pic');
+  if(pic){
+    document.getElementById('profilePicImg').src = pic;
+    document.getElementById('profilePicImg').style.display = 'block';
+    document.getElementById('profilePicPlaceholder').style.display = 'none';
+  }
+}
+
+// ============================================================
+// LANGUAGE PAGE JS
+// ============================================================
+const LANGUAGES = [
+  {code:'hi', name:'हिंदी', flag:'🇮🇳', label:'Hindi'},
+  {code:'en', name:'English', flag:'🇺🇸', label:'English'},
+  {code:'es', name:'Español', flag:'🇪🇸', label:'Spanish'},
+  {code:'fr', name:'Français', flag:'🇫🇷', label:'French'},
+  {code:'de', name:'Deutsch', flag:'🇩🇪', label:'German'},
+  {code:'ar', name:'العربية', flag:'🇸🇦', label:'Arabic'},
+  {code:'pt', name:'Português', flag:'🇧🇷', label:'Portuguese'},
+  {code:'ru', name:'Русский', flag:'🇷🇺', label:'Russian'},
+  {code:'ja', name:'日本語', flag:'🇯🇵', label:'Japanese'},
+  {code:'ko', name:'한국어', flag:'🇰🇷', label:'Korean'},
+  {code:'zh', name:'中文', flag:'🇨🇳', label:'Chinese'},
+  {code:'it', name:'Italiano', flag:'🇮🇹', label:'Italian'},
+  {code:'tr', name:'Türkçe', flag:'🇹🇷', label:'Turkish'},
+  {code:'bn', name:'বাংলা', flag:'🇧🇩', label:'Bengali'},
+  {code:'ur', name:'اردو', flag:'🇵🇰', label:'Urdu'},
+  {code:'pa', name:'ਪੰਜਾਬੀ', flag:'🇮🇳', label:'Punjabi'},
+  {code:'ta', name:'தமிழ்', flag:'🇮🇳', label:'Tamil'},
+  {code:'te', name:'తెలుగు', flag:'🇮🇳', label:'Telugu'},
+  {code:'mr', name:'मराठी', flag:'🇮🇳', label:'Marathi'},
+  {code:'gu', name:'ગુજરાતી', flag:'🇮🇳', label:'Gujarati'},
+];
+
+let currentLang = localStorage.getItem('ns_lang') || 'hi';
+
+function renderLanguages(filter=''){
+  const list = document.getElementById('langList');
+  if(!list) return;
+  list.innerHTML='';
+  const filtered = LANGUAGES.filter(l =>
+    l.label.toLowerCase().includes(filter.toLowerCase()) ||
+    l.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  filtered.forEach(lang=>{
+    const row = document.createElement('div');
+    const isActive = lang.code === currentLang;
+    row.style.cssText = `display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;border-bottom:1px solid var(--line);background:${isActive?'rgba(177,39,45,.08)':'transparent'};transition:background .15s;`;
+    row.innerHTML = `
+      <span style="font-size:24px;">${lang.flag}</span>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:600;color:${isActive?'var(--ember)':'var(--ink)'};">${lang.name}</div>
+        <div style="font-size:11px;color:var(--ink-faint);">${lang.label}</div>
+      </div>
+      ${isActive?'<span style="color:var(--ember);font-size:18px;">✓</span>':''}
+    `;
+    row.onclick = ()=>{ selectLanguage(lang.code); };
+    list.appendChild(row);
+  });
+}
+
+function filterLanguages(val){ renderLanguages(val); }
+
+function selectLanguage(code){
+  currentLang = code;
+  localStorage.setItem('ns_lang', code);
+  renderLanguages(document.getElementById('langSearch').value);
+  showToast('✅ Language: ' + (LANGUAGES.find(l=>l.code===code)?.label||code));
+  // Update AI prompts language preference
+  setTimeout(()=>closePage('languagePage'), 800);
+}
+
+// ============================================================
+// APP DETAILS PAGE JS
+// ============================================================
+const APP_DETAILS = {
+  hi: `
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div>
+  <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;">Version 2.0 · GK Horror Tales</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio ek AI-powered Hindi horror content creation tool hai jo specially YouTube creators ke liye banaya gaya hai.</div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">🎯 App Ka Uddeshya</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.9;">Hindi horror YouTube creators ko professional content banana asaan karna. Script likhne se lekar thumbnail banane tak — sab kuch ek jagah.</div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">⚡ Features</div>
+  <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);">
+    <div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Horror story ideas generate karo subject, category, tone se</div>
+    <div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — Script se poora production pack: BGM, SFX, scenes, characters, thumbnail, YouTube SEO</div>
+    <div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Script ki kaminyan dhundho: plot holes, weak scenes, pacing issues</div>
+    <div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Har scene ke liye professional camera shots suggest karta hai</div>
+    <div>📤 <strong style="color:var(--ember);">Share Project</strong> — Project share karo, QR code banao, duplicate karo</div>
+  </div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">📱 Kaise Use Karein</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.9;">
+    1️⃣ Menu (≡) se koi bhi feature kholo<br>
+    2️⃣ Naya project banao ya purana select karo<br>
+    3️⃣ Input dalo (subject/script/topic)<br>
+    4️⃣ Generate button dabao<br>
+    5️⃣ Output copy karo aur use karo YouTube pe
+  </div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">🔒 Privacy</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Tera data sirf teri apni Firebase account mein save hota hai. Koi bhi tera data nahi dekh sakta. Google authentication se secure login.</div>
+</div>`,
+
+  en: `
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div>
+  <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;">Version 2.0 · GK Horror Tales</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio is an AI-powered Hindi horror content creation tool specifically designed for YouTube creators.</div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">🎯 Purpose</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.9;">To make professional Hindi horror YouTube content creation easy — from scripting to thumbnails, everything in one place.</div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">⚡ Features</div>
+  <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);">
+    <div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Generate horror story ideas by subject, category & tone</div>
+    <div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — Full production pack from script: BGM, SFX, scenes, characters, thumbnail & YouTube SEO</div>
+    <div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Find script flaws: plot holes, weak scenes, pacing issues</div>
+    <div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Professional camera shot suggestions for each scene</div>
+    <div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share project, generate QR code, duplicate</div>
+  </div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">📱 How To Use</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.9;">
+    1️⃣ Open any feature from the Menu (≡)<br>
+    2️⃣ Create a new project or select existing<br>
+    3️⃣ Enter your input (subject/script/topic)<br>
+    4️⃣ Press Generate<br>
+    5️⃣ Copy output and use on YouTube
+  </div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
+  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">🔒 Privacy</div>
+  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Your data is saved only in your own Firebase account. No one else can access it. Secured with Google Authentication.</div>
+</div>`
+};
+
+function setAppDetailsLang(lang){
+  document.getElementById('appDetailsContent').innerHTML = APP_DETAILS[lang] || APP_DETAILS.hi;
+  document.getElementById('adLangHi').style.background = lang==='hi' ? 'var(--blood-2)' : 'var(--surface)';
+  document.getElementById('adLangHi').style.color = lang==='hi' ? '#fff' : 'var(--ink-dim)';
+  document.getElementById('adLangEn').style.background = lang==='en' ? 'var(--blood-2)' : 'var(--surface)';
+  document.getElementById('adLangEn').style.color = lang==='en' ? '#fff' : 'var(--ink-dim)';
+}
+
+// Load app details default
+document.addEventListener('DOMContentLoaded', ()=>{
+  setAppDetailsLang(currentLang === 'en' ? 'en' : 'hi');
+  renderLanguages();
+  loadProfile();
+});
+
+</script>
 </body>
 </html>
