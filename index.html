@@ -834,7 +834,13 @@ const WORDS_PER_MINUTE = 130;
         <div id="orbitBtn1" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(1)">🌐<span>Language</span></div>
         <div id="orbitBtn2" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(2)">📋<span>App Details</span></div>
       </div>
-      <div id="introText" style="position:relative;z-index:3;margin-top:60px;font-family:'Cinzel',Georgia,serif;font-size:14px;font-weight:700;letter-spacing:.25em;color:#cc2200;text-shadow:0 0 15px #ff3300;text-transform:uppercase;text-align:center;opacity:.8;">SELECT AN OPTION TO CONTINUE</div>
+      <div id="introText" style="position:relative;z-index:3;margin-top:50px;font-family:'Cinzel',Georgia,serif;font-size:13px;font-weight:700;letter-spacing:.2em;color:#cc2200;text-shadow:0 0 15px #ff3300;text-transform:uppercase;text-align:center;opacity:.8;" id="orbitSubText">FILL ALL OPTIONS TO CONTINUE</div>
+      <div id="orbitProgress" style="position:relative;z-index:3;display:flex;gap:12px;margin-top:14px;justify-content:center;">
+        <div id="prog0" style="width:36px;height:36px;border-radius:50%;border:2px solid #332424;background:#0c0808;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .3s;">👤</div>
+        <div id="prog1" style="width:36px;height:36px;border-radius:50%;border:2px solid #332424;background:#0c0808;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .3s;">🌐</div>
+        <div id="prog2" style="width:36px;height:36px;border-radius:50%;border:2px solid #332424;background:#0c0808;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .3s;">📋</div>
+      </div>
+      <button id="enterAppBtn" onclick="enterApp()" style="display:none;position:relative;z-index:3;margin-top:20px;padding:12px 32px;border-radius:30px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.15em;text-transform:uppercase;box-shadow:0 0 20px rgba(177,39,45,.6);animation:glow 1.5s infinite;">🔥 ENTER APP</button>
     </div>
 
     <!-- SKIP BUTTON -->
@@ -901,7 +907,7 @@ const WORDS_PER_MINUTE = 130;
     <div style="max-width:480px;margin:0 auto;padding:20px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-top:8px;">
         <div style="display:flex;align-items:center;gap:12px;">
-          <button onclick="closePage('appDetailsPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">← Back</button>
+          <button onclick="closePage('appDetailsPage');markOrbitDone(2);" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">← Done</button>
           <div style="font-size:18px;font-weight:700;color:var(--ember);font-family:var(--font-display);">📋 App Details</div>
         </div>
         <div style="display:flex;gap:6px;">
@@ -1704,9 +1710,16 @@ function dmHandleBack(){ featureHandleBack('director'); }
 function openPage(pageId){
   document.getElementById('sideDrawer').classList.add('hidden');
   const el = document.getElementById(pageId);
+  // Settings pages need z-index above intro overlay (9999)
+  const settingsPages = ['profilePage','languagePage','appDetailsPage'];
+  if(settingsPages.includes(pageId)){
+    el.style.zIndex = '10000';
+  } else {
+    el.style.zIndex = '500';
+  }
   el.classList.remove('hidden');
   el.classList.remove('feature-page-enter');
-  void el.offsetWidth; // force reflow
+  void el.offsetWidth;
   el.classList.add('feature-page-enter');
 }
 function closePage(pageId){
@@ -2770,6 +2783,29 @@ function startOrbitEmbers(){
 let orbitActive = false;
 let orbitAnimFrame = null;
 let introShowClickHint = false;
+const orbitDone = [false, false, false];
+
+function markOrbitDone(idx){
+  orbitDone[idx] = true;
+  const prog = document.getElementById('prog'+idx);
+  if(prog){
+    prog.style.border = '2px solid #5fae6f';
+    prog.style.background = 'rgba(95,174,111,.2)';
+    prog.textContent = '✅';
+  }
+  // Check all done
+  if(orbitDone.every(Boolean)){
+    if(orbitAnimFrame) cancelAnimationFrame(orbitAnimFrame);
+    document.getElementById('enterAppBtn').style.display = 'block';
+    document.getElementById('orbitSubText').textContent = 'YOU ARE READY!';
+    document.getElementById('orbitSubText').style.color = '#5fae6f';
+    document.getElementById('orbitSubText').style.textShadow = '0 0 15px #5fae6f';
+  }
+}
+
+function enterApp(){
+  if(window._introFinish) window._introFinish(true);
+}
 
 function introLogoClick(){
   if(orbitActive) return;
@@ -2822,17 +2858,14 @@ function startOrbitRotation(btns){
 }
 
 function orbitFeatureClick(idx){
-  if(orbitAnimFrame) cancelAnimationFrame(orbitAnimFrame);
+  // Flash the button
   const btn = document.getElementById('orbitBtn'+idx);
-  btn.style.boxShadow = '0 0 60px #fff,0 0 30px rgba(255,255,255,.8)';
-  setTimeout(()=>{
-    if(window._introFinish) window._introFinish(true);
-    setTimeout(()=>{
-      if(idx===0) openPage('profilePage');
-      else if(idx===1) openPage('languagePage');
-      else if(idx===2) openPage('appDetailsPage');
-    }, 900);
-  }, 200);
+  btn.style.boxShadow = '0 0 40px #fff,0 0 20px rgba(255,255,255,.8)';
+  setTimeout(()=>{ btn.style.boxShadow=''; }, 400);
+  // Open the page ON TOP of orbit (orbit stays behind)
+  if(idx===0) openPage('profilePage');
+  else if(idx===1) openPage('languagePage');
+  else if(idx===2) openPage('appDetailsPage');
 }
 
 
@@ -2864,8 +2897,9 @@ async function saveProfile(){
   try{
     if(currentUser) await db.collection('users').doc(currentUser.uid).set({username,dob,gender:selectedGender,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
     localStorage.setItem('ns_profile', JSON.stringify({username,dob,gender:selectedGender}));
-    showToast('Profile save ho gayi!');
+    showToast('✅ Profile save ho gayi!');
     closePage('profilePage');
+    markOrbitDone(0); // Mark profile done
   }catch(e){ showToast('Error: '+e.message); }
 }
 function loadProfile(){
@@ -2925,8 +2959,11 @@ function filterLanguages(val){ renderLanguages(val); }
 function selectLanguage(code){
   currentLang=code; localStorage.setItem('ns_lang',code);
   renderLanguages(document.getElementById('langSearch')?.value||'');
-  showToast('Language: '+(LANGUAGES.find(l=>l.code===code)?.label||code));
-  setTimeout(()=>closePage('languagePage'),800);
+  showToast('✅ Language: '+(LANGUAGES.find(l=>l.code===code)?.label||code));
+  setTimeout(()=>{
+    closePage('languagePage');
+    markOrbitDone(1); // Mark language done
+  }, 600);
 }
 
 // ============================================================
