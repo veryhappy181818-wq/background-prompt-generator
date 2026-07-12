@@ -39,7 +39,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 /* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--surface),var(--bg));position:sticky;top:0;z-index:50;}
 .brand{display:flex;align-items:center;gap:10px;}
-.brand-mark{width:46px;height:46px;border-radius:50%;flex:none;overflow:hidden;box-shadow:0 0 12px rgba(177,39,45,.5);}
+.brand-mark{width:34px;height:34px;border-radius:50%;flex:none;overflow:hidden;}
 .brand-text{display:flex;flex-direction:column;line-height:1.1;}
 .brand-text .t1{font-family:var(--font-display);font-size:17px;letter-spacing:.08em;font-weight:700;color:var(--ink);}
 .brand-text .t2{font-size:10px;letter-spacing:.25em;color:var(--ember);text-transform:uppercase;}
@@ -433,54 +433,6 @@ button[onclick*="HandleBack"]:hover, button[onclick*="closePage"]:hover {
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* ============================================================ */
-/* INTRO ORBIT ANIMATION */
-/* ============================================================ */
-.orbit-btn {
-  position: absolute;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1a0505, #2d0a0a);
-  border: 2px solid #b1272d;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  box-shadow: 0 0 20px rgba(177,39,45,.5), inset 0 0 10px rgba(177,39,45,.2);
-  transition: transform .2s, box-shadow .2s;
-  z-index: 4;
-  text-shadow: 0 0 8px rgba(255,100,100,.8);
-}
-.orbit-btn span {
-  font-size: 9px;
-  letter-spacing: .1em;
-  color: #d98e3a;
-}
-.orbit-btn:hover {
-  box-shadow: 0 0 35px rgba(177,39,45,.9), inset 0 0 15px rgba(177,39,45,.4);
-  transform: scale(1.15) !important;
-}
-.orbit-btn:nth-child(2) { border-color: #d98e3a; box-shadow: 0 0 20px rgba(217,142,58,.5); }
-.orbit-btn:nth-child(3) { border-color: #5fae6f; box-shadow: 0 0 20px rgba(95,174,111,.5); }
-
-@keyframes orbitSpin {
-  from { transform: rotate(0deg) translateX(130px) rotate(0deg); }
-  to   { transform: rotate(360deg) translateX(130px) rotate(-360deg); }
-}
-@keyframes orbitPop {
-  0%   { transform: scale(0) rotate(0deg) translateX(0px); opacity:0; }
-  60%  { transform: scale(1.2) rotate(120deg) translateX(110px); opacity:1; }
-  100% { transform: rotate(var(--orbit-angle)) translateX(130px) rotate(calc(-1 * var(--orbit-angle))); opacity:1; }
-}
-
 @keyframes glow-blue {
   0%,100% { box-shadow:0 4px 20px rgba(41,128,212,.4); }
   50%      { box-shadow:0 4px 35px rgba(41,128,212,.9), 0 0 60px rgba(41,128,212,.3); }
@@ -865,52 +817,49 @@ const WORDS_PER_MINUTE = 130;
   <!-- ============================================================ -->
   <!-- CINEMATIC INTRO ANIMATION -->
   <!-- ============================================================ -->
-  <div id="introOverlay" class="hidden" style="position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
-    <canvas id="introCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+  <div id="introOverlay" class="hidden" style="position:fixed;inset:0;background:#000;z-index:9999;overflow:hidden;">
 
-    <!-- ORBIT CONTAINER -->
-    <div id="introOrbitWrap" style="position:relative;z-index:2;display:flex;align-items:center;justify-content:center;width:320px;height:320px;">
-      <!-- Logo in center -->
-      <div id="introLogo" style="position:absolute;z-index:3;opacity:0;transform:scale(0.1);transition:none;cursor:pointer;" onclick="introLogoClick()">
-        <img src="file_0000000090c872079807bfcdd0984dfd.png" id="introLogoImg" style="width:180px;height:180px;border-radius:50%;object-fit:cover;image-rendering:high-quality;"/>
-        <div id="introClickHint" style="display:none;position:absolute;bottom:-36px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;color:#d98e3a;letter-spacing:.15em;text-shadow:0 0 10px #d98e3a;font-family:Cinzel,Georgia,serif;animation:pulse 1.5s infinite;">✨ CLICK FOR OPTIONS</div>
+    <!-- YOUR 3D VIDEO -->
+    <video id="introVideo" playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" src="1000014863.mp4...."></video>
+
+    <!-- ORBIT SCREEN - shown after video ends -->
+    <div id="introOrbitScreen" style="position:absolute;inset:0;z-index:2;display:none;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle at 50% 40%,#150000 0%,#000 100%);">
+      <canvas id="introCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+      <div id="introOrbitWrap" style="position:relative;z-index:3;width:320px;height:320px;display:flex;align-items:center;justify-content:center;">
+        <div id="introLogo" style="position:absolute;z-index:4;cursor:pointer;" onclick="introLogoClick()">
+          <img src="file_0000000090c872079807bfcdd0984dfd.png" id="introLogoImg" style="width:160px;height:160px;border-radius:50%;object-fit:cover;box-shadow:0 0 40px rgba(177,39,45,.8),0 0 80px rgba(177,39,45,.4);animation:pulse 2s infinite;display:block;"/>
+          <div id="introClickHint" style="position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;color:#d98e3a;letter-spacing:.15em;text-shadow:0 0 10px #d98e3a;font-family:Cinzel,Georgia,serif;animation:pulse 1.5s infinite;text-align:center;">✨ CLICK FOR OPTIONS</div>
+        </div>
+        <div id="orbitBtn0" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(0)">👤<span>Profile</span></div>
+        <div id="orbitBtn1" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(1)">🌐<span>Language</span></div>
+        <div id="orbitBtn2" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(2)">📋<span>App Details</span></div>
       </div>
-
-      <!-- 3 Orbit Buttons -->
-      <div id="orbitBtn0" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(0)">👤<span>Profile</span></div>
-      <div id="orbitBtn1" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(1)">🌐<span>Language</span></div>
-      <div id="orbitBtn2" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(2)">📋<span>App Details</span></div>
+      <div id="introText" style="position:relative;z-index:3;margin-top:60px;font-family:'Cinzel',Georgia,serif;font-size:14px;font-weight:700;letter-spacing:.25em;color:#cc2200;text-shadow:0 0 15px #ff3300;text-transform:uppercase;text-align:center;opacity:.8;">SELECT AN OPTION TO CONTINUE</div>
     </div>
 
-    <div id="introText" style="position:relative;z-index:2;margin-top:16px;font-family:'Cinzel','Georgia',serif;font-size:18px;font-weight:700;letter-spacing:.3em;color:#cc2200;text-shadow:0 0 15px #ff3300,0 0 30px #b1272d,0 0 60px rgba(177,39,45,0.5);opacity:0;text-transform:uppercase;text-align:center;padding-bottom:4px;"></div>
-    <button id="introSkip" style="position:absolute;top:20px;right:20px;z-index:10;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.1em;">SKIP</button>
+    <!-- SKIP BUTTON -->
+    <button id="introSkip" style="position:absolute;top:20px;right:20px;z-index:10;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:7px 18px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.1em;">SKIP</button>
   </div>
 
 
-  <!-- ============================================================ -->
   <!-- PROFILE PAGE -->
-  <!-- ============================================================ -->
   <div id="profilePage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
     <div style="max-width:420px;margin:0 auto;padding:20px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-top:8px;">
         <button onclick="closePage('profilePage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">← Back</button>
         <div style="font-size:18px;font-weight:700;color:var(--ember);font-family:var(--font-display);">👤 Profile</div>
       </div>
-
-      <!-- Profile Picture -->
       <div style="text-align:center;margin-bottom:28px;">
         <div id="profilePicWrap" style="position:relative;display:inline-block;cursor:pointer;" onclick="document.getElementById('profilePicInput').click()">
           <div id="profilePicCircle" style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#1a0505,#2d0a0a);border:3px solid #b1272d;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 0 20px rgba(177,39,45,.4);">
             <img id="profilePicImg" src="" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:50%;"/>
             <span id="profilePicPlaceholder" style="font-size:36px;">👤</span>
           </div>
-          <div style="position:absolute;bottom:2px;right:2px;background:#b1272d;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.4);">📷</div>
+          <div style="position:absolute;bottom:2px;right:2px;background:#b1272d;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;">📷</div>
         </div>
         <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePic(this)"/>
         <div style="font-size:11px;color:var(--ink-faint);margin-top:8px;letter-spacing:.1em;">TAP TO CHANGE PHOTO</div>
       </div>
-
-      <!-- Form Fields -->
       <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px;">
         <div>
           <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:6px;">Username</label>
@@ -929,14 +878,11 @@ const WORDS_PER_MINUTE = 130;
           </div>
         </div>
       </div>
-
-      <button onclick="saveProfile()" style="width:100%;padding:14px;border-radius:10px;margin-top:20px;background:linear-gradient(135deg,#1a6bb5,#2980d4);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.1em;box-shadow:0 4px 20px rgba(41,128,212,.4);animation:glow-blue 2s infinite;">✅ DONE</button>
+      <button onclick="saveProfile()" style="width:100%;padding:14px;border-radius:10px;margin-top:20px;background:linear-gradient(135deg,#1a6bb5,#2980d4);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.1em;box-shadow:0 4px 20px rgba(41,128,212,.4);">✅ DONE</button>
     </div>
   </div>
 
-  <!-- ============================================================ -->
   <!-- LANGUAGE PAGE -->
-  <!-- ============================================================ -->
   <div id="languagePage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
     <div style="max-width:420px;margin:0 auto;padding:20px;">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:8px;">
@@ -950,12 +896,10 @@ const WORDS_PER_MINUTE = 130;
     </div>
   </div>
 
-  <!-- ============================================================ -->
   <!-- APP DETAILS PAGE -->
-  <!-- ============================================================ -->
   <div id="appDetailsPage" class="hidden" style="position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;">
     <div style="max-width:480px;margin:0 auto;padding:20px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;padding-top:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-top:8px;">
         <div style="display:flex;align-items:center;gap:12px;">
           <button onclick="closePage('appDetailsPage')" style="background:var(--surface);border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;">← Back</button>
           <div style="font-size:18px;font-weight:700;color:var(--ember);font-family:var(--font-display);">📋 App Details</div>
@@ -995,7 +939,7 @@ const WORDS_PER_MINUTE = 130;
   <div id="mainScreen" class="hidden">
     <div class="topbar">
       <div class="brand">
-        <div class="brand-mark" style="background:none;overflow:hidden;border-radius:50%;"><img src="file_0000000090c872079807bfcdd0984dfd.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;" alt="GK"/></div>
+        <div class="brand-mark" style="background:none;box-shadow:none;overflow:hidden;border-radius:50%;"><img src="file_0000000090c872079807bfcdd0984dfd.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;" alt="GK"/></div>
         <div class="brand-text">
           <span class="t1">NIGHTMARE STUDIO</span>
           <span class="t2">Background Prompt Generator</span>
@@ -2721,247 +2665,100 @@ function renderDirectorShots(shots){
 
 
 // ============================================================
-// CINEMATIC INTRO ANIMATION - ENHANCED
+// CINEMATIC INTRO ANIMATION - VIDEO BASED
 // ============================================================
 function playIntroAnimation(onComplete) {
   const overlay = document.getElementById('introOverlay');
-  const canvas = document.getElementById('introCanvas');
-  const logo = document.getElementById('introLogo');
-  const textEl = document.getElementById('introText');
+  const video = document.getElementById('introVideo');
+  const orbitScreen = document.getElementById('introOrbitScreen');
   const skipBtn = document.getElementById('introSkip');
 
+  // Show overlay
   overlay.classList.remove('hidden');
-  overlay.style.display = 'flex';
+  overlay.style.display = 'block';
 
+  let finished = false;
+
+  function showOrbitScreen(){
+    if(finished) return;
+    // Fade out video, show orbit
+    video.style.transition = 'opacity .8s ease';
+    video.style.opacity = '0';
+    setTimeout(()=>{
+      video.style.display = 'none';
+      orbitScreen.style.display = 'flex';
+      // Start ember canvas
+      startOrbitEmbers();
+    }, 800);
+  }
+
+  function finish(skipToApp){
+    if(finished) return;
+    finished = true;
+    video.pause();
+    overlay.style.transition = 'opacity .8s ease';
+    overlay.style.opacity = '0';
+    setTimeout(()=>{
+      overlay.classList.add('hidden');
+      overlay.style.display = 'none';
+      overlay.style.opacity = '1';
+      onComplete && onComplete();
+    }, 800);
+  }
+
+  // Video events
+  video.onended = () => showOrbitScreen();
+  video.onerror = () => showOrbitScreen(); // fallback if video fails
+
+  // Try to play video
+  video.play().catch(()=>{
+    // Autoplay blocked - show orbit directly
+    showOrbitScreen();
+  });
+
+  // Skip button
+  skipBtn.onclick = () => finish(true);
+
+  // Store finish fn globally for orbit use
+  window._introFinish = finish;
+}
+
+// ============================================================
+// ORBIT EMBERS CANVAS
+// ============================================================
+function startOrbitEmbers(){
+  const canvas = document.getElementById('introCanvas');
+  if(!canvas) return;
   const ctx = canvas.getContext('2d');
-  let W, H;
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  resize();
-  window.addEventListener('resize', resize);
+  let W = canvas.width = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+  window.addEventListener('resize', ()=>{ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; });
 
-  // ── EMBERS ──
-  const embers = Array.from({length:180}, () => ({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight + window.innerHeight,
-    vx: (Math.random()-.5)*1.2,
-    vy: -(Math.random()*2+0.8),
-    size: Math.random()*4+1,
-    alpha: Math.random(),
-    color: Math.random()>.6?'#ff5500':Math.random()>.5?'#ff2200':'#ffaa00',
-    life: Math.random()
+  const embers = Array.from({length:100}, ()=>({
+    x:Math.random()*W, y:Math.random()*H+H,
+    vx:(Math.random()-.5)*.8, vy:-(Math.random()*1.5+.5),
+    size:Math.random()*3+1, life:Math.random(),
+    color:Math.random()>.5?'#ff4422':'#d98e3a'
   }));
 
-  // ── EXPLOSION PARTICLES ──
-  const explParts = [];
-  let exploded = false;
-
-  function triggerExplosion() {
-    if (exploded) return;
-    exploded = true;
-    for (let i = 0; i < 120; i++) {
-      const angle = (Math.PI*2*i)/120 + Math.random()*0.3;
-      const speed = Math.random()*12+5;
-      explParts.push({
-        x:W/2, y:H/2,
-        vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed,
-        size:Math.random()*6+2,
-        alpha:1, life:1,
-        color:Math.random()>.5?'#ff3300':Math.random()>.5?'#d98e3a':'#ffcc00',
-        rot:Math.random()*360, rotV:(Math.random()-.5)*8
-      });
-    }
-  }
-
-  // ── GLOW RINGS ──
-  function drawGlowRing(x, y, r, alpha, color){
-    ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    ctx.globalAlpha = alpha;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 30;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI*2);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  let animFrame;
-  let startTime = null;
-  let finished = false;
-  let revealedChars = 0;
-  let lastCharTime = 0;
-  const MESSAGE = "THE GATE HAS OPENED";
-
-  function finish() {
-    if (finished) return;
-    finished = true;
-    cancelAnimationFrame(animFrame);
-    window.removeEventListener('resize', resize);
-    overlay.style.transition = 'opacity 1s ease';
-    overlay.style.opacity = '0';
-    setTimeout(() => {
-      overlay.classList.add('hidden');
-      overlay.style.opacity = '1';
-      overlay.style.display = 'none';
-      onComplete && onComplete();
-    }, 1000);
-  }
-
-  skipBtn.onclick = finish;
-
-  function draw(ts) {
-    if (!startTime) startTime = ts;
-    const elapsed = (ts - startTime) / 1000;
-
+  function drawEmbers(){
     ctx.clearRect(0,0,W,H);
-
-    // ── BACKGROUND ──
-    const bgGrad = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H));
-    bgGrad.addColorStop(0,'rgba(15,0,0,1)');
-    bgGrad.addColorStop(0.5,'rgba(8,0,0,1)');
-    bgGrad.addColorStop(1,'rgba(0,0,0,1)');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0,0,W,H);
-
-    // ── EMBERS ──
-    embers.forEach(p => {
-      p.x+=p.vx; p.y+=p.vy; p.life-=0.002;
-      if(p.life<=0||p.y<-20){ p.x=Math.random()*W; p.y=H+10; p.life=0.7+Math.random()*0.3; }
+    embers.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.life-=.002;
+      if(p.life<=0||p.y<-10){ p.x=Math.random()*W; p.y=H+10; p.life=.7+Math.random()*.3; }
       ctx.save();
-      ctx.globalAlpha = p.life*0.9;
-      ctx.fillStyle = p.color;
-      ctx.shadowColor = p.color;
-      ctx.shadowBlur = 8;
+      ctx.globalAlpha=p.life*.8;
+      ctx.fillStyle=p.color;
+      ctx.shadowColor=p.color;
+      ctx.shadowBlur=6;
       ctx.beginPath();
       ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
       ctx.fill();
       ctx.restore();
     });
-
-    // ── EXPLOSION PARTICLES ──
-    explParts.forEach(p => {
-      // SLOW MOTION explosion
-      p.x+=p.vx*0.4; p.y+=p.vy*0.4; p.vy+=0.08;
-      p.rot+=p.rotV; p.life-=0.012; p.alpha=p.life;
-      if(p.life<=0) return;
-      ctx.save();
-      ctx.globalAlpha = p.alpha;
-      ctx.fillStyle = p.color;
-      ctx.shadowColor = p.color;
-      ctx.shadowBlur = 15;
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot*Math.PI/180);
-      const s = p.size*p.life;
-      ctx.fillRect(-s/2,-s/2,s,s);
-      ctx.restore();
-    });
-
-    // ── GROUND GLOW ──
-    if(elapsed > 0.5){
-      const gg = ctx.createRadialGradient(W/2,H*0.75,0,W/2,H*0.75,W*0.4);
-      gg.addColorStop(0,`rgba(177,39,45,${Math.min(elapsed*0.06,0.15)})`);
-      gg.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=gg;
-      ctx.fillRect(0,0,W,H);
-    }
-
-    // ── SHOCKWAVE RINGS ──
-    if(elapsed>3 && elapsed<6){
-      const sw = (elapsed-3)/3;
-      [0.3,0.6,1].forEach((offset,i) => {
-        const prog = Math.max(0, sw-offset*0.3);
-        if(prog<=0) return;
-        const r = prog*Math.min(W,H)*0.7;
-        const a = Math.max(0, 1-prog*1.5);
-        drawGlowRing(W/2,H/2,r,a*0.8,'rgba(177,39,45,1)');
-      });
-    }
-
-    // ── LOGO ANIMATION ──
-    // 0-1.5s: darkness
-    // 1.5-4s: logo flies in SLOWLY (slow-mo)
-    // 4-4.3s: flash + explosion
-    // 4.3-7s: fragments rebuild slowly
-    // 7-9s: text reveal
-    // 9-10.5s: final glow
-
-    if(elapsed >= 1.5 && elapsed < 4){
-      const t = (elapsed-1.5)/2.5;
-      const ease = 1 - Math.pow(1-t,4); // stronger ease
-      const scale = 0.04 + ease*0.96;
-      const opacity = Math.min(t*2, 1);
-      logo.style.opacity = opacity;
-      logo.style.transform = `scale(${scale})`;
-      // Rotating glow while approaching
-      const glowSize = 20 + ease*60;
-      document.getElementById('introLogoImg').style.filter =
-        `drop-shadow(0 0 ${glowSize}px rgba(177,39,45,${0.5+ease*0.5})) drop-shadow(0 0 ${glowSize*0.5}px rgba(217,142,58,0.8))`;
-    } else if(elapsed >= 4 && elapsed < 4.3){
-      // WHITE FLASH
-      triggerExplosion();
-      const flash = 1-(elapsed-4)/0.3;
-      ctx.fillStyle = `rgba(255,255,255,${flash})`;
-      ctx.fillRect(0,0,W,H);
-      logo.style.opacity = '0';
-    } else if(elapsed >= 4.3 && elapsed < 5){
-      logo.style.opacity = '0';
-    } else if(elapsed >= 5 && elapsed < 7.5){
-      // REBUILD - slow fragments converging
-      const t = (elapsed-5)/2.5;
-      const ease = 1 - Math.pow(1-t,3);
-      logo.style.opacity = (ease*ease);
-      logo.style.transform = `scale(${0.6+ease*0.4})`;
-      // Pulsing glow on rebuild
-      const pulse = Math.sin(elapsed*6)*0.3+0.7;
-      const glow = 30 + ease*50;
-      document.getElementById('introLogoImg').style.filter =
-        `drop-shadow(0 0 ${glow*pulse}px rgba(177,39,45,0.9)) drop-shadow(0 0 ${glow*0.5}px rgba(217,142,58,0.8)) drop-shadow(0 0 ${glow*0.3}px rgba(255,200,0,0.5))`;
-      // Draw converging ring
-      if(ease < 0.95){
-        drawGlowRing(W/2, H/2, (1-ease)*Math.min(W,H)*0.5, (1-ease)*0.8, '#d98e3a');
-      }
-    } else if(elapsed >= 7.5){
-      logo.style.opacity = '1';
-      logo.style.transform = 'scale(1)';
-      // Steady glow
-      const steadyPulse = Math.sin(elapsed*3)*0.2+0.8;
-      document.getElementById('introLogoImg').style.filter =
-        `drop-shadow(0 0 ${40*steadyPulse}px rgba(177,39,45,0.9)) drop-shadow(0 0 20px rgba(217,142,58,0.7))`;
-      // Show click hint
-      if(!introShowClickHint){
-        introShowClickHint = true;
-        const hint = document.getElementById('introClickHint');
-        if(hint){ hint.style.display = 'block'; hint.style.animation = 'pulse 1.5s infinite'; }
-      }
-    }
-
-    // ── TEXT REVEAL (7.5s onward) ──
-    if(elapsed >= 7.5 && elapsed < 9.5){
-      if(ts - lastCharTime > 100 && revealedChars < MESSAGE.length){
-        revealedChars++;
-        lastCharTime = ts;
-      }
-      textEl.textContent = MESSAGE.substring(0, revealedChars);
-      textEl.style.opacity = '1';
-      // Blood drip effect - red underline grows
-      textEl.style.borderBottom = `2px solid rgba(177,39,45,${revealedChars/MESSAGE.length})`;
-    }
-
-    // ── FINAL BLOOD FILL ──
-    if(elapsed >= 9.8){
-      const t = Math.min((elapsed-9.8)/1.2, 1);
-      const easedT = t*t*(3-2*t);
-      ctx.fillStyle = `rgba(100,0,0,${easedT*0.9})`;
-      ctx.fillRect(0,0,W,H);
-      if(easedT >= 0.95){ finish(); return; }
-    }
-
-    if(elapsed < 12){ animFrame = requestAnimationFrame(draw); }
-    else { finish(); }
+    requestAnimationFrame(drawEmbers);
   }
-
-  animFrame = requestAnimationFrame(draw);
+  drawEmbers();
 }
 
 </script>
@@ -2972,149 +2769,105 @@ function playIntroAnimation(onComplete) {
 // ============================================================
 let orbitActive = false;
 let orbitAnimFrame = null;
-let orbitAngle = 0;
+let introShowClickHint = false;
 
 function introLogoClick(){
   if(orbitActive) return;
   orbitActive = true;
-  document.getElementById('introClickHint').style.display = 'none';
+  document.getElementById('introClickHint').style.animation = 'none';
+  document.getElementById('introClickHint').style.opacity = '0';
 
-  // Show 3 orbit buttons with staggered pop
   const btns = [
-    {id:'orbitBtn0', angle: -90},
-    {id:'orbitBtn1', angle:  30},
-    {id:'orbitBtn2', angle: 150},
+    {id:'orbitBtn0', angle:-90},
+    {id:'orbitBtn1', angle:30},
+    {id:'orbitBtn2', angle:150},
   ];
 
-  btns.forEach((b, i) => {
+  btns.forEach((b,i)=>{
     const el = document.getElementById(b.id);
     el.style.display = 'flex';
-    el.style.setProperty('--orbit-angle', b.angle + 'deg');
     el.style.opacity = '0';
     el.style.transform = 'scale(0)';
-
-    setTimeout(() => {
+    el.style.position = 'absolute';
+    setTimeout(()=>{
       el.style.transition = 'all .5s cubic-bezier(.34,1.56,.64,1)';
       el.style.opacity = '1';
-      // Position on circle
+      el.style.transform = 'scale(1)';
       const rad = (b.angle - 90) * Math.PI / 180;
       const r = 130;
       el.style.left = (160 + r * Math.cos(rad) - 36) + 'px';
       el.style.top  = (160 + r * Math.sin(rad) - 36) + 'px';
-      el.style.transform = 'scale(1)';
     }, i * 180);
   });
 
-  // Start slow orbit rotation after pop
-  setTimeout(() => startOrbitRotation(btns), 800);
+  setTimeout(()=> startOrbitRotation(btns), 900);
 }
 
 function startOrbitRotation(btns){
   let angle = 0;
-  function rotateOrbit(){
-    angle += 0.3; // slow rotation degrees per frame
-    btns.forEach((b, i) => {
+  function rotate(){
+    angle += 0.25;
+    btns.forEach((b,i)=>{
       const el = document.getElementById(b.id);
-      const baseAngle = b.angle + angle;
-      const rad = (baseAngle - 90) * Math.PI / 180;
+      const a = b.angle + angle;
+      const rad = (a-90)*Math.PI/180;
       const r = 130;
-      const cx = 160 + r * Math.cos(rad) - 36;
-      const cy = 160 + r * Math.sin(rad) - 36;
-      el.style.left = cx + 'px';
-      el.style.top  = cy + 'px';
-      // Counter-rotate button text to stay upright
+      el.style.left = (160 + r*Math.cos(rad) - 36)+'px';
+      el.style.top  = (160 + r*Math.sin(rad) - 36)+'px';
       el.style.transform = `rotate(${-angle}deg) scale(1)`;
     });
-    orbitAnimFrame = requestAnimationFrame(rotateOrbit);
+    orbitAnimFrame = requestAnimationFrame(rotate);
   }
-  orbitAnimFrame = requestAnimationFrame(rotateOrbit);
+  orbitAnimFrame = requestAnimationFrame(rotate);
 }
 
 function orbitFeatureClick(idx){
-  // Stop orbit
   if(orbitAnimFrame) cancelAnimationFrame(orbitAnimFrame);
-
-  // Flash effect on click
-  const btn = document.getElementById('orbitBtn' + idx);
-  btn.style.transition = 'all .1s';
-  btn.style.boxShadow = '0 0 60px #fff, 0 0 30px #fff';
-  btn.style.transform += ' scale(1.3)';
-
-  setTimeout(() => {
-    // Hide intro
-    const overlay = document.getElementById('introOverlay');
-    overlay.style.transition = 'opacity .6s ease';
-    overlay.style.opacity = '0';
-    setTimeout(() => {
-      overlay.classList.add('hidden');
-      overlay.style.opacity = '1';
-      overlay.style.display = 'none';
-      // Open feature
-      if(idx === 0) openPage('profilePage');
-      else if(idx === 1) openPage('languagePage');
-      else if(idx === 2) openPage('appDetailsPage');
-    }, 600);
+  const btn = document.getElementById('orbitBtn'+idx);
+  btn.style.boxShadow = '0 0 60px #fff,0 0 30px rgba(255,255,255,.8)';
+  setTimeout(()=>{
+    if(window._introFinish) window._introFinish(true);
+    setTimeout(()=>{
+      if(idx===0) openPage('profilePage');
+      else if(idx===1) openPage('languagePage');
+      else if(idx===2) openPage('appDetailsPage');
+    }, 900);
   }, 200);
 }
-
-// Modify playIntroAnimation to show click hint after rebuild
-// (injected at the right time inside the draw loop via flag)
-let introShowClickHint = false;
-
-// ============================================================
-// PROFILE PAGE
-// ============================================================
-// ============================================================
-// LANGUAGE PAGE
-// ============================================================
-// ============================================================
-// APP DETAILS PAGE
-// ============================================================
 
 
 // ============================================================
 // PROFILE PAGE JS
 // ============================================================
 let selectedGender = '';
-
 function selectGender(g){
   selectedGender = g;
   document.querySelectorAll('[data-gender]').forEach(el=>{
-    el.classList.toggle('active', el.dataset.gender === g);
+    el.classList.toggle('active', el.dataset.gender===g);
   });
 }
-
 function handleProfilePic(input){
-  const file = input.files[0];
-  if(!file) return;
+  const file = input.files[0]; if(!file) return;
   const reader = new FileReader();
   reader.onload = e => {
     const img = document.getElementById('profilePicImg');
-    img.src = e.target.result;
-    img.style.display = 'block';
+    img.src = e.target.result; img.style.display = 'block';
     document.getElementById('profilePicPlaceholder').style.display = 'none';
     localStorage.setItem('ns_profile_pic', e.target.result);
   };
   reader.readAsDataURL(file);
 }
-
 async function saveProfile(){
   const username = document.getElementById('profileUsername').value.trim();
   const dob = document.getElementById('profileDob').value;
-  if(!username){ showToast('⚠️ Naam likho pehle!'); return; }
+  if(!username){ showToast('Naam likho pehle!'); return; }
   try{
-    if(currentUser){
-      await db.collection('users').doc(currentUser.uid).set({
-        username, dob, gender: selectedGender,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, {merge:true});
-    }
-    localStorage.setItem('ns_profile', JSON.stringify({username, dob, gender:selectedGender}));
-    showToast('✅ Profile save ho gayi!');
+    if(currentUser) await db.collection('users').doc(currentUser.uid).set({username,dob,gender:selectedGender,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    localStorage.setItem('ns_profile', JSON.stringify({username,dob,gender:selectedGender}));
+    showToast('Profile save ho gayi!');
     closePage('profilePage');
   }catch(e){ showToast('Error: '+e.message); }
 }
-
 function loadProfile(){
   const saved = localStorage.getItem('ns_profile');
   if(saved){
@@ -3125,9 +2878,8 @@ function loadProfile(){
   }
   const pic = localStorage.getItem('ns_profile_pic');
   if(pic){
-    document.getElementById('profilePicImg').src = pic;
-    document.getElementById('profilePicImg').style.display = 'block';
-    document.getElementById('profilePicPlaceholder').style.display = 'none';
+    const img = document.getElementById('profilePicImg');
+    if(img){ img.src=pic; img.style.display='block'; const ph=document.getElementById('profilePicPlaceholder'); if(ph) ph.style.display='none'; }
   }
 }
 
@@ -3135,152 +2887,66 @@ function loadProfile(){
 // LANGUAGE PAGE JS
 // ============================================================
 const LANGUAGES = [
-  {code:'hi', name:'हिंदी', flag:'🇮🇳', label:'Hindi'},
-  {code:'en', name:'English', flag:'🇺🇸', label:'English'},
-  {code:'es', name:'Español', flag:'🇪🇸', label:'Spanish'},
-  {code:'fr', name:'Français', flag:'🇫🇷', label:'French'},
-  {code:'de', name:'Deutsch', flag:'🇩🇪', label:'German'},
-  {code:'ar', name:'العربية', flag:'🇸🇦', label:'Arabic'},
-  {code:'pt', name:'Português', flag:'🇧🇷', label:'Portuguese'},
-  {code:'ru', name:'Русский', flag:'🇷🇺', label:'Russian'},
-  {code:'ja', name:'日本語', flag:'🇯🇵', label:'Japanese'},
-  {code:'ko', name:'한국어', flag:'🇰🇷', label:'Korean'},
-  {code:'zh', name:'中文', flag:'🇨🇳', label:'Chinese'},
-  {code:'it', name:'Italiano', flag:'🇮🇹', label:'Italian'},
-  {code:'tr', name:'Türkçe', flag:'🇹🇷', label:'Turkish'},
-  {code:'bn', name:'বাংলা', flag:'🇧🇩', label:'Bengali'},
-  {code:'ur', name:'اردو', flag:'🇵🇰', label:'Urdu'},
-  {code:'pa', name:'ਪੰਜਾਬੀ', flag:'🇮🇳', label:'Punjabi'},
-  {code:'ta', name:'தமிழ்', flag:'🇮🇳', label:'Tamil'},
-  {code:'te', name:'తెలుగు', flag:'🇮🇳', label:'Telugu'},
-  {code:'mr', name:'मराठी', flag:'🇮🇳', label:'Marathi'},
-  {code:'gu', name:'ગુજરાતી', flag:'🇮🇳', label:'Gujarati'},
+  {code:'hi',name:'हिंदी',flag:'🇮🇳',label:'Hindi'},
+  {code:'en',name:'English',flag:'🇺🇸',label:'English'},
+  {code:'es',name:'Español',flag:'🇪🇸',label:'Spanish'},
+  {code:'fr',name:'Français',flag:'🇫🇷',label:'French'},
+  {code:'de',name:'Deutsch',flag:'🇩🇪',label:'German'},
+  {code:'ar',name:'العربية',flag:'🇸🇦',label:'Arabic'},
+  {code:'pt',name:'Português',flag:'🇧🇷',label:'Portuguese'},
+  {code:'ru',name:'Русский',flag:'🇷🇺',label:'Russian'},
+  {code:'ja',name:'日本語',flag:'🇯🇵',label:'Japanese'},
+  {code:'ko',name:'한국어',flag:'🇰🇷',label:'Korean'},
+  {code:'zh',name:'中文',flag:'🇨🇳',label:'Chinese'},
+  {code:'it',name:'Italiano',flag:'🇮🇹',label:'Italian'},
+  {code:'tr',name:'Türkçe',flag:'🇹🇷',label:'Turkish'},
+  {code:'bn',name:'বাংলা',flag:'🇧🇩',label:'Bengali'},
+  {code:'ur',name:'اردو',flag:'🇵🇰',label:'Urdu'},
+  {code:'pa',name:'ਪੰਜਾਬੀ',flag:'🇮🇳',label:'Punjabi'},
+  {code:'ta',name:'தமிழ்',flag:'🇮🇳',label:'Tamil'},
+  {code:'te',name:'తెలుగు',flag:'🇮🇳',label:'Telugu'},
+  {code:'mr',name:'मराठी',flag:'🇮🇳',label:'Marathi'},
+  {code:'gu',name:'ગુજરાતી',flag:'🇮🇳',label:'Gujarati'},
 ];
-
-let currentLang = localStorage.getItem('ns_lang') || 'hi';
-
+let currentLang = localStorage.getItem('ns_lang')||'hi';
 function renderLanguages(filter=''){
-  const list = document.getElementById('langList');
-  if(!list) return;
+  const list = document.getElementById('langList'); if(!list) return;
   list.innerHTML='';
-  const filtered = LANGUAGES.filter(l =>
-    l.label.toLowerCase().includes(filter.toLowerCase()) ||
-    l.name.toLowerCase().includes(filter.toLowerCase())
-  );
-  filtered.forEach(lang=>{
+  LANGUAGES.filter(l=>l.label.toLowerCase().includes(filter.toLowerCase())||l.name.includes(filter)).forEach(lang=>{
+    const isActive = lang.code===currentLang;
     const row = document.createElement('div');
-    const isActive = lang.code === currentLang;
-    row.style.cssText = `display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;border-bottom:1px solid var(--line);background:${isActive?'rgba(177,39,45,.08)':'transparent'};transition:background .15s;`;
-    row.innerHTML = `
-      <span style="font-size:24px;">${lang.flag}</span>
-      <div style="flex:1;">
-        <div style="font-size:14px;font-weight:600;color:${isActive?'var(--ember)':'var(--ink)'};">${lang.name}</div>
-        <div style="font-size:11px;color:var(--ink-faint);">${lang.label}</div>
-      </div>
-      ${isActive?'<span style="color:var(--ember);font-size:18px;">✓</span>':''}
-    `;
-    row.onclick = ()=>{ selectLanguage(lang.code); };
+    row.style.cssText=`display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;border-bottom:1px solid var(--line);background:${isActive?'rgba(177,39,45,.08)':'transparent'};`;
+    row.innerHTML=`<span style="font-size:24px;">${lang.flag}</span><div style="flex:1;"><div style="font-size:14px;font-weight:600;color:${isActive?'var(--ember)':'var(--ink)'};">${lang.name}</div><div style="font-size:11px;color:var(--ink-faint);">${lang.label}</div></div>${isActive?'<span style="color:var(--ember);font-size:18px;">✓</span>':''}`;
+    row.onclick=()=>selectLanguage(lang.code);
     list.appendChild(row);
   });
 }
-
 function filterLanguages(val){ renderLanguages(val); }
-
 function selectLanguage(code){
-  currentLang = code;
-  localStorage.setItem('ns_lang', code);
-  renderLanguages(document.getElementById('langSearch').value);
-  showToast('✅ Language: ' + (LANGUAGES.find(l=>l.code===code)?.label||code));
-  // Update AI prompts language preference
-  setTimeout(()=>closePage('languagePage'), 800);
+  currentLang=code; localStorage.setItem('ns_lang',code);
+  renderLanguages(document.getElementById('langSearch')?.value||'');
+  showToast('Language: '+(LANGUAGES.find(l=>l.code===code)?.label||code));
+  setTimeout(()=>closePage('languagePage'),800);
 }
 
 // ============================================================
 // APP DETAILS PAGE JS
 // ============================================================
 const APP_DETAILS = {
-  hi: `
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div>
-  <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;">Version 2.0 · GK Horror Tales</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio ek AI-powered Hindi horror content creation tool hai jo specially YouTube creators ke liye banaya gaya hai.</div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">🎯 App Ka Uddeshya</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.9;">Hindi horror YouTube creators ko professional content banana asaan karna. Script likhne se lekar thumbnail banane tak — sab kuch ek jagah.</div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">⚡ Features</div>
-  <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);">
-    <div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Horror story ideas generate karo subject, category, tone se</div>
-    <div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — Script se poora production pack: BGM, SFX, scenes, characters, thumbnail, YouTube SEO</div>
-    <div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Script ki kaminyan dhundho: plot holes, weak scenes, pacing issues</div>
-    <div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Har scene ke liye professional camera shots suggest karta hai</div>
-    <div>📤 <strong style="color:var(--ember);">Share Project</strong> — Project share karo, QR code banao, duplicate karo</div>
-  </div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">📱 Kaise Use Karein</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.9;">
-    1️⃣ Menu (≡) se koi bhi feature kholo<br>
-    2️⃣ Naya project banao ya purana select karo<br>
-    3️⃣ Input dalo (subject/script/topic)<br>
-    4️⃣ Generate button dabao<br>
-    5️⃣ Output copy karo aur use karo YouTube pe
-  </div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">🔒 Privacy</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Tera data sirf teri apni Firebase account mein save hota hai. Koi bhi tera data nahi dekh sakta. Google authentication se secure login.</div>
-</div>`,
-
-  en: `
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div>
-  <div style="font-size:12px;color:var(--ink-faint);margin-bottom:16px;">Version 2.0 · GK Horror Tales</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio is an AI-powered Hindi horror content creation tool specifically designed for YouTube creators.</div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">🎯 Purpose</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.9;">To make professional Hindi horror YouTube content creation easy — from scripting to thumbnails, everything in one place.</div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">⚡ Features</div>
-  <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);">
-    <div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Generate horror story ideas by subject, category & tone</div>
-    <div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — Full production pack from script: BGM, SFX, scenes, characters, thumbnail & YouTube SEO</div>
-    <div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Find script flaws: plot holes, weak scenes, pacing issues</div>
-    <div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Professional camera shot suggestions for each scene</div>
-    <div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share project, generate QR code, duplicate</div>
-  </div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;">📱 How To Use</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.9;">
-    1️⃣ Open any feature from the Menu (≡)<br>
-    2️⃣ Create a new project or select existing<br>
-    3️⃣ Enter your input (subject/script/topic)<br>
-    4️⃣ Press Generate<br>
-    5️⃣ Copy output and use on YouTube
-  </div>
-</div>
-<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;">
-  <div style="font-size:12px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;">🔒 Privacy</div>
-  <div style="font-size:13px;color:var(--ink);line-height:1.8;">Your data is saved only in your own Firebase account. No one else can access it. Secured with Google Authentication.</div>
-</div>`
+  hi:`<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div><div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">Version 2.0 · GK Horror Tales</div><div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio ek AI-powered Hindi horror content creation tool hai jo specially YouTube creators ke liye banaya gaya hai.</div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">⚡ Features</div><div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);"><div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Horror story ideas generate karo</div><div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — BGM, SFX, scenes, thumbnail, YouTube SEO</div><div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Plot holes, weak scenes dhundho</div><div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Camera shots suggest karta hai</div><div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share, QR code, duplicate</div></div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">📱 Kaise Use Karein</div><div style="font-size:13px;color:var(--ink);line-height:1.9;">1️⃣ Menu (≡) se koi bhi feature kholo<br>2️⃣ Naya project banao ya purana select karo<br>3️⃣ Input dalo<br>4️⃣ Generate dabao<br>5️⃣ Output copy karo YouTube ke liye</div></div>`,
+  en:`<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div><div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">Version 2.0 · GK Horror Tales</div><div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio is an AI-powered Hindi horror content creation tool for YouTube creators.</div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">⚡ Features</div><div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);"><div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Generate horror story ideas</div><div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — BGM, SFX, scenes, thumbnail, YouTube SEO</div><div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Find plot holes & weak scenes</div><div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Camera shot suggestions</div><div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share, QR code, duplicate</div></div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">📱 How To Use</div><div style="font-size:13px;color:var(--ink);line-height:1.9;">1️⃣ Open any feature from Menu (≡)<br>2️⃣ Create or select a project<br>3️⃣ Enter your input<br>4️⃣ Press Generate<br>5️⃣ Copy output for YouTube</div></div>`
 };
-
 function setAppDetailsLang(lang){
-  document.getElementById('appDetailsContent').innerHTML = APP_DETAILS[lang] || APP_DETAILS.hi;
-  document.getElementById('adLangHi').style.background = lang==='hi' ? 'var(--blood-2)' : 'var(--surface)';
-  document.getElementById('adLangHi').style.color = lang==='hi' ? '#fff' : 'var(--ink-dim)';
-  document.getElementById('adLangEn').style.background = lang==='en' ? 'var(--blood-2)' : 'var(--surface)';
-  document.getElementById('adLangEn').style.color = lang==='en' ? '#fff' : 'var(--ink-dim)';
+  document.getElementById('appDetailsContent').innerHTML=APP_DETAILS[lang]||APP_DETAILS.hi;
+  document.getElementById('adLangHi').style.background=lang==='hi'?'var(--blood-2)':'var(--surface)';
+  document.getElementById('adLangHi').style.color=lang==='hi'?'#fff':'var(--ink-dim)';
+  document.getElementById('adLangEn').style.background=lang==='en'?'var(--blood-2)':'var(--surface)';
+  document.getElementById('adLangEn').style.color=lang==='en'?'#fff':'var(--ink-dim)';
 }
 
-// Load app details default
-document.addEventListener('DOMContentLoaded', ()=>{
-  setAppDetailsLang(currentLang === 'en' ? 'en' : 'hi');
+// Init on load
+document.addEventListener('DOMContentLoaded',()=>{
+  setAppDetailsLang(currentLang==='en'?'en':'hi');
   renderLanguages();
   loadProfile();
 });
