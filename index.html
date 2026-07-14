@@ -857,9 +857,9 @@ const WORDS_PER_MINUTE = 130;
     <div id="introOrbitScreen" style="position:absolute;inset:0;z-index:2;display:none;align-items:center;justify-content:center;flex-direction:column;background:#000;">
 
       <!-- ORBIT VIDEO (GK star animation with 3 features) -->
-      <video id="orbitVideo" playsinline muted autoplay
+      <video id="orbitVideo" playsinline muted autoplay loop
         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;"
-        src="VN20260712_125025.mp4">
+        src="VN20260714_083853.mp4">
       </video>
 
       <!-- 3 Clickable buttons on top of video -->
@@ -2737,13 +2737,11 @@ function playIntroAnimation(onComplete) {
     setTimeout(()=>{
       video.style.display = 'none';
       orbitScreen.style.display = 'flex';
-      // Play orbit video
+      // Play orbit video (looping)
       const orbitVid = document.getElementById('orbitVideo');
       if(orbitVid) orbitVid.play().catch(()=>{});
-      // Show orbit buttons after 3 seconds (let video show features first)
-      setTimeout(()=>{
-        showOrbitButtons();
-      }, 3000);
+      // Show star buttons immediately
+      showOrbitButtons();
     }, 800);
   }
 
