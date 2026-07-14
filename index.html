@@ -857,7 +857,7 @@ const WORDS_PER_MINUTE = 130;
     <div id="introOrbitScreen" style="position:absolute;inset:0;z-index:2;display:none;align-items:center;justify-content:center;flex-direction:column;background:#000;">
 
       <!-- ORBIT VIDEO (GK star animation with 3 features) -->
-      <video id="orbitVideo" playsinline muted autoplay loop
+      <video id="orbitVideo" playsinline muted autoplay
         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;"
         src="VN20260714_083853.mp4">
       </video>
@@ -2737,9 +2737,16 @@ function playIntroAnimation(onComplete) {
     setTimeout(()=>{
       video.style.display = 'none';
       orbitScreen.style.display = 'flex';
-      // Play orbit video (looping)
+      // Play orbit video once - freeze on last frame
       const orbitVid = document.getElementById('orbitVideo');
-      if(orbitVid) orbitVid.play().catch(()=>{});
+      if(orbitVid){
+        orbitVid.play().catch(()=>{});
+        orbitVid.onended = ()=>{
+          // Freeze on last frame
+          orbitVid.currentTime = orbitVid.duration - 0.01;
+          orbitVid.pause();
+        };
+      }
       // Show star buttons immediately
       showOrbitButtons();
     }, 800);
@@ -3031,12 +3038,180 @@ function filterLanguages(val){ renderLanguages(val); }
 function selectLanguage(code){
   currentLang=code; localStorage.setItem('ns_lang',code);
   renderLanguages(document.getElementById('langSearch')?.value||'');
+  applyAppLanguage(code);
   showToast('✅ Language: '+(LANGUAGES.find(l=>l.code===code)?.label||code));
   setTimeout(()=>{
     closePage('languagePage');
-    markOrbitDone(1); // Mark language done
+    markOrbitDone(1);
   }, 600);
 }
+
+// ============================================================
+// APP LANGUAGE TRANSLATION
+// ============================================================
+const APP_TRANSLATIONS = {
+  en: {
+    // Tabs
+    'tab_script': '📝 Script',
+    'tab_backgrounds': '🖼️ Backgrounds',
+    'tab_analytics': '📊 Analytics',
+    'tab_history': '🕯️ History',
+    // Menu features
+    'feat_ideas': '💡 Idea Writer',
+    'feat_production': '🚀 One-Click Production',
+    'feat_doctor': '🩺 AI Script Doctor',
+    'feat_director': '🎥 Director Mode',
+    'feat_share': '📤 Share Project',
+    // Buttons
+    'btn_generate': '🩸 Generate 10 Ideas',
+    'btn_analyze': '🩺 Diagnose Script',
+    'btn_camera': '🎥 Generate Camera Shots',
+    'btn_production': '🚀 Generate Production Pack',
+    'btn_new_project': '+ Create',
+    'btn_enter_app': '🔥 ENTER APP',
+    // Labels
+    'subject_label': 'Subject / Topic',
+    'duration_label': 'Story Duration',
+    'category_label': 'Story Category',
+    'tone_label': 'Story Tone',
+    'script_label': 'Paste Your Script Here',
+    'project_label': 'Create New Project',
+    'old_project_label': 'Or Open Old Project',
+    // Placeholders
+    'subject_placeholder': 'e.g. Haunted school, cursed mirror...',
+    'script_placeholder': 'Paste your horror script here...',
+    'project_placeholder': 'Project name...',
+    // Page titles
+    'idea_title': '💡 Idea Writer',
+    'prod_title': '🚀 One-Click Production',
+    'doctor_title': '🩺 AI Script Doctor',
+    'director_title': '🎥 Director Mode',
+    'share_title': '📤 Share Project',
+    'profile_title': '👤 Profile',
+    'language_title': '🌐 Language',
+    'appdetails_title': '📋 App Details',
+    // Toast messages
+    'saved': 'Saved!',
+    'copied': 'Copied!',
+    'generating': 'Generating...',
+    'error_script': '⚠️ Paste your script first!',
+    'error_name': 'Enter name first!',
+    'project_created': '✅ Project created!',
+  },
+  hi: {
+    'tab_script': '📝 Script',
+    'tab_backgrounds': '🖼️ Backgrounds',
+    'tab_analytics': '📊 Analytics',
+    'tab_history': '🕯️ History',
+    'feat_ideas': '💡 Idea Writer',
+    'feat_production': '🚀 One-Click Production',
+    'feat_doctor': '🩺 AI Script Doctor',
+    'feat_director': '🎥 Director Mode',
+    'feat_share': '📤 Share Project',
+    'btn_generate': '🩸 10 Ideas Generate Karo',
+    'btn_analyze': '🩺 Script Diagnose Karo',
+    'btn_camera': '🎥 Camera Shots Generate Karo',
+    'btn_production': '🚀 Production Pack Generate Karo',
+    'btn_new_project': '+ Banao',
+    'btn_enter_app': '🔥 APP MEIN JAAON',
+    'subject_label': 'Subject / Topic',
+    'duration_label': 'Story Duration',
+    'category_label': 'Story Category',
+    'tone_label': 'Story Ka Tone',
+    'script_label': 'Apni Script Yahan Paste Karo',
+    'project_label': 'Naya Project Banao',
+    'old_project_label': 'Ya Purana Project Kholo',
+    'subject_placeholder': 'e.g. Bhootiya school, shrapit aaina...',
+    'script_placeholder': 'Yahan apni horror script paste karo...',
+    'project_placeholder': 'Project ka naam...',
+    'idea_title': '💡 Idea Writer',
+    'prod_title': '🚀 One-Click Production',
+    'doctor_title': '🩺 AI Script Doctor',
+    'director_title': '🎥 Director Mode',
+    'share_title': '📤 Share Project',
+    'profile_title': '👤 Profile',
+    'language_title': '🌐 Bhasha',
+    'appdetails_title': '📋 App Details',
+    'saved': 'Save ho gaya!',
+    'copied': 'Copy ho gaya!',
+    'generating': 'Generate ho raha hai...',
+    'error_script': '⚠️ Pehle script paste karo!',
+    'error_name': 'Pehle naam likho!',
+    'project_created': '✅ Project ban gaya!',
+  }
+};
+
+function t(key){
+  const lang = currentLang==='en'?'en':'hi';
+  return APP_TRANSLATIONS[lang]?.[key] || APP_TRANSLATIONS['hi']?.[key] || key;
+}
+
+function applyAppLanguage(code){
+  const isEn = code === 'en';
+  // Update AI prompt language preference
+  localStorage.setItem('ns_lang', code);
+
+  // Update Enter App button
+  const enterBtn = document.getElementById('enterAppBtn');
+  if(enterBtn) enterBtn.textContent = isEn ? '🔥 ENTER APP' : '🔥 APP MEIN JAAON';
+
+  // Update generate buttons text
+  const iw2btn = document.getElementById('iw2-gen-btn');
+  if(iw2btn) iw2btn.textContent = isEn ? '🩸 Generate 10 Ideas' : '🩸 10 Ideas Generate Karo';
+
+  const sdbtn = document.getElementById('sd-analyze-btn');
+  if(sdbtn) sdbtn.textContent = isEn ? '🩺 Diagnose Script' : '🩺 Script Diagnose Karo';
+
+  const dmbtn = document.getElementById('dm-gen-btn');
+  if(dmbtn) dmbtn.textContent = isEn ? '🎥 Generate Camera Shots' : '🎥 Camera Shots Generate Karo';
+
+  const prodbtn = document.getElementById('prod-gen-btn');
+  if(prodbtn) prodbtn.textContent = isEn ? '🚀 Generate Production Pack' : '🚀 Production Pack Generate Karo';
+
+  // Update new project buttons
+  document.querySelectorAll('[onclick*="featureCreateProject"]').forEach(btn=>{
+    btn.textContent = isEn ? '+ Create' : '+ Banao';
+  });
+
+  // Update iw2-subject placeholder
+  const subj = document.getElementById('iw2-subject');
+  if(subj) subj.placeholder = isEn ? 'e.g. Haunted school, cursed mirror...' : 'e.g. Bhootiya school, shrapit aaina...';
+
+  // Update script textareas placeholder
+  ['prod-script-input','sd-script-input','dm-script-input'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.placeholder = isEn
+      ? 'Paste your Hindi horror script here...'
+      : 'Yahan apni horror script paste karo...';
+  });
+
+  // Update new project inputs placeholder
+  ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.placeholder = isEn ? 'Project name...' : 'Project ka naam...';
+  });
+
+  // Update language page title
+  const langTitle = document.querySelector('#languagePage .feature-title-shimmer');
+  if(langTitle) langTitle.textContent = isEn ? '🌐 Language' : '🌐 Bhasha';
+
+  // Update profile done button
+  const profileDone = document.querySelector('#profilePage button[onclick="saveProfile()"]');
+  if(profileDone) profileDone.textContent = isEn ? '✅ DONE' : '✅ SAVE KARO';
+
+  // Update app details default lang
+  setAppDetailsLang(isEn ? 'en' : 'hi');
+
+  // Update AI prompts - store lang for use in API calls
+  window.nsAppLang = code;
+}
+
+// Apply on load
+document.addEventListener('DOMContentLoaded', ()=>{
+  const savedLang = localStorage.getItem('ns_lang') || 'hi';
+  currentLang = savedLang;
+  if(savedLang === 'en') applyAppLanguage('en');
+});
 
 // ============================================================
 // APP DETAILS PAGE JS
