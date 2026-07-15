@@ -854,30 +854,40 @@ const WORDS_PER_MINUTE = 130;
     <video id="introVideo" playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" src="1000014863.mp4.mp4"></video>
 
     <!-- ORBIT SCREEN - shown after intro video ends -->
-    <div id="introOrbitScreen" style="position:absolute;inset:0;z-index:2;display:none;align-items:center;justify-content:center;flex-direction:column;background:#000;">
+    <div id="introOrbitScreen" style="position:absolute;inset:0;z-index:2;display:none;flex-direction:column;align-items:center;justify-content:center;background:#000;">
 
-      <!-- ORBIT VIDEO (GK star animation with 3 features) -->
+      <!-- ORBIT VIDEO (loops) -->
       <video id="orbitVideo" playsinline muted autoplay
         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;"
         src="VN20260714_083853.mp4">
       </video>
 
-      <!-- 3 Clickable buttons on top of video -->
-      <div id="introOrbitWrap" style="position:relative;z-index:3;width:320px;height:320px;display:flex;align-items:center;justify-content:center;">
-        <div id="orbitBtn0" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(0)">👤</div>
-        <div id="orbitBtn1" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(1)">🌐</div>
-        <div id="orbitBtn2" class="orbit-btn" style="display:none;" onclick="orbitFeatureClick(2)">📋</div>
+      <!-- INVISIBLE CLICK ZONES - 3 screen areas -->
+      <div id="starOverlay" style="position:absolute;inset:0;z-index:10;pointer-events:none;display:none;">
+        <!-- Top zone - Profile -->
+        <div id="orbitBtn0" onclick="orbitFeatureClick(0)"
+          style="position:absolute;top:0;left:0;right:0;height:40%;cursor:pointer;pointer-events:all;background:transparent;">
+        </div>
+        <!-- Bottom-left zone - Language -->
+        <div id="orbitBtn1" onclick="orbitFeatureClick(1)"
+          style="position:absolute;bottom:0;left:0;width:50%;height:60%;cursor:pointer;pointer-events:all;background:transparent;">
+        </div>
+        <!-- Bottom-right zone - App Details -->
+        <div id="orbitBtn2" onclick="orbitFeatureClick(2)"
+          style="position:absolute;bottom:0;right:0;width:50%;height:60%;cursor:pointer;pointer-events:all;background:transparent;">
+        </div>
       </div>
 
-      <!-- Progress + Enter App -->
-      <!-- Progress pills - hidden initially, shown when all 3 done -->
-      <div id="orbitSubText" style="display:none;position:relative;z-index:3;margin-top:16px;font-family:'Cinzel',Georgia,serif;font-size:12px;font-weight:700;letter-spacing:.2em;color:#cc2200;text-shadow:0 0 15px #ff3300;text-transform:uppercase;text-align:center;"></div>
-      <div id="orbitProgress" style="display:none;position:relative;z-index:3;gap:12px;margin-top:12px;justify-content:center;">
-        <div id="prog0" style="width:32px;height:32px;border-radius:50%;border:2px solid #332424;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .3s;">👤</div>
-        <div id="prog1" style="width:32px;height:32px;border-radius:50%;border:2px solid #332424;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .3s;">🌐</div>
-        <div id="prog2" style="width:32px;height:32px;border-radius:50%;border:2px solid #332424;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .3s;">📋</div>
+      <!-- Progress + Enter App - bottom center -->
+      <div id="orbitBottomBar" style="position:absolute;bottom:40px;left:0;right:0;z-index:11;display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div id="orbitSubText" style="display:none;font-family:'Cinzel',Georgia,serif;font-size:11px;font-weight:700;letter-spacing:.2em;color:#cc2200;text-shadow:0 0 15px #ff3300;text-transform:uppercase;text-align:center;"></div>
+        <div id="orbitProgress" style="display:none;gap:10px;justify-content:center;">
+          <div id="prog0" style="width:30px;height:30px;border-radius:50%;border:2px solid #332424;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .3s;">👤</div>
+          <div id="prog1" style="width:30px;height:30px;border-radius:50%;border:2px solid #332424;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .3s;">🌐</div>
+          <div id="prog2" style="width:30px;height:30px;border-radius:50%;border:2px solid #332424;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .3s;">📋</div>
+        </div>
+        <button id="enterAppBtn" onclick="enterApp()" style="display:none;padding:12px 32px;border-radius:30px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.15em;text-transform:uppercase;box-shadow:0 0 20px rgba(177,39,45,.6);animation:glow 1.5s infinite;">🔥 ENTER APP</button>
       </div>
-      <button id="enterAppBtn" onclick="enterApp()" style="display:none;position:relative;z-index:3;margin-top:16px;padding:12px 32px;border-radius:30px;background:linear-gradient(135deg,#7a1a1f,#b1272d);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.15em;text-transform:uppercase;box-shadow:0 0 20px rgba(177,39,45,.6);animation:glow 1.5s infinite;">🔥 ENTER APP</button>
     </div>
 
     <!-- SKIP BUTTON -->
@@ -2753,29 +2763,9 @@ function playIntroAnimation(onComplete) {
   }
 
   function showOrbitButtons(){
-    const btns = [
-      {id:'orbitBtn0', angle:-90},
-      {id:'orbitBtn1', angle:30},
-      {id:'orbitBtn2', angle:150},
-    ];
-    btns.forEach((b,i)=>{
-      const el = document.getElementById(b.id);
-      el.style.display = 'flex';
-      el.style.position = 'absolute';
-      el.style.opacity = '0';
-      el.style.transform = 'scale(0)';
-      setTimeout(()=>{
-        el.style.transition = 'all .5s cubic-bezier(.34,1.56,.64,1)';
-        el.style.opacity = '1';
-        el.style.transform = 'scale(1)';
-        const rad = (b.angle-90)*Math.PI/180;
-        const r = 130;
-        el.style.left = (160+r*Math.cos(rad)-36)+'px';
-        el.style.top  = (160+r*Math.sin(rad)-36)+'px';
-      }, i*200);
-    });
-    // Start slow rotation after pop
-    setTimeout(()=> startOrbitRotation(btns), 900);
+    // Simply show the invisible click zones overlay
+    const overlay = document.getElementById('starOverlay');
+    if(overlay) overlay.style.display = 'block';
   }
 
   function finish(skipToApp){
@@ -2918,17 +2908,20 @@ function introLogoClick(){
   setTimeout(()=> startOrbitRotation(btns), 900);
 }
 
-function startOrbitRotation(btns){
+function startOrbitRotation(btns, cx, cy, r){
+  cx = cx || window.innerWidth/2;
+  cy = cy || window.innerHeight/2;
+  r  = r  || Math.min(window.innerWidth, window.innerHeight)*0.32;
   let angle = 0;
   function rotate(){
     angle += 0.25;
-    btns.forEach((b,i)=>{
+    btns.forEach((b)=>{
       const el = document.getElementById(b.id);
+      if(!el) return;
       const a = b.angle + angle;
-      const rad = (a-90)*Math.PI/180;
-      const r = 130;
-      el.style.left = (160 + r*Math.cos(rad) - 36)+'px';
-      el.style.top  = (160 + r*Math.sin(rad) - 36)+'px';
+      const rad = (a - 90) * Math.PI / 180;
+      el.style.left = (cx + r * Math.cos(rad) - 35) + 'px';
+      el.style.top  = (cy + r * Math.sin(rad) - 35) + 'px';
       el.style.transform = `rotate(${-angle}deg) scale(1)`;
     });
     orbitAnimFrame = requestAnimationFrame(rotate);
@@ -2937,11 +2930,7 @@ function startOrbitRotation(btns){
 }
 
 function orbitFeatureClick(idx){
-  // Flash the button
-  const btn = document.getElementById('orbitBtn'+idx);
-  btn.style.boxShadow = '0 0 40px #fff,0 0 20px rgba(255,255,255,.8)';
-  setTimeout(()=>{ btn.style.boxShadow=''; }, 400);
-  // Open the page ON TOP of orbit (orbit stays behind)
+  // Open page directly - no button flash needed (invisible zones)
   if(idx===0) openPage('profilePage');
   else if(idx===1) openPage('languagePage');
   else if(idx===2) openPage('appDetailsPage');
