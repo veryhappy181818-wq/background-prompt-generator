@@ -3146,71 +3146,283 @@ function t(key){
   return APP_TRANSLATIONS[lang]?.[key] || APP_TRANSLATIONS['hi']?.[key] || key;
 }
 
+// ============================================================
+// FULL APP UI TRANSLATIONS (all languages via Google Translate API-free approach)
+// ============================================================
+const UI_TEXT = {
+  hi: {
+    // Idea Writer
+    'iw_title': '💡 Idea Writer',
+    'iw_subject_label': 'Subject / Topic',
+    'iw_subject_ph': 'e.g. Bhootiya school, shrapit aaina...',
+    'iw_category_label': 'Story Category',
+    'iw_duration_label': 'Story Duration',
+    'iw_tone_label': 'Story Ka Tone',
+    'iw_gen_btn': '🩸 10 Ideas Generate Karo',
+    // Production
+    'prod_title': '🚀 One-Click Production',
+    'prod_script_label': 'Apni Script Yahan Paste Karo',
+    'prod_script_ph': 'Yahan apni poori horror script paste karo...',
+    'prod_gen_btn': '🚀 Production Pack Generate Karo',
+    'prod_wc': '0 words',
+    // Script Doctor
+    'sd_title': '🩺 AI Script Doctor',
+    'sd_script_label': 'Apni Script Paste Karo',
+    'sd_script_ph': 'Apni script paste karo — AI problems dhundh kar fix suggestions dega...',
+    'sd_analyze_btn': '🩺 Script Diagnose Karo',
+    // Director Mode
+    'dm_title': '🎥 Director Mode',
+    'dm_script_label': 'Apni Script Paste Karo',
+    'dm_script_ph': 'Script paste karo — AI camera shots suggest karega...',
+    'dm_gen_btn': '🎥 Camera Shots Generate Karo',
+    // Share Project
+    'share_title': '📤 Share Project',
+    'share_opts_label': 'Share Options',
+    'share_link_btn': '🔗 Share Link Copy Karo',
+    'share_qr_btn': '📱 QR Code Generate Karo',
+    'share_readonly_btn': '👁️ Read-Only Link',
+    'share_dup_btn': '📋 Project Duplicate Karo',
+    // Profile
+    'profile_title': '👤 Profile',
+    'profile_pic_hint': 'PHOTO CHANGE KARO',
+    'profile_username_label': 'Username',
+    'profile_username_ph': 'Apna naam likho...',
+    'profile_dob_label': 'Date of Birth',
+    'profile_gender_label': 'Gender',
+    'profile_done_btn': '✅ SAVE KARO',
+    // Language
+    'lang_title': '🌐 Bhasha',
+    'lang_search_ph': '🔍 Bhasha dhundho...',
+    // App Details
+    'appdetails_title': '📋 App Details',
+    // Common
+    'new_project_label': 'Naya Project Banao',
+    'old_project_label': 'Ya Purana Project Kholo',
+    'project_name_ph': 'Project ka naam...',
+    'create_btn': '+ Banao',
+    'switch_btn': 'Switch Karo',
+    'back_btn': '← Back',
+    'done_btn': '← Done',
+    'clear_btn': '🗑️ Clear',
+    'save_btn': '💾 Save',
+    'enter_app_btn': '🔥 APP MEIN JAAON',
+    'no_project_msg': 'Koi project nahi hai abhi tak',
+    'has_data_msg': '✅ Pehle se generated hai',
+    'empty_data_msg': '⚪ Khali project',
+    'select_continue': 'SELECT ALL 3 TO CONTINUE',
+    'you_ready': 'YOU ARE READY! 🔥',
+    'generating': 'Generate ho raha hai...',
+    'analyzing': 'Analyze ho raha hai...',
+    'loading': 'Loading...',
+    'saved_msg': 'Save ho gaya!',
+    'copied_msg': 'Copy ho gaya!',
+    'proj_created': '✅ Project ban gaya! Ab list mein click karo.',
+    'err_script': '⚠️ Pehle script paste karo!',
+    'err_name': 'Naam likho pehle!',
+    'err_proj': 'Project select karo pehle!',
+    'delete_msg': 'will be deleted.',
+    'delete_confirm': 'Delete',
+    'cancel_btn': 'Cancel',
+    // Tabs
+    'tab_scripts': '📝 Script',
+    'tab_backgrounds': '🖼️ Backgrounds',
+    'tab_analytics': '📊 Analytics',
+    'tab_history': '🕯️ History',
+    // Ideas loading
+    'iw_loading': 'Bhoot Bulaa Rahe Hain...',
+    'prod_loading': 'Production Pack Taiyar Ho Raha Hai...',
+    'sd_loading': 'Script Ki Cheerhfaad Ho Rahi Hai...',
+    'dm_loading': 'Director Apna Kaam Kar Raha Hai...',
+    // Saved ideas
+    'saved_ideas_title': '✦ Pehle Generated Ideas ✦',
+    // Share
+    'no_project_share': 'Pehle koi project kholo',
+    'qr_title': 'QR Code',
+  },
+  en: {
+    'iw_title': '💡 Idea Writer',
+    'iw_subject_label': 'Subject / Topic',
+    'iw_subject_ph': 'e.g. Haunted school, cursed mirror, abandoned hospital...',
+    'iw_category_label': 'Story Category',
+    'iw_duration_label': 'Story Duration',
+    'iw_tone_label': 'Story Tone',
+    'iw_gen_btn': '🩸 Generate 10 Ideas',
+    'prod_title': '🚀 One-Click Production',
+    'prod_script_label': 'Paste Your Script Here',
+    'prod_script_ph': 'Paste your complete horror script here...',
+    'prod_gen_btn': '🚀 Generate Production Pack',
+    'prod_wc': '0 words',
+    'sd_title': '🩺 AI Script Doctor',
+    'sd_script_label': 'Paste Your Script',
+    'sd_script_ph': 'Paste your script — AI will find problems and give fix suggestions...',
+    'sd_analyze_btn': '🩺 Diagnose Script',
+    'dm_title': '🎥 Director Mode',
+    'dm_script_label': 'Paste Your Script',
+    'dm_script_ph': 'Paste your script — AI will suggest camera shots...',
+    'dm_gen_btn': '🎥 Generate Camera Shots',
+    'share_title': '📤 Share Project',
+    'share_opts_label': 'Share Options',
+    'share_link_btn': '🔗 Copy Share Link',
+    'share_qr_btn': '📱 Generate QR Code',
+    'share_readonly_btn': '👁️ Read-Only Link',
+    'share_dup_btn': '📋 Duplicate Project',
+    'profile_title': '👤 Profile',
+    'profile_pic_hint': 'TAP TO CHANGE PHOTO',
+    'profile_username_label': 'Username',
+    'profile_username_ph': 'Enter your name...',
+    'profile_dob_label': 'Date of Birth',
+    'profile_gender_label': 'Gender',
+    'profile_done_btn': '✅ DONE',
+    'lang_title': '🌐 Language',
+    'lang_search_ph': '🔍 Search language...',
+    'appdetails_title': '📋 App Details',
+    'new_project_label': 'Create New Project',
+    'old_project_label': 'Or Open Existing Project',
+    'project_name_ph': 'Project name...',
+    'create_btn': '+ Create',
+    'switch_btn': 'Switch Project',
+    'back_btn': '← Back',
+    'done_btn': '← Done',
+    'clear_btn': '🗑️ Clear',
+    'save_btn': '💾 Save',
+    'enter_app_btn': '🔥 ENTER APP',
+    'no_project_msg': 'No projects yet',
+    'has_data_msg': '✅ Previously generated',
+    'empty_data_msg': '⚪ Empty project',
+    'select_continue': 'SELECT ALL 3 TO CONTINUE',
+    'you_ready': 'YOU ARE READY! 🔥',
+    'generating': 'Generating...',
+    'analyzing': 'Analyzing...',
+    'loading': 'Loading...',
+    'saved_msg': 'Saved!',
+    'copied_msg': 'Copied!',
+    'proj_created': '✅ Project created! Click to open.',
+    'err_script': '⚠️ Please paste your script first!',
+    'err_name': 'Please enter a name first!',
+    'err_proj': 'Please select a project first!',
+    'delete_msg': 'will be deleted.',
+    'delete_confirm': 'Delete',
+    'cancel_btn': 'Cancel',
+    'tab_scripts': '📝 Script',
+    'tab_backgrounds': '🖼️ Backgrounds',
+    'tab_analytics': '📊 Analytics',
+    'tab_history': '🕯️ History',
+    'iw_loading': 'Calling the Spirits...',
+    'prod_loading': 'Preparing Production Pack...',
+    'sd_loading': 'Dissecting Your Script...',
+    'dm_loading': 'Director is Working...',
+    'saved_ideas_title': '✦ Previously Generated Ideas ✦',
+    'no_project_share': 'Please open a project first',
+    'qr_title': 'QR Code',
+  }
+};
+
+// Get text in current language (fallback to Hindi)
+function tx(key){
+  const lang = currentLang || 'hi';
+  const dict = UI_TEXT[lang] || UI_TEXT['hi'];
+  return dict[key] || UI_TEXT['hi'][key] || key;
+}
+
 function applyAppLanguage(code){
-  const isEn = code === 'en';
-  // Update AI prompt language preference
   localStorage.setItem('ns_lang', code);
-
-  // Update Enter App button
-  const enterBtn = document.getElementById('enterAppBtn');
-  if(enterBtn) enterBtn.textContent = isEn ? '🔥 ENTER APP' : '🔥 APP MEIN JAAON';
-
-  // Update generate buttons text
-  const iw2btn = document.getElementById('iw2-gen-btn');
-  if(iw2btn) iw2btn.textContent = isEn ? '🩸 Generate 10 Ideas' : '🩸 10 Ideas Generate Karo';
-
-  const sdbtn = document.getElementById('sd-analyze-btn');
-  if(sdbtn) sdbtn.textContent = isEn ? '🩺 Diagnose Script' : '🩺 Script Diagnose Karo';
-
-  const dmbtn = document.getElementById('dm-gen-btn');
-  if(dmbtn) dmbtn.textContent = isEn ? '🎥 Generate Camera Shots' : '🎥 Camera Shots Generate Karo';
-
-  const prodbtn = document.getElementById('prod-gen-btn');
-  if(prodbtn) prodbtn.textContent = isEn ? '🚀 Generate Production Pack' : '🚀 Production Pack Generate Karo';
-
-  // Update new project buttons
-  document.querySelectorAll('[onclick*="featureCreateProject"]').forEach(btn=>{
-    btn.textContent = isEn ? '+ Create' : '+ Banao';
-  });
-
-  // Update iw2-subject placeholder
-  const subj = document.getElementById('iw2-subject');
-  if(subj) subj.placeholder = isEn ? 'e.g. Haunted school, cursed mirror...' : 'e.g. Bhootiya school, shrapit aaina...';
-
-  // Update script textareas placeholder
-  ['prod-script-input','sd-script-input','dm-script-input'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.placeholder = isEn
-      ? 'Paste your Hindi horror script here...'
-      : 'Yahan apni horror script paste karo...';
-  });
-
-  // Update new project inputs placeholder
-  ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.placeholder = isEn ? 'Project name...' : 'Project ka naam...';
-  });
-
-  // Update language page title
-  const langTitle = document.querySelector('#languagePage .feature-title-shimmer');
-  if(langTitle) langTitle.textContent = isEn ? '🌐 Language' : '🌐 Bhasha';
-
-  // Update profile done button
-  const profileDone = document.querySelector('#profilePage button[onclick="saveProfile()"]');
-  if(profileDone) profileDone.textContent = isEn ? '✅ DONE' : '✅ SAVE KARO';
-
-  // Update app details default lang
-  setAppDetailsLang(isEn ? 'en' : 'hi');
-
-  // Update AI prompts - store lang for use in API calls
   window.nsAppLang = code;
+  currentLang = code;
+
+  // Helper to safely set text
+  const setText = (id, key) => { const el=document.getElementById(id); if(el) el.textContent=tx(key); };
+  const setPlaceholder = (id, key) => { const el=document.getElementById(id); if(el) el.placeholder=tx(key); };
+  const setHTML = (id, html) => { const el=document.getElementById(id); if(el) el.innerHTML=html; };
+
+  // ── ENTER APP BUTTON ──
+  setText('enterAppBtn', 'enter_app_btn');
+
+  // ── IDEA WRITER ──
+  setText('iw2-gen-btn', 'iw_gen_btn');
+  setPlaceholder('iw2-subject', 'iw_subject_ph');
+  document.querySelectorAll('#iw2-form-section label').forEach((el,i)=>{
+    const keys = ['iw_subject_label','iw_category_label','iw_duration_label','iw_tone_label'];
+    if(keys[i]) el.textContent = tx(keys[i]);
+  });
+
+  // ── ONE-CLICK PRODUCTION ──
+  setText('prod-gen-btn', 'prod_gen_btn');
+  setPlaceholder('prod-script-input', 'prod_script_ph');
+
+  // ── SCRIPT DOCTOR ──
+  setText('sd-analyze-btn', 'sd_analyze_btn');
+  setPlaceholder('sd-script-input', 'sd_script_ph');
+
+  // ── DIRECTOR MODE ──
+  setText('dm-gen-btn', 'dm_gen_btn');
+  setPlaceholder('dm-script-input', 'dm_script_ph');
+
+  // ── ALL NEW PROJECT INPUTS ──
+  ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>{
+    setPlaceholder(id, 'project_name_ph');
+  });
+
+  // ── ALL CREATE BUTTONS ──
+  document.querySelectorAll('[onclick*="featureCreateProject"]').forEach(btn=>{
+    btn.textContent = tx('create_btn');
+  });
+
+  // ── ALL SWITCH BUTTONS ──
+  document.querySelectorAll('[onclick*="featureSwitchProject"]').forEach(btn=>{
+    btn.textContent = tx('switch_btn');
+  });
+
+  // ── PROFILE PAGE ──
+  const profileDone = document.querySelector('#profilePage button[onclick="saveProfile()"]');
+  if(profileDone) profileDone.textContent = tx('profile_done_btn');
+  const picHint = document.querySelector('#profilePage .profile-pic-hint');
+  if(picHint) picHint.textContent = tx('profile_pic_hint');
+  document.querySelectorAll('#profilePage label').forEach(el=>{
+    const txt = el.textContent.trim();
+    if(txt.includes('Username')||txt.includes('naam')) el.textContent = tx('profile_username_label');
+    else if(txt.includes('Birth')||txt.includes('janam')) el.textContent = tx('profile_dob_label');
+    else if(txt.includes('Gender')||txt.includes('ling')) el.textContent = tx('profile_gender_label');
+  });
+  setPlaceholder('profileUsername', 'profile_username_ph');
+
+  // ── LANGUAGE PAGE ──
+  setPlaceholder('langSearch', 'lang_search_ph');
+
+  // ── LOADING TEXTS ──
+  const iwLoad = document.querySelector('#iw2-loading div:last-child');
+  if(iwLoad) iwLoad.textContent = tx('iw_loading');
+  const prodLoad = document.getElementById('prod-loading-text');
+  if(prodLoad) prodLoad.textContent = tx('prod_loading');
+  const sdLoad = document.querySelector('#sd-loading div:last-child');
+  if(sdLoad) sdLoad.textContent = tx('sd_loading');
+  const dmLoad = document.querySelector('#dm-loading div:last-child');
+  if(dmLoad) dmLoad.textContent = tx('dm_loading');
+
+  // ── SHARE PAGE ──
+  document.querySelectorAll('#shareProjectPage button').forEach(btn=>{
+    if(btn.onclick && btn.onclick.toString().includes('shareViaLink')) btn.querySelector('span') && (btn.querySelector('span').textContent=tx('share_link_btn'));
+    if(btn.onclick && btn.onclick.toString().includes('generateQR')) btn.querySelector('span') && (btn.querySelector('span').textContent=tx('share_qr_btn'));
+    if(btn.onclick && btn.onclick.toString().includes('copyReadOnly')) btn.querySelector('span') && (btn.querySelector('span').textContent=tx('share_readonly_btn'));
+    if(btn.onclick && btn.onclick.toString().includes('duplicate')) btn.querySelector('span') && (btn.querySelector('span').textContent=tx('share_dup_btn'));
+  });
+
+  // ── FEATURE PROJECT LISTS (re-render with new language) ──
+  Object.keys(featurePageMap).forEach(feature=>{
+    featureRenderProjectList(feature);
+  });
+
+  // ── APP DETAILS ──
+  setAppDetailsLang(code === 'en' ? 'en' : 'hi');
+
+  // Re-render language list
+  renderLanguages(document.getElementById('langSearch')?.value || '');
 }
 
 // Apply on load
 document.addEventListener('DOMContentLoaded', ()=>{
   const savedLang = localStorage.getItem('ns_lang') || 'hi';
   currentLang = savedLang;
-  if(savedLang === 'en') applyAppLanguage('en');
+  applyAppLanguage(savedLang);
 });
 
 // ============================================================
