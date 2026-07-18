@@ -3147,133 +3147,255 @@ function t(key){
 }
 
 // ============================================================
-// FULL APP TRANSLATION - Google Translate
+// FULL APP TRANSLATION SYSTEM (No Google, Pure JS)
 // ============================================================
+
+// All translatable strings in app
+const TRANSLATIONS = {
+  hi: {
+    // Feature titles
+    'iw_title': '💡 Idea Writer',
+    'prod_title': '🚀 One-Click Production',
+    'sd_title': '🩺 AI Script Doctor',
+    'dm_title': '🎥 Director Mode',
+    'share_title': '📤 Share Project',
+    'profile_title': '👤 Profile',
+    'lang_title': '🌐 Bhasha',
+    'appdetails_title': '📋 App Details',
+    // Buttons
+    'iw_gen_btn': '🩸 10 Ideas Generate Karo',
+    'prod_gen_btn': '🚀 Production Pack Generate Karo',
+    'sd_btn': '🩺 Script Diagnose Karo',
+    'dm_btn': '🎥 Camera Shots Generate Karo',
+    'create_btn': '+ Banao',
+    'switch_btn': 'Switch Karo',
+    'save_btn': '💾 Save',
+    'done_btn': '✅ SAVE KARO',
+    'back_btn': '← Back',
+    'enter_btn': '🔥 APP MEIN JAAON',
+    'clear_btn': '🗑️ Clear',
+    // Labels
+    'subject_label': 'Subject / Topic',
+    'category_label': 'Story Category',
+    'duration_label': 'Story Duration',
+    'tone_label': 'Story Ka Tone',
+    'script_label': 'Apni Script Yahan Paste Karo',
+    'new_proj_label': 'Naya Project Banao',
+    'old_proj_label': 'Ya Purana Project Kholo',
+    'username_label': 'Username',
+    'dob_label': 'Janm Tithi',
+    'gender_label': 'Ling',
+    // Placeholders
+    'subject_ph': 'e.g. Bhootiya school, shrapit aaina...',
+    'script_ph': 'Yahan apni horror script paste karo...',
+    'proj_ph': 'Project ka naam...',
+    'username_ph': 'Apna naam likho...',
+    'lang_search_ph': '🔍 Bhasha dhundho...',
+    // Loading
+    'iw_loading': 'Bhoot Bulaa Rahe Hain...',
+    'prod_loading': 'Production Pack Taiyar Ho Raha Hai...',
+    'sd_loading': 'Script Ki Cheerhfaad Ho Rahi Hai...',
+    'dm_loading': 'Director Apna Kaam Kar Raha Hai...',
+    // Share
+    'share_link': '🔗 Share Link Copy Karo',
+    'share_qr': '📱 QR Code Generate Karo',
+    'share_readonly': '👁️ Read-Only Link',
+    'share_dup': '📋 Project Duplicate Karo',
+    'share_qr_title': 'QR Code',
+    'no_proj_share': 'Pehle koi project kholo',
+    // Misc
+    'no_proj': 'Koi project nahi hai abhi tak',
+    'has_data': '✅ Pehle se generated hai',
+    'empty_proj': '⚪ Khali project',
+    'select_all': 'SELECT ALL 3 TO CONTINUE',
+    'you_ready': 'YOU ARE READY! 🔥',
+    'saved_ideas': '✦ Pehle Generated Ideas ✦',
+    'male_label': '👦 Male',
+    'female_label': '👧 Female',
+    'other_label': '🌈 Other',
+    'tab_pic_hint': 'PHOTO CHANGE KARO',
+    'proj_info_label': 'Project Info',
+    'share_options_label': 'Share Options',
+  },
+  en: {
+    'iw_title': '💡 Idea Writer',
+    'prod_title': '🚀 One-Click Production',
+    'sd_title': '🩺 AI Script Doctor',
+    'dm_title': '🎥 Director Mode',
+    'share_title': '📤 Share Project',
+    'profile_title': '👤 Profile',
+    'lang_title': '🌐 Language',
+    'appdetails_title': '📋 App Details',
+    'iw_gen_btn': '🩸 Generate 10 Ideas',
+    'prod_gen_btn': '🚀 Generate Production Pack',
+    'sd_btn': '🩺 Diagnose Script',
+    'dm_btn': '🎥 Generate Camera Shots',
+    'create_btn': '+ Create',
+    'switch_btn': 'Switch',
+    'save_btn': '💾 Save',
+    'done_btn': '✅ DONE',
+    'back_btn': '← Back',
+    'enter_btn': '🔥 ENTER APP',
+    'clear_btn': '🗑️ Clear',
+    'subject_label': 'Subject / Topic',
+    'category_label': 'Story Category',
+    'duration_label': 'Story Duration',
+    'tone_label': 'Story Tone',
+    'script_label': 'Paste Your Script Here',
+    'new_proj_label': 'Create New Project',
+    'old_proj_label': 'Or Open Existing Project',
+    'username_label': 'Username',
+    'dob_label': 'Date of Birth',
+    'gender_label': 'Gender',
+    'subject_ph': 'e.g. Haunted school, cursed mirror...',
+    'script_ph': 'Paste your horror script here...',
+    'proj_ph': 'Project name...',
+    'username_ph': 'Enter your name...',
+    'lang_search_ph': '🔍 Search language...',
+    'iw_loading': 'Calling the Spirits...',
+    'prod_loading': 'Preparing Production Pack...',
+    'sd_loading': 'Dissecting Your Script...',
+    'dm_loading': 'Director is Working...',
+    'share_link': '🔗 Copy Share Link',
+    'share_qr': '📱 Generate QR Code',
+    'share_readonly': '👁️ Read-Only Link',
+    'share_dup': '📋 Duplicate Project',
+    'share_qr_title': 'QR Code',
+    'no_proj_share': 'Please open a project first',
+    'no_proj': 'No projects yet',
+    'has_data': '✅ Previously generated',
+    'empty_proj': '⚪ Empty project',
+    'select_all': 'SELECT ALL 3 TO CONTINUE',
+    'you_ready': 'YOU ARE READY! 🔥',
+    'saved_ideas': '✦ Previously Generated Ideas ✦',
+    'male_label': '👦 Male',
+    'female_label': '👧 Female',
+    'other_label': '🌈 Other',
+    'tab_pic_hint': 'TAP TO CHANGE PHOTO',
+    'proj_info_label': 'Project Info',
+    'share_options_label': 'Share Options',
+  },
+  es: { 'iw_gen_btn':'🩸 Generar 10 Ideas','prod_gen_btn':'🚀 Generar Pack','sd_btn':'🩺 Diagnosticar Guión','dm_btn':'🎥 Generar Tomas','create_btn':'+ Crear','switch_btn':'Cambiar','done_btn':'✅ HECHO','back_btn':'← Atrás','enter_btn':'🔥 ENTRAR','subject_label':'Tema','script_label':'Pega tu guión aquí','new_proj_label':'Crear Nuevo Proyecto','old_proj_label':'O Abrir Proyecto','proj_ph':'Nombre del proyecto...','script_ph':'Pega tu guión aquí...','username_ph':'Tu nombre...','lang_search_ph':'🔍 Buscar idioma...','no_proj':'Sin proyectos aún','has_data':'✅ Generado antes','empty_proj':'⚪ Proyecto vacío','iw_loading':'Invocando Espíritus...','prod_loading':'Preparando Pack...','sd_loading':'Analizando Guión...','dm_loading':'Director Trabajando...','iw_title':'💡 Escritor de Ideas','prod_title':'🚀 Producción Un Clic','sd_title':'🩺 Doctor de Guión','dm_title':'🎥 Modo Director','share_title':'📤 Compartir Proyecto','profile_title':'👤 Perfil','lang_title':'🌐 Idioma','appdetails_title':'📋 Detalles de App','enter_btn':'🔥 ENTRAR A LA APP'},
+  fr: { 'iw_gen_btn':'🩸 Générer 10 Idées','prod_gen_btn':'🚀 Générer Pack','sd_btn':'🩺 Diagnostiquer','dm_btn':'🎥 Générer Plans','create_btn':'+ Créer','switch_btn':'Changer','done_btn':'✅ FAIT','back_btn':'← Retour','enter_btn':'🔥 ENTRER','subject_label':'Sujet','script_label':'Collez votre script ici','new_proj_label':'Créer Nouveau Projet','old_proj_label':'Ouvrir Projet Existant','proj_ph':'Nom du projet...','script_ph':'Collez votre script...','username_ph':'Votre nom...','lang_search_ph':'🔍 Rechercher langue...','no_proj':'Aucun projet','has_data':'✅ Déjà généré','empty_proj':'⚪ Projet vide','iw_loading':'Invocation des Esprits...','prod_loading':'Préparation du Pack...','sd_loading':'Analyse du Script...','dm_loading':'Directeur au Travail...','iw_title':'💡 Redacteur Idees','prod_title':'🚀 Production Un Clic','sd_title':'🩺 Docteur de Script','dm_title':'🎥 Mode Réalisateur','share_title':'📤 Partager Projet','profile_title':'👤 Profil','lang_title':'🌐 Langue','appdetails_title':'📋 Détails App'},
+  de: { 'iw_gen_btn':'🩸 10 Ideen Generieren','prod_gen_btn':'🚀 Paket Generieren','sd_btn':'🩺 Skript Analysieren','dm_btn':'🎥 Shots Generieren','create_btn':'+ Erstellen','switch_btn':'Wechseln','done_btn':'✅ FERTIG','back_btn':'← Zurück','enter_btn':'🔥 APP BETRETEN','subject_label':'Thema','script_label':'Skript hier einfügen','new_proj_label':'Neues Projekt','old_proj_label':'Vorhandenes Projekt','proj_ph':'Projektname...','script_ph':'Skript einfügen...','username_ph':'Dein Name...','lang_search_ph':'🔍 Sprache suchen...','no_proj':'Keine Projekte','has_data':'✅ Bereits generiert','empty_proj':'⚪ Leeres Projekt','iw_loading':'Geister rufen...','prod_loading':'Paket vorbereiten...','sd_loading':'Skript analysieren...','dm_loading':'Regisseur arbeitet...','iw_title':'💡 Ideenschreiber','prod_title':'🚀 Ein-Klick-Produktion','sd_title':'🩺 Skript-Doktor','dm_title':'🎥 Regisseur-Modus','share_title':'📤 Projekt teilen','profile_title':'👤 Profil','lang_title':'🌐 Sprache','appdetails_title':'📋 App Details'},
+};
+
+function tx(key){
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS['hi'];
+  return dict[key] || TRANSLATIONS['hi'][key] || key;
+}
 
 function applyAppLanguage(code){
   localStorage.setItem('ns_lang', code);
   window.nsAppLang = code;
   currentLang = code;
 
-  // Always update app details page
-  setAppDetailsLang(code === 'en' ? 'en' : 'hi');
+  // Helper functions
+  const set = (id, key) => { const el=document.getElementById(id); if(el&&el.textContent!==undefined) el.textContent=tx(key); };
+  const ph  = (id, key) => { const el=document.getElementById(id); if(el) el.placeholder=tx(key); };
 
-  // If Hindi - restore original (reload page content)
-  if(code === 'hi'){
-    // Just refresh project lists and update specific elements
-    updateStaticElements('hi');
-    Object.keys(featurePageMap).forEach(f => featureRenderProjectList(f));
-    renderLanguages(document.getElementById('langSearch')?.value || '');
-    return;
-  }
+  // ── GENERATE BUTTONS ──
+  set('iw2-gen-btn', 'iw_gen_btn');
+  set('prod-gen-btn', 'prod_gen_btn');
+  set('sd-analyze-btn', 'sd_btn');
+  set('dm-gen-btn', 'dm_btn');
+  set('enterAppBtn', 'enter_btn');
 
-  // For any other language - use Google Translate
-  translatePageTo(code);
-}
+  // ── PLACEHOLDERS ──
+  ph('iw2-subject', 'subject_ph');
+  ph('prod-script-input', 'script_ph');
+  ph('sd-script-input', 'script_ph');
+  ph('dm-script-input', 'script_ph');
+  ph('profileUsername', 'username_ph');
+  ph('langSearch', 'lang_search_ph');
+  ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>ph(id,'proj_ph'));
 
-// Translate entire page using Google Translate Widget
-function translatePageTo(langCode){
-  // Remove existing translate frame if any
-  const existing = document.getElementById('gt_frame');
-  if(existing) existing.remove();
+  // ── ALL CREATE BUTTONS ──
+  document.querySelectorAll('[onclick*="featureCreateProject"]').forEach(btn=>{ btn.textContent=tx('create_btn'); });
 
-  // Use Google Translate Element
-  if(!window.googleTranslateLoaded){
-    window.googleTranslateLoaded = true;
+  // ── ALL SWITCH BUTTONS ──
+  document.querySelectorAll('[onclick*="featureSwitchProject"]').forEach(btn=>{ btn.textContent=tx('switch_btn'); });
 
-    // Add Google Translate script
-    const meta = document.createElement('meta');
-    meta.name = 'google-translate-customization';
-    meta.content = 'translated';
-    document.head.appendChild(meta);
+  // ── PROFILE PAGE ──
+  const pd=document.querySelector('#profilePage button[onclick="saveProfile()"]');
+  if(pd) pd.textContent=tx('done_btn');
+  const picHint=document.querySelector('#profilePage div[style*="TAP TO"]') || document.querySelector('#profilePage div[style*="PHOTO"]');
+  if(picHint) picHint.textContent=tx('tab_pic_hint');
 
-    const div = document.createElement('div');
-    div.id = 'google_translate_element';
-    div.style.display = 'none';
-    document.body.appendChild(div);
-
-    window.googleTranslateElementInit = function(){
-      new google.translate.TranslateElement({
-        pageLanguage: 'hi',
-        includedLanguages: 'en,es,fr,de,ar,pt,ru,ja,ko,zh-CN,it,tr,bn,pa,ta,te,mr,gu',
-        autoDisplay: false,
-        layout: google.translate.TranslateElement.FloatPosition.TOP_LEFT
-      }, 'google_translate_element');
-    };
-
-    const script = document.createElement('script');
-    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-    script.onload = () => setTimeout(()=> triggerGoogleTranslate(langCode), 1000);
-    document.body.appendChild(script);
-  } else {
-    triggerGoogleTranslate(langCode);
-  }
-}
-
-function triggerGoogleTranslate(langCode){
-  try{
-    // Find the Google Translate select element and change it
-    const select = document.querySelector('.goog-te-combo');
-    if(select){
-      select.value = langCode;
-      select.dispatchEvent(new Event('change'));
-      showToast('✅ Language changed!');
-    } else {
-      // Fallback: use cookie method
-      setGTranslateCookie(langCode);
-    }
-  }catch(e){
-    setGTranslateCookie(langCode);
-  }
-}
-
-function setGTranslateCookie(langCode){
-  // Set Google Translate cookie and reload
-  document.cookie = `googtrans=/hi/${langCode}; path=/; domain=${window.location.hostname}`;
-  document.cookie = `googtrans=/hi/${langCode}; path=/`;
-  showToast('✅ Language changed! Reloading...');
-  setTimeout(()=> window.location.reload(), 800);
-}
-
-// Update static elements (for Hindi mode)
-function updateStaticElements(code){
-  const isEn = code === 'en';
-
-  // Buttons
-  const btns = {
-    'iw2-gen-btn': isEn ? '🩸 Generate 10 Ideas' : '🩸 10 Ideas Generate Karo',
-    'sd-analyze-btn': isEn ? '🩺 Diagnose Script' : '🩺 Script Diagnose Karo',
-    'dm-gen-btn': isEn ? '🎥 Generate Camera Shots' : '🎥 Camera Shots Generate Karo',
-    'prod-gen-btn': isEn ? '🚀 Generate Production Pack' : '🚀 Production Pack Generate Karo',
-    'enterAppBtn': isEn ? '🔥 ENTER APP' : '🔥 APP MEIN JAAON',
-  };
-  Object.entries(btns).forEach(([id, txt])=>{ const el=document.getElementById(id); if(el) el.textContent=txt; });
-
-  // Placeholders
-  const phs = {
-    'iw2-subject': isEn ? 'e.g. Haunted school, cursed mirror...' : 'e.g. Bhootiya school, shrapit aaina...',
-    'prod-script-input': isEn ? 'Paste your horror script here...' : 'Yahan apni horror script paste karo...',
-    'sd-script-input': isEn ? 'Paste your script here...' : 'Yahan script paste karo...',
-    'dm-script-input': isEn ? 'Paste your script here...' : 'Yahan script paste karo...',
-    'profileUsername': isEn ? 'Enter your name...' : 'Apna naam likho...',
-    'langSearch': isEn ? '🔍 Search language...' : '🔍 Bhasha dhundho...',
-  };
-  Object.entries(phs).forEach(([id, ph])=>{ const el=document.getElementById(id); if(el) el.placeholder=ph; });
-
-  ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.placeholder=isEn?'Project name...':'Project ka naam...';
+  // ── FEATURE PAGE SHIMMER TITLES ──
+  document.querySelectorAll('.feature-title-shimmer').forEach(el=>{
+    const t = el.textContent;
+    if(t.includes('Idea Writer')) el.textContent=tx('iw_title');
+    else if(t.includes('Production')) el.textContent=tx('prod_title');
+    else if(t.includes('Script Doctor')) el.textContent=tx('sd_title');
+    else if(t.includes('Director')) el.textContent=tx('dm_title');
+    else if(t.includes('Share')) el.textContent=tx('share_title');
   });
-  document.querySelectorAll('[onclick*="featureCreateProject"]').forEach(btn=>{ btn.textContent=isEn?'+ Create':'+ Banao'; });
-  document.querySelectorAll('[onclick*="featureSwitchProject"]').forEach(btn=>{ btn.textContent=isEn?'Switch':'Switch Karo'; });
-  const pd=document.querySelector('#profilePage button[onclick="saveProfile()"]'); if(pd) pd.textContent=isEn?'✅ DONE':'✅ SAVE KARO';
+
+  // ── LABELS in feature pages ──
+  document.querySelectorAll('#iw2-form-section label, #prod-form-section label, #sd-form-section label, #dm-form-section label').forEach(el=>{
+    const t = el.textContent.trim();
+    if(t.includes('Subject')||t.includes('Topic')) el.textContent=tx('subject_label');
+    else if(t.includes('Category')) el.textContent=tx('category_label');
+    else if(t.includes('Duration')) el.textContent=tx('duration_label');
+    else if(t.includes('Tone')||t.includes('tone')) el.textContent=tx('tone_label');
+    else if(t.includes('Script')||t.includes('Paste')) el.textContent=tx('script_label');
+    else if(t.includes('Naya')||t.includes('New')||t.includes('Create')) el.textContent=tx('new_proj_label');
+    else if(t.includes('Purana')||t.includes('Open')||t.includes('Old')||t.includes('Existing')) el.textContent=tx('old_proj_label');
+  });
+
+  // ── PICKER LABELS ──
+  document.querySelectorAll('[id$="-picker"] label').forEach(el=>{
+    const t = el.textContent.trim();
+    if(t.includes('Naya')||t.includes('New')||t.includes('Banao')||t.includes('Create')) el.textContent=tx('new_proj_label');
+    else if(t.includes('Purana')||t.includes('Old')||t.includes('Open')) el.textContent=tx('old_proj_label');
+  });
+
+  // ── LOADING TEXTS ──
+  const iwL=document.querySelector('#iw2-loading div:last-child'); if(iwL) iwL.textContent=tx('iw_loading');
+  const sdL=document.querySelector('#sd-loading div:last-child'); if(sdL) sdL.textContent=tx('sd_loading');
+  const dmL=document.querySelector('#dm-loading div:last-child'); if(dmL) dmL.textContent=tx('dm_loading');
+  const plT=document.getElementById('prod-loading-text'); if(plT) plT.textContent=tx('prod_loading');
+
+  // ── PROFILE LABELS ──
+  document.querySelectorAll('#profilePage label').forEach(el=>{
+    const t=el.textContent.trim();
+    if(t.includes('Username')||t.includes('naam')) el.textContent=tx('username_label');
+    else if(t.includes('Birth')||t.includes('Tithi')) el.textContent=tx('dob_label');
+    else if(t.includes('Gender')||t.includes('Ling')) el.textContent=tx('gender_label');
+  });
+
+  // ── PAGE TITLES in header divs ──
+  document.querySelectorAll('#profilePage .feature-title-shimmer, #profilePage [style*="font-size:17px"]').forEach(el=>{
+    if(el.textContent.includes('Profile')) el.textContent=tx('profile_title');
+  });
+  document.querySelectorAll('#languagePage [style*="font-size:17px"]').forEach(el=>{
+    el.textContent=tx('lang_title');
+  });
+
+  // ── BACK BUTTONS ──
+  document.querySelectorAll('button[onclick*="closePage"]').forEach(btn=>{
+    if(btn.textContent.includes('Back')||btn.textContent.includes('Back')) btn.textContent=tx('back_btn');
+  });
+
+  // ── APP DETAILS ──
+  setAppDetailsLang(code==='en'?'en':'hi');
+
+  // ── RE-RENDER PROJECT LISTS (in new language) ──
+  Object.keys(featurePageMap).forEach(f => {
+    try{ featureRenderProjectList(f); }catch(e){}
+  });
+
+  // ── RE-RENDER LANGUAGE LIST ──
+  renderLanguages(document.getElementById('langSearch')?.value||'');
 }
 
-// Apply on load
+// Apply saved language on load
 document.addEventListener('DOMContentLoaded', ()=>{
   const savedLang = localStorage.getItem('ns_lang') || 'hi';
   currentLang = savedLang;
-  updateStaticElements(savedLang);
-  if(savedLang !== 'hi') applyAppLanguage(savedLang);
+  // Apply after slight delay to ensure DOM is ready
+  setTimeout(()=> applyAppLanguage(savedLang), 300);
 });
 
 // ============================================================
