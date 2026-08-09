@@ -510,7 +510,7 @@ const MAX_SCRIPT_MINUTES = 10;
 const WORDS_PER_MINUTE = 130;
   
 </script>
-<div class="onboard-overlay hidden" id="onboardOverlay"><div class="onboard-card"><div class="onboard-header"><div class="onboard-eyebrow">Nightmare Studio</div><div class="onboard-steps" id="obSteps"><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#b1272d 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">📜</div><div class="onboard-title">Script Paste Karo</div><div class="onboard-desc">Apna Hindi horror script paste karo. App automatically scenes detect karke analyze karega.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#b1272d,#7a1a1f 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">🩸</div><div class="onboard-title">AI Analysis</div><div class="onboard-desc">Analyze Script button dabao. Gemini AI har scene ke liye unique background art prompts generate karega.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#8a5d27 70%);box-shadow:0 0 24px rgba(217,142,58,.3);">🎞️</div><div class="onboard-title">Prompts Copy Karo</div><div class="onboard-desc">Backgrounds tab mein prompts milenge. Copy karke kisi bhi image AI mein paste karo!</div></div></div><div class="onboard-progress"><div class="onboard-dot active" id="ob0"></div><div class="onboard-dot" id="ob1"></div><div class="onboard-dot" id="ob2"></div></div></div><div class="onboard-footer"><button class="onboard-next" id="obNext">AAGE BADHO</button><button class="onboard-skip" id="obSkip">SKIP KARO</button></div></div></div>
+<div class="onboard-overlay hidden" id="onboardOverlay"><div class="onboard-card"><div class="onboard-header"><div class="onboard-eyebrow">Nightmare Studio</div><div class="onboard-steps" id="obSteps"><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#b1272d 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">📜</div><div class="onboard-title">Paste Script</div><div class="onboard-desc">Paste your Hindi horror script. The app will automatically detect and analyze scenes.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#b1272d,#7a1a1f 70%);box-shadow:0 0 24px rgba(177,39,45,.4);">🩸</div><div class="onboard-title">AI Analysis</div><div class="onboard-desc">Press Analyze Script. Gemini AI will generate unique background art prompts for each scene.</div></div><div class="onboard-step"><div class="onboard-icon-wrap" style="background:radial-gradient(circle at 35% 30%,#d98e3a,#8a5d27 70%);box-shadow:0 0 24px rgba(217,142,58,.3);">🎞️</div><div class="onboard-title">Copy Prompts</div><div class="onboard-desc">Find prompts in the Backgrounds tab. Copy and paste into any AI image generator!</div></div></div><div class="onboard-progress"><div class="onboard-dot active" id="ob0"></div><div class="onboard-dot" id="ob1"></div><div class="onboard-dot" id="ob2"></div></div></div><div class="onboard-footer"><button class="onboard-next" id="obNext">NEXT</button><button class="onboard-skip" id="obSkip">SKIP</button></div></div></div>
 <div class="app" id="app">
   
 
@@ -1006,10 +1006,10 @@ const WORDS_PER_MINUTE = 130;
         <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.6 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16 4 9.1 8.4 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-2 14-5.4l-6.5-5.4C29.6 35 27 36 24 36c-5.3 0-9.8-3.4-11.3-8.1l-6.6 5.1C9 39.6 16 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 2.8-3 5.1-5.6 6.5l6.5 5.4C39.9 36.5 44 31 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
         Continue with Google
       </button>
-      <div class="divider-or" data-i18n="or">or</div>
+      <div class="divider-or">or</div>
       <div class="auth-tabs">
-        <div class="auth-tab active" data-mode="signin" data-i18n="sign_in">Sign In</div>
-        <div class="auth-tab" data-mode="signup" data-i18n="create_account">Create Account</div>
+        <div class="auth-tab active" data-mode="signin">Sign In</div>
+        <div class="auth-tab" data-mode="signup">Create Account</div>
       </div>
       <div class="field"><label>Email</label><input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email"/></div>
       <div class="field"><label>Password</label><input type="password" id="passInput" placeholder="••••••••" autocomplete="current-password"/></div>
@@ -1264,11 +1264,11 @@ auth.onAuthStateChanged(async(user)=>{
     currentUser=user;
     $("userAvatar").textContent=(user.displayName||user.email||"U")[0].toUpperCase();
     // Apply saved language
-    const _sl = localStorage.getItem('ns_lang')||'hi';
+    const _sl = localStorage.getItem('ns_lang')||'en';
     currentLang = _sl;
     setTimeout(()=>{ if(typeof I18N!=='undefined') I18N.switchLang(_sl); else applyAppLanguage(_sl); }, 800);
     // Apply saved language after login
-    const _savedLang = localStorage.getItem('ns_lang') || 'hi';
+    const _savedLang = localStorage.getItem('ns_lang') || 'en';
     if(_savedLang !== 'hi'){
       setTimeout(()=> applyAppLanguage(_savedLang), 800);
     }
@@ -1782,7 +1782,7 @@ function renderAnalytics(){
 function statCard(num,label){ return `<div class="stat-card"><div class="stat-num">${num}</div><div class="stat-label">${label}</div></div>`; }
 
 window.addEventListener("beforeunload",()=>{ if(currentProject) saveDraft(); });
-(function(){if(localStorage.getItem("ns_onboard_done"))return;const ov=document.getElementById("onboardOverlay");ov.classList.remove("hidden");let cur=0;function go(n){cur=n;document.getElementById("obSteps").style.transform=`translateX(-${cur*100}%)`;[0,1,2].forEach(i=>{const d=document.getElementById("ob"+i);d.className="onboard-dot"+(i===cur?" active":"");});document.getElementById("obNext").textContent=cur===2?"SHURU KARO 🔥":"AAGE BADHO";}document.getElementById("obNext").addEventListener("click",()=>{cur<2?go(cur+1):done();});document.getElementById("obSkip").addEventListener("click",done);function done(){localStorage.setItem("ns_onboard_done","1");ov.classList.add("hidden");}})();
+(function(){if(localStorage.getItem("ns_onboard_done"))return;const ov=document.getElementById("onboardOverlay");ov.classList.remove("hidden");let cur=0;function go(n){cur=n;document.getElementById("obSteps").style.transform=`translateX(-${cur*100}%)`;[0,1,2].forEach(i=>{const d=document.getElementById("ob"+i);d.className="onboard-dot"+(i===cur?" active":"");});document.getElementById("obNext").textContent=cur===2?"GET STARTED 🔥":"NEXT";}document.getElementById("obNext").addEventListener("click",()=>{cur<2?go(cur+1):done();});document.getElementById("obSkip").addEventListener("click",done);function done(){localStorage.setItem("ns_onboard_done","1");ov.classList.add("hidden");}})();
 
 
 // ============================================================
@@ -2803,7 +2803,7 @@ function playIntroAnimation(onComplete) {
       // Play orbit video slow (0.5x speed), loop forever
       const orbitVid = document.getElementById('orbitVideo');
       if(orbitVid){
-        orbitVid.playbackRate = 0.5;
+        orbitVid.playbackRate = 1.0;
         orbitVid.play().catch(()=>{});
       }
       // No extra buttons needed - buttons are in HTML already
@@ -3035,28 +3035,15 @@ function loadProfile(){
 // LANGUAGE PAGE JS
 // ============================================================
 const LANGUAGES = [
-  {code:'hi',name:'हिंदी',flag:'🇮🇳',label:'Hindi'},
-  {code:'en',name:'English',flag:'🇺🇸',label:'English'},
-  {code:'es',name:'Español',flag:'🇪🇸',label:'Spanish'},
-  {code:'fr',name:'Français',flag:'🇫🇷',label:'French'},
-  {code:'de',name:'Deutsch',flag:'🇩🇪',label:'German'},
-  {code:'ar',name:'العربية',flag:'🇸🇦',label:'Arabic'},
-  {code:'pt',name:'Português',flag:'🇧🇷',label:'Portuguese'},
-  {code:'ru',name:'Русский',flag:'🇷🇺',label:'Russian'},
-  {code:'ja',name:'日本語',flag:'🇯🇵',label:'Japanese'},
-  {code:'ko',name:'한국어',flag:'🇰🇷',label:'Korean'},
-  {code:'zh',name:'中文',flag:'🇨🇳',label:'Chinese'},
-  {code:'it',name:'Italiano',flag:'🇮🇹',label:'Italian'},
-  {code:'tr',name:'Türkçe',flag:'🇹🇷',label:'Turkish'},
-  {code:'bn',name:'বাংলা',flag:'🇧🇩',label:'Bengali'},
-  {code:'ur',name:'اردو',flag:'🇵🇰',label:'Urdu'},
-  {code:'pa',name:'ਪੰਜਾਬੀ',flag:'🇮🇳',label:'Punjabi'},
-  {code:'ta',name:'தமிழ்',flag:'🇮🇳',label:'Tamil'},
-  {code:'te',name:'తెలుగు',flag:'🇮🇳',label:'Telugu'},
-  {code:'mr',name:'मराठी',flag:'🇮🇳',label:'Marathi'},
-  {code:'gu',name:'ગુજરાતી',flag:'🇮🇳',label:'Gujarati'},
+  {code:'en', name:'English', label:'English – English'},
+  {code:'hi', name:'हिन्दी', label:'Hindi – हिन्दी'},
+  {code:'mr', name:'मराठी', label:'Marathi – मराठी'},
+  {code:'ur', name:'اردو', label:'Urdu – اردو'},
+  {code:'bn', name:'বাংলা', label:'Bengali – বাংলা'},
+  {code:'te', name:'తెలుగు', label:'Telugu – తెలుగు'},
+  {code:'ta', name:'தமிழ்', label:'Tamil – தமிழ்'},
 ];
-let currentLang = localStorage.getItem('ns_lang')||'hi';
+let currentLang = localStorage.getItem('ns_lang')||'en';
 function renderLanguages(filter=''){
   const list = document.getElementById('langList'); if(!list) return;
   list.innerHTML='';
@@ -3064,7 +3051,7 @@ function renderLanguages(filter=''){
     const isActive = lang.code===currentLang;
     const row = document.createElement('div');
     row.style.cssText=`display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;border-bottom:1px solid var(--line);background:${isActive?'rgba(177,39,45,.08)':'transparent'};`;
-    row.innerHTML=`<span style="font-size:24px;">${lang.flag}</span><div style="flex:1;"><div style="font-size:14px;font-weight:600;color:${isActive?'var(--ember)':'var(--ink)'};">${lang.name}</div><div style="font-size:11px;color:var(--ink-faint);">${lang.label}</div></div>${isActive?'<span style="color:var(--ember);font-size:18px;">✓</span>':''}`;
+    row.innerHTML=`<div style="flex:1;"><div style="font-size:15px;font-weight:600;color:${isActive?'var(--ember)':'var(--ink)'};">${lang.label}</div></div>${isActive?'<span style="color:var(--ember);font-size:18px;">✓</span>':''}`;
     row.onclick=()=>selectLanguage(lang.code);
     list.appendChild(row);
   });
@@ -3501,14 +3488,7 @@ function applyAppLanguage(code){
   const ws = document.querySelector('#workerSetup strong');
   if(ws) ws.textContent = tx('worker_setup');
 
-  // ── ONBOARDING ──
-  document.querySelectorAll('.onboard-title').forEach((el,i)=>{
-    const keys = ['ob_step1_title','ob_step2_title','ob_step3_title'];
-    if(keys[i]) el.textContent = tx(keys[i]);
-  });
-  const obNext = document.getElementById('obNext'); if(obNext) obNext.textContent = tx('ob_next');
-  const obSkip = document.getElementById('obSkip'); if(obSkip) obSkip.textContent = tx('ob_skip');
-  const obFinish = document.getElementById('obFinish'); if(obFinish) obFinish.textContent = tx('ob_finish');
+  // ── ONBOARDING ── (always English - not translated)
 
   // ── RE-RENDER PROJECT LISTS (in new language) ──
   Object.keys(featurePageMap).forEach(f => {
@@ -3524,9 +3504,9 @@ function applyAppLanguage(code){
 
 // Apply saved language whenever mainScreen is shown
 function applyLanguageWhenReady(){
-  const savedLang = localStorage.getItem('ns_lang') || 'hi';
+  const savedLang = localStorage.getItem('ns_lang') || 'en';
   currentLang = savedLang;
-  if(savedLang !== 'hi'){
+  if(savedLang !== 'en'){
     // Keep trying until elements are available
     let tries = 0;
     const interval = setInterval(()=>{
@@ -3567,7 +3547,7 @@ function setAppDetailsLang(lang){
 
 // Init on load
 document.addEventListener('DOMContentLoaded',()=>{
-  const _savedLang = localStorage.getItem('ns_lang') || 'hi';
+  const _savedLang = localStorage.getItem('ns_lang') || 'en';
   currentLang = _savedLang;
   setAppDetailsLang(_savedLang==='en'?'en':'hi');
   renderLanguages();
