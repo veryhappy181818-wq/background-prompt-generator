@@ -478,6 +478,32 @@ button[onclick*="HandleBack"]:hover, button[onclick*="closePage"]:hover {
 .rtl-mode .feat-proj-row { flex-direction: row-reverse; }
 .rtl-mode .prod-section-head { flex-direction: row-reverse; }
 
+
+@media(min-width:768px){
+  .container{padding:24px 32px;}
+  .main-shell{max-width:900px;margin:0 auto;}
+  .proj-grid{grid-template-columns:repeat(3,1fr);}
+  .feature-page-inner,[style*="max-width:480px"]{max-width:100%!important;}
+  .modal{max-width:520px;}
+  .auth-card{max-width:420px;}
+  .tabs{gap:8px;}
+  .tab{padding:10px 22px;font-size:13px;}
+  .section-head{gap:14px;}
+  .search-input{max-width:340px;}
+}
+@media(min-width:1024px){
+  .container{padding:28px 48px;max-width:1200px;}
+  .proj-grid{grid-template-columns:repeat(4,1fr);}
+  .main-shell{max-width:1100px;}
+  .feature-page-inner,[style*="max-width:480px"],[style*="max-width:420px"]{max-width:720px!important;margin:0 auto;}
+  .modal{max-width:560px;}
+  .tabs .tab{padding:12px 28px;}
+}
+@media(min-width:1440px){
+  .container{padding:32px 64px;max-width:1400px;}
+  .proj-grid{grid-template-columns:repeat(5,1fr);}
+  .feature-page-inner,[style*="max-width:480px"],[style*="max-width:420px"]{max-width:860px!important;}
+}
 </style>
 <link rel="manifest" href="manifest.json">
 <script src="i18n.js"></script>
@@ -706,7 +732,7 @@ const WORDS_PER_MINUTE = 130;
       </div>
       <div id="share-no-project" style="text-align:center;padding:60px 20px;">
         <div style="font-size:40px;margin-bottom:12px;">🔒</div>
-        <div style="color:var(--ink-dim);font-size:13px;">Pehle koi project kholo</div>
+        <div style="color:var(--ink-dim);font-size:13px;" data-i18n="no_proj_share">Pehle koi project kholo</div>
       </div>
       <div id="share-content" class="hidden">
         <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:12px;">
@@ -1227,7 +1253,7 @@ $("googleBtn").addEventListener("click",()=>{
 });
 $("emailAuthBtn").addEventListener("click",()=>{
   const email=$("emailInput").value.trim(); const pass=$("passInput").value;
-  if(!email||!pass) return setAuthError("Email aur password dono daalo.");
+  if(!email||!pass) return setAuthError("Please enter both email and password.");
   $("authError").classList.add("hidden");
   if(authMode==="signin") auth.signInWithEmailAndPassword(email,pass).catch(e=>{
     if(e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'){
@@ -1348,7 +1374,7 @@ async function incrementUsage(){
 }
 async function refreshQuota(){
   const usage=await getUsageDoc(); const used=usage.count||0;
-  $("quotaText").textContent=`${used}/${DAILY_LIMIT} scripts used today`;
+  $("quotaText").textContent=`${used}/${DAILY_LIMIT} `+(typeof tx==='function'?tx('quota_suffix')||'scripts used today':'scripts used today');
   const dot=$("quotaDot");
   dot.className="quota-dot "+(used>=DAILY_LIMIT?"danger":used===DAILY_LIMIT-1?"warn":"");
   $("dailyWarning").classList.toggle("hidden",used<DAILY_LIMIT);
@@ -1392,7 +1418,7 @@ function renderProjects(filter=""){
     const card=document.createElement("div"); card.className="proj-card";
     const updated=p.updatedAt&&p.updatedAt.toDate?p.updatedAt.toDate().toLocaleDateString():"—";
     card.innerHTML=`<div class="pmenu" data-id="${p.id}">⋮</div>
-    <div class="pname">${escapeHtml(p.projectName||"Untitled Reel")}</div>
+    <div class="pname">${escapeHtml(p.projectName||"")}</div>
     <div class="pmeta">Updated ${updated}</div>
     <div class="pstats"><span>🎞️ ${p.bgCount||0} bg</span><span>🎬 ${p.sceneCount||0} scenes</span></div>`;
     card.addEventListener("click",(e)=>{ if(e.target.classList.contains("pmenu")) return; openProject(p); });
@@ -1410,7 +1436,8 @@ $("newProjectCard").addEventListener("click",()=>{
   <button class="btn btn-primary" id="createProjBtn">Create</button></div>`);
   setTimeout(()=>$("newProjName").focus(),50);
   $("createProjBtn").onclick=async()=>{
-    const name=$("newProjName").value.trim()||"Untitled Reel";
+    const name=$("newProjName").value.trim();
+    if(!name){ $("newProjName").style.border='2px solid #e74c3c'; $("newProjName").placeholder='Project name required!'; $("newProjName").focus(); return; }
     const ref=await db.collection("projects").add({
       userId:currentUser.uid,projectName:name,
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
@@ -1438,7 +1465,8 @@ function openProjectMenu(p){
     openModal(`<h3>Rename</h3><div class="field"><label>Name</label><input type="text" id="renameInput" value="${escapeHtml(p.projectName||'')}"/></div>
     <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="renameSave">Save</button></div>`);
     $("renameSave").onclick=async()=>{
-      const name=$("renameInput").value.trim()||"Untitled Reel";
+      const name=$("renameInput").value.trim();
+      if(!name){ $("renameInput").style.border='2px solid #e74c3c'; $("renameInput").focus(); return; }
       await db.collection("projects").doc(p.id).update({projectName:name,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
       closeModal(); loadProjects();
     };
@@ -1508,7 +1536,7 @@ document.querySelectorAll(".tab").forEach(tab=>{
 
 async function openProject(p){
   currentProject=p;
-  $("projectNameInput").value=p.projectName||"Untitled Reel";
+  $("projectNameInput").value=p.projectName||"";
   $("dashboardView").classList.add("hidden");
   $("workspaceView").classList.remove("hidden");
   document.querySelectorAll(".tab")[0].click();
@@ -1521,7 +1549,8 @@ async function openProject(p){
 }
 
 $("projectNameInput").addEventListener("change",async()=>{
-  const name=$("projectNameInput").value.trim()||"Untitled Reel";
+  const name=$("projectNameInput").value.trim();
+  if(!name){ $("projectNameInput").style.border='2px solid #e74c3c'; return; }
   await db.collection("projects").doc(currentProject.id).update({projectName:name,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
 });
 
@@ -2340,7 +2369,9 @@ async function featureRenderProjectList(feature){
 async function featureCreateProject(feature){
   const cfg = featurePageMap[feature];
   const nameInput = document.getElementById(cfg.newNameInput);
-  const name = nameInput.value.trim() || 'Untitled Reel';
+  const name = nameInput.value.trim();
+  if(!name){ nameInput.style.border='2px solid #e74c3c'; nameInput.placeholder=(typeof tx==='function'?tx('proj_name_required')||'Project name required!':'Project name required!'); nameInput.focus(); return; }
+  nameInput.style.border='';
   try{
     const ref = await db.collection(cfg.collection).add({
       userId: currentUser.uid, projectName: name,
@@ -2352,7 +2383,7 @@ async function featureCreateProject(feature){
     nameInput.value='';
     // Don't auto-open project — show picker with updated list
     await featureRenderProjectList(feature);
-    showToast('✅ Project ban gaya! Ab list mein click karo.');
+    showToast(typeof tx==='function' ? (tx('proj_created')||'✅ Project created! Click in list.') : '✅ Project created!');
   }catch(e){ showToast('Error: '+e.message); }
 }
 
@@ -2404,7 +2435,7 @@ async function featureDeleteProject(feature, projectId){
         document.getElementById(cfg.activeBar).classList.add('hidden');
         document.getElementById(cfg.formSection).classList.add('hidden');
       }
-      showToast('🗑️ Project delete ho gaya');
+      showToast(typeof tx==='function' ? (tx('proj_deleted')||'🗑️ Project deleted') : '🗑️ Project deleted');
     }catch(e){ showToast('Error: '+e.message); }
   };
 }
@@ -3408,15 +3439,8 @@ function applyAppLanguage(code){
   const picHint=document.querySelector('#profilePage div[style*="TAP TO"]') || document.querySelector('#profilePage div[style*="PHOTO"]');
   if(picHint) picHint.textContent=tx('tab_pic_hint');
 
-  // ── FEATURE PAGE SHIMMER TITLES ──
-  document.querySelectorAll('.feature-title-shimmer').forEach(el=>{
-    const t = el.textContent;
-    if(t.includes('Idea Writer')) el.textContent=tx('iw_title');
-    else if(t.includes('Production')) el.textContent=tx('prod_title');
-    else if(t.includes('Script Doctor')) el.textContent=tx('sd_title');
-    else if(t.includes('Director')) el.textContent=tx('dm_title');
-    else if(t.includes('Share')) el.textContent=tx('share_title');
-  });
+  // ── FEATURE PAGE SHIMMER TITLES — English names always ──
+  // Feature names stay English per spec: Idea Writer, One-click Production, AI Script Doctor, Director Mode
 
   // ── LABELS in feature pages ──
   document.querySelectorAll('#iw2-form-section label, #prod-form-section label, #sd-form-section label, #dm-form-section label').forEach(el=>{
@@ -3488,7 +3512,7 @@ function applyAppLanguage(code){
   const qt = document.getElementById('quotaText');
   if(qt){
     const cur = qt.textContent.match(/\d+\/\d+/)?.[0] || '0/3';
-    qt.textContent = cur + ' ' + (code==='en' ? 'scripts used today' : 'scripts aaj use hue');
+    qt.textContent = cur + ' ' + (tx('quota_suffix')||'scripts used today');
   }
 
   // ── WORKSPACE TABS ──
