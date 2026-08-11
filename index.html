@@ -966,23 +966,23 @@ const WORDS_PER_MINUTE = 130;
           <div style="position:absolute;bottom:2px;right:2px;background:#b1272d;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;">📷</div>
         </div>
         <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePic(this)"/>
-        <div style="font-size:11px;color:var(--ink-faint);margin-top:8px;letter-spacing:.1em;" data-i18n="profile_pic_hint">TAP TO CHANGE PHOTO</div>
+        <div style="font-size:11px;color:var(--ink-faint);margin-top:8px;letter-spacing:.1em;" >Enter Photo</div>
       </div>
       <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px;">
         <div>
           <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:6px;">Username</label>
-          <input id="profileUsername" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;box-sizing:border-box;" placeholder="Apna naam likho..."/>
+          <input id="profileUsername" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;box-sizing:border-box;" placeholder="Enter username"/>
         </div>
         <div>
-          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:6px;" data-i18n="profile_dob">Date of Birth</label>
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:6px;" >Date of Birth</label>
           <input type="date" id="profileDob" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg-deep);color:var(--ink);font-size:13px;outline:none;box-sizing:border-box;"/>
         </div>
         <div>
-          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;" data-i18n="profile_gender">Gender</label>
+          <label style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember-dim);display:block;margin-bottom:10px;" >Gender</label>
           <div style="display:flex;gap:10px;">
-            <div class="iw2-chip" data-gender="male" onclick="selectGender('male')" style="flex:1;text-align:center;" data-i18n="profile_male">👦 Male</div>
-            <div class="iw2-chip" data-gender="female" onclick="selectGender('female')" style="flex:1;text-align:center;" data-i18n="profile_female">👧 Female</div>
-            <div class="iw2-chip" data-gender="other" onclick="selectGender('other')" style="flex:1;text-align:center;" data-i18n="profile_other">🌈 Other</div>
+            <div class="iw2-chip" data-gender="male" onclick="selectGender('male')" style="flex:1;text-align:center;" >👦 Male</div>
+            <div class="iw2-chip" data-gender="female" onclick="selectGender('female')" style="flex:1;text-align:center;" >👧 Female</div>
+            <div class="iw2-chip" data-gender="other" onclick="selectGender('other')" style="flex:1;text-align:center;" >🌈 Other</div>
           </div>
         </div>
       </div>
@@ -1076,7 +1076,7 @@ const WORDS_PER_MINUTE = 130;
           <div class="section-title">
             <span><span class="eyebrow" data-i18n="dashboard_eyebrow">Darr Ka Asli Chehra</span><span data-i18n="dashboard_title">Your Projects</span></span>
           </div>
-          <input type="text" class="search-input" id="projectSearch" placeholder="Search projects…"/>
+          <input type="text" class="search-input" id="projectSearch" placeholder="Search projects..."/>
           <div class="quota-pill" id="quotaPill">
             <span class="quota-dot" id="quotaDot"></span>
             <span id="quotaText">0/3 scripts used today</span>
@@ -1304,6 +1304,10 @@ $("userAvatar").addEventListener("click",()=>{
 // ============================================================
 // AUTH STATE
 // ============================================================
+// Ensure persistent login - user stays logged in until manual signout
+if(typeof firebase!=='undefined' && firebase.auth){
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+}
 auth.onAuthStateChanged(async(user)=>{
   if(user){
     // All users allowed
@@ -1435,19 +1439,27 @@ $("newProjectCard").addEventListener("click",()=>{
   <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button>
   <button class="btn btn-primary" id="createProjBtn">Create</button></div>`);
   setTimeout(()=>$("newProjName").focus(),50);
+  let _projBusy = false;
   $("createProjBtn").onclick=async()=>{
+    if(_projBusy) return;
     const name=$("newProjName").value.trim();
     if(!name){ $("newProjName").style.border='2px solid #e74c3c'; $("newProjName").placeholder='Project name required!'; $("newProjName").focus(); return; }
-    const ref=await db.collection("projects").add({
-      userId:currentUser.uid,projectName:name,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
-      lastOpenedAt:firebase.firestore.FieldValue.serverTimestamp(),
-      bgCount:0,sceneCount:0
-    });
-    const doc=await ref.get();
-    closeModal(); await loadProjects();
-    openProject({id:ref.id,...doc.data()});
+    _projBusy = true;
+    $("createProjBtn").disabled = true;
+    $("createProjBtn").textContent = 'Creating...';
+    try{
+      const ref=await db.collection("projects").add({
+        userId:currentUser.uid,projectName:name,
+        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        lastOpenedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        bgCount:0,sceneCount:0
+      });
+      const doc=await ref.get();
+      closeModal(); await loadProjects();
+      openProject({id:ref.id,...doc.data()});
+    }catch(e){ showToast('❌ '+e.message); }
+    finally{ _projBusy=false; }
   };
 });
 
@@ -3093,13 +3105,8 @@ function loadProfile(){
 // LANGUAGE PAGE JS
 // ============================================================
 const LANGUAGES = [
-  {code:'en', name:'English', label:'English – English'},
+  {code:'en', name:'English', label:'English'},
   {code:'hi', name:'हिन्दी', label:'Hindi – हिन्दी'},
-  {code:'mr', name:'मराठी', label:'Marathi – मराठी'},
-  {code:'ur', name:'اردو', label:'Urdu – اردو'},
-  {code:'bn', name:'বাংলা', label:'Bengali – বাংলা'},
-  {code:'te', name:'తెలుగు', label:'Telugu – తెలుగు'},
-  {code:'ta', name:'தமிழ்', label:'Tamil – தமிழ்'},
 ];
 let currentLang = localStorage.getItem('ns_lang')||'en';
 function renderLanguages(filter=''){
@@ -3391,9 +3398,6 @@ const TRANSLATIONS = {
     'proj_info_label': 'Project Info',
     'share_options_label': 'Share Options',
   },
-  es: { 'iw_gen_btn':'🩸 Generar 10 Ideas','prod_gen_btn':'🚀 Generar Pack','sd_btn':'🩺 Diagnosticar Guión','dm_btn':'🎥 Generar Tomas','create_btn':'+ Crear','switch_btn':'Cambiar','done_btn':'✅ HECHO','back_btn':'← Atrás','enter_btn':'🔥 ENTRAR','subject_label':'Tema','script_label':'Pega tu guión aquí','new_proj_label':'Crear Nuevo Proyecto','old_proj_label':'O Abrir Proyecto','proj_ph':'Nombre del proyecto...','script_ph':'Pega tu guión aquí...','username_ph':'Tu nombre...','lang_search_ph':'🔍 Buscar idioma...','no_proj':'Sin proyectos aún','has_data':'✅ Generado antes','empty_proj':'⚪ Proyecto vacío','iw_loading':'Invocando Espíritus...','prod_loading':'Preparando Pack...','sd_loading':'Analizando Guión...','dm_loading':'Director Trabajando...','iw_title':'💡 Escritor de Ideas','prod_title':'🚀 Producción Un Clic','sd_title':'🩺 Doctor de Guión','dm_title':'🎥 Modo Director','share_title':'📤 Compartir Proyecto','profile_title':'👤 Perfil','lang_title':'🌐 Idioma','appdetails_title':'📋 Detalles de App','enter_btn':'🔥 ENTRAR A LA APP'},
-  fr: { 'iw_gen_btn':'🩸 Générer 10 Idées','prod_gen_btn':'🚀 Générer Pack','sd_btn':'🩺 Diagnostiquer','dm_btn':'🎥 Générer Plans','create_btn':'+ Créer','switch_btn':'Changer','done_btn':'✅ FAIT','back_btn':'← Retour','enter_btn':'🔥 ENTRER','subject_label':'Sujet','script_label':'Collez votre script ici','new_proj_label':'Créer Nouveau Projet','old_proj_label':'Ouvrir Projet Existant','proj_ph':'Nom du projet...','script_ph':'Collez votre script...','username_ph':'Votre nom...','lang_search_ph':'🔍 Rechercher langue...','no_proj':'Aucun projet','has_data':'✅ Déjà généré','empty_proj':'⚪ Projet vide','iw_loading':'Invocation des Esprits...','prod_loading':'Préparation du Pack...','sd_loading':'Analyse du Script...','dm_loading':'Directeur au Travail...','iw_title':'💡 Redacteur Idees','prod_title':'🚀 Production Un Clic','sd_title':'🩺 Docteur de Script','dm_title':'🎥 Mode Réalisateur','share_title':'📤 Partager Projet','profile_title':'👤 Profil','lang_title':'🌐 Langue','appdetails_title':'📋 Détails App'},
-  de: { 'iw_gen_btn':'🩸 10 Ideen Generieren','prod_gen_btn':'🚀 Paket Generieren','sd_btn':'🩺 Skript Analysieren','dm_btn':'🎥 Shots Generieren','create_btn':'+ Erstellen','switch_btn':'Wechseln','done_btn':'✅ FERTIG','back_btn':'← Zurück','enter_btn':'🔥 APP BETRETEN','subject_label':'Thema','script_label':'Skript hier einfügen','new_proj_label':'Neues Projekt','old_proj_label':'Vorhandenes Projekt','proj_ph':'Projektname...','script_ph':'Skript einfügen...','username_ph':'Dein Name...','lang_search_ph':'🔍 Sprache suchen...','no_proj':'Keine Projekte','has_data':'✅ Bereits generiert','empty_proj':'⚪ Leeres Projekt','iw_loading':'Geister rufen...','prod_loading':'Paket vorbereiten...','sd_loading':'Skript analysieren...','dm_loading':'Regisseur arbeitet...','iw_title':'💡 Ideenschreiber','prod_title':'🚀 Ein-Klick-Produktion','sd_title':'🩺 Skript-Doktor','dm_title':'🎥 Regisseur-Modus','share_title':'📤 Projekt teilen','profile_title':'👤 Profil','lang_title':'🌐 Sprache','appdetails_title':'📋 App Details'},
 };
 
 function tx(key){
@@ -3424,7 +3428,7 @@ function applyAppLanguage(code){
   ph('sd-script-input', 'script_ph');
   ph('dm-script-input', 'script_ph');
   ph('profileUsername', 'username_ph');
-  ph('langSearch', 'lang_search_ph');
+  // lang search always English
   ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>ph(id,'proj_ph'));
 
   // ── ALL CREATE BUTTONS ──
@@ -3585,8 +3589,8 @@ const _origApplyLang = applyLanguageWhenReady;
 // APP DETAILS PAGE JS
 // ============================================================
 const APP_DETAILS = {
-  hi:`<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div><div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">Version 2.0 · GK Horror Tales</div><div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio ek AI-powered Hindi horror content creation tool hai jo specially YouTube creators ke liye banaya gaya hai.</div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">⚡ Features</div><div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);"><div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Horror story ideas generate karo</div><div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — BGM, SFX, scenes, thumbnail, YouTube SEO</div><div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Plot holes, weak scenes dhundho</div><div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Camera shots suggest karta hai</div><div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share, QR code, duplicate</div></div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">📱 Kaise Use Karein</div><div style="font-size:13px;color:var(--ink);line-height:1.9;">1️⃣ Menu (≡) se koi bhi feature kholo<br>2️⃣ Naya project banao ya purana select karo<br>3️⃣ Input dalo<br>4️⃣ Generate dabao<br>5️⃣ Output copy karo YouTube ke liye</div></div>`,
-  en:`<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div><div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">Version 2.0 · GK Horror Tales</div><div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio is an AI-powered Hindi horror content creation tool for YouTube creators.</div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">⚡ Features</div><div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);"><div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Generate horror story ideas</div><div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — BGM, SFX, scenes, thumbnail, YouTube SEO</div><div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Find plot holes & weak scenes</div><div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Camera shot suggestions</div><div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share, QR code, duplicate</div></div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">📱 How To Use</div><div style="font-size:13px;color:var(--ink);line-height:1.9;">1️⃣ Open any feature from Menu (≡)<br>2️⃣ Create or select a project<br>3️⃣ Enter your input<br>4️⃣ Press Generate<br>5️⃣ Copy output for YouTube</div></div>`
+  hi:`<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div><div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio ek AI-powered Hindi horror content creation tool hai jo specially YouTube creators ke liye banaya gaya hai.</div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">⚡ Features</div><div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);"><div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Horror story ideas generate karo</div><div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — BGM, SFX, scenes, thumbnail, YouTube SEO</div><div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Plot holes, weak scenes dhundho</div><div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Camera shots suggest karta hai</div><div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share, QR code, duplicate</div></div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">📱 Kaise Use Karein</div><div style="font-size:13px;color:var(--ink);line-height:1.9;">1️⃣ Menu (≡) se koi bhi feature kholo<br>2️⃣ Naya project banao ya purana select karo<br>3️⃣ Input dalo<br>4️⃣ Generate dabao<br>5️⃣ Output copy karo YouTube ke liye</div></div>`,
+  en:`<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:20px;font-weight:700;color:var(--ember);font-family:Cinzel,Georgia,serif;margin-bottom:6px;">🎬 Nightmare Studio</div><div style="font-size:13px;color:var(--ink);line-height:1.8;">Nightmare Studio is an AI-powered Hindi horror content creation tool for YouTube creators.</div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">⚡ Features</div><div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--ink);"><div>💡 <strong style="color:var(--ember);">Idea Writer</strong> — Generate horror story ideas</div><div>🚀 <strong style="color:var(--ember);">One-Click Production</strong> — BGM, SFX, scenes, thumbnail, YouTube SEO</div><div>🩺 <strong style="color:var(--ember);">AI Script Doctor</strong> — Find plot holes & weak scenes</div><div>🎥 <strong style="color:var(--ember);">Director Mode</strong> — Camera shot suggestions</div><div>📤 <strong style="color:var(--ember);">Share Project</strong> — Share, QR code, duplicate</div></div></div><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--ember-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;">📱 How To Use</div><div style="font-size:13px;color:var(--ink);line-height:1.9;">1️⃣ Open any feature from Menu (≡)<br>2️⃣ Create or select a project<br>3️⃣ Enter your input<br>4️⃣ Press Generate<br>5️⃣ Copy output for YouTube</div></div>`
 };
 function setAppDetailsLang(lang){
   document.getElementById('appDetailsContent').innerHTML=APP_DETAILS[lang]||APP_DETAILS.hi;
