@@ -919,8 +919,7 @@ const WORDS_PER_MINUTE = 130;
       </div>
     </div>
 
-    <!-- SKIP BUTTON -->
-    <button id="introSkip" style="position:absolute;top:20px;right:20px;z-index:10;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:7px 18px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:.1em;">SKIP</button>
+    <!-- SKIP BUTTON REMOVED -->
   </div>
 
 
@@ -1048,7 +1047,7 @@ const WORDS_PER_MINUTE = 130;
       <div id="dashboardView">
         <div class="section-head">
           <div class="section-title">
-            <span><span class="eyebrow" data-i18n="dashboard_eyebrow">Darr Ka Asli Chehra</span><span data-i18n="dashboard_title">Your Projects</span></span>
+            <span><span class="eyebrow">GK Nightmare Studio</span><span>Your Projects</span></span>
           </div>
           <input type="text" class="search-input" id="projectSearch" placeholder="Search projects..."/>
           <div class="quota-pill" id="quotaPill">
@@ -1422,18 +1421,32 @@ $("newProjectCard").addEventListener("click",()=>{
     $("createProjBtn").disabled = true;
     $("createProjBtn").textContent = 'Creating...';
     try{
-      const ref=await db.collection("projects").add({
-        userId:currentUser.uid,projectName:name,
-        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        lastOpenedAt:firebase.firestore.FieldValue.serverTimestamp(),
-        bgCount:0,sceneCount:0
+      if(!currentUser){ showToast('❌ Not logged in!'); _projBusy=false; return; }
+      const ref=await db.collection('projects').add({
+        userId: currentUser.uid,
+        projectName: name,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        bgCount: 0,
+        sceneCount: 0
       });
-      const doc=await ref.get();
-      closeModal(); await loadProjects();
-      openProject({id:ref.id,...doc.data()});
-    }catch(e){ showToast('❌ '+e.message); }
-    finally{ _projBusy=false; }
+      const doc = await ref.get();
+      closeModal();
+      await loadProjects();
+      openProject({id: ref.id, ...doc.data()});
+    } catch(e) {
+      console.error('Create project error:', e);
+      if(e.code==='permission-denied') {
+        showToast('❌ Firestore rules block "projects". Add rule in Firebase console!');
+      } else {
+        showToast('❌ ' + e.message);
+      }
+    } finally {
+      _projBusy = false;
+      const cb = document.getElementById('createProjBtn');
+      if(cb){ cb.disabled=false; cb.textContent='Create'; }
+    }
   };
 });
 
@@ -2821,7 +2834,7 @@ function playIntroAnimation(onComplete) {
   const overlay = document.getElementById('introOverlay');
   const video = document.getElementById('introVideo');
   const orbitScreen = document.getElementById('introOrbitScreen');
-  const skipBtn = document.getElementById('introSkip');
+  const skipBtn = null; // Skip removed
 
   // Show overlay
   overlay.classList.remove('hidden');
@@ -2875,15 +2888,7 @@ function playIntroAnimation(onComplete) {
     showOrbitScreen();
   });
 
-  // Skip button - go to orbit screen (not directly to app)
-  skipBtn.onclick = () => {
-    if(finished) return;
-    if(orbitScreen.style.display === 'flex'){
-      finish(true);
-    } else {
-      showOrbitScreen();
-    }
-  };
+  // Skip button removed
 
   // Store finish fn globally for orbit use
   window._introFinish = finish;
@@ -3256,8 +3261,8 @@ const TRANSLATIONS = {
     'new_proj_label': 'Naya Project Banao',
     'old_proj_label': 'Ya Purana Project Kholo',
     'username_label': 'Username',
-    'dob_label': 'Janm Tithi',
-    'gender_label': 'Ling',
+    'dob_label': 'Date of Birth',
+    'gender_label': 'Gender',
     // Placeholders
     'subject_ph': 'e.g. Bhootiya school, shrapit aaina...',
     'script_ph': 'Yahan apni horror script paste karo...',
@@ -3466,12 +3471,12 @@ function applyAppLanguage(code){
   const dmL=document.querySelector('#dm-loading div:last-child'); if(dmL) dmL.textContent=tx('dm_loading');
   const plT=document.getElementById('prod-loading-text'); if(plT) plT.textContent=tx('prod_loading');
 
-  // ── PROFILE LABELS ──
+  // ── PROFILE LABELS — always English ──
   document.querySelectorAll('#profilePage label').forEach(el=>{
-    const t=el.textContent.trim();
-    if(t.includes('Username')||t.includes('naam')) el.textContent=tx('username_label');
-    else if(t.includes('Birth')||t.includes('Tithi')) el.textContent=tx('dob_label');
-    else if(t.includes('Gender')||t.includes('Ling')) el.textContent=tx('gender_label');
+    const t=el.textContent.trim().toLowerCase();
+    if(t.includes('username')||t.includes('naam')) el.textContent='USERNAME';
+    else if(t.includes('birth')||t.includes('tithi')||t.includes('dob')) el.textContent='DATE OF BIRTH';
+    else if(t.includes('gender')||t.includes('ling')) el.textContent='GENDER';
   });
 
   // ── PAGE TITLES in header divs ──
@@ -3492,7 +3497,7 @@ function applyAppLanguage(code){
 
   // ── MAIN DASHBOARD PAGE ──
   const eyebrow = document.querySelector('.section-title .eyebrow');
-  if(eyebrow) eyebrow.textContent = 'GK Nightmare Studio'; // Always English
+  if(eyebrow) eyebrow.textContent = 'GK Nightmare Studio';
   // dashboard_title — always English
   const dashTitleEl = document.querySelector('[data-i18n="dashboard_title"]');
   if(dashTitleEl) dashTitleEl.textContent = 'Your Projects'; // Always English
