@@ -478,32 +478,6 @@ button[onclick*="HandleBack"]:hover, button[onclick*="closePage"]:hover {
 .rtl-mode .feat-proj-row { flex-direction: row-reverse; }
 .rtl-mode .prod-section-head { flex-direction: row-reverse; }
 
-
-@media(min-width:768px){
-  .container{padding:24px 32px;}
-  .main-shell{max-width:900px;margin:0 auto;}
-  .proj-grid{grid-template-columns:repeat(3,1fr);}
-  .feature-page-inner,[style*="max-width:480px"]{max-width:100%!important;}
-  .modal{max-width:520px;}
-  .auth-card{max-width:420px;}
-  .tabs{gap:8px;}
-  .tab{padding:10px 22px;font-size:13px;}
-  .section-head{gap:14px;}
-  .search-input{max-width:340px;}
-}
-@media(min-width:1024px){
-  .container{padding:28px 48px;max-width:1200px;}
-  .proj-grid{grid-template-columns:repeat(4,1fr);}
-  .main-shell{max-width:1100px;}
-  .feature-page-inner,[style*="max-width:480px"],[style*="max-width:420px"]{max-width:720px!important;margin:0 auto;}
-  .modal{max-width:560px;}
-  .tabs .tab{padding:12px 28px;}
-}
-@media(min-width:1440px){
-  .container{padding:32px 64px;max-width:1400px;}
-  .proj-grid{grid-template-columns:repeat(5,1fr);}
-  .feature-page-inner,[style*="max-width:480px"],[style*="max-width:420px"]{max-width:860px!important;}
-}
 </style>
 <link rel="manifest" href="manifest.json">
 <script src="i18n.js"></script>
@@ -911,20 +885,20 @@ const WORDS_PER_MINUTE = 130;
         <!-- BOTTOM: 3 feature buttons in a row -->
         <div style="display:flex;gap:20px;justify-content:center;align-items:center;margin-bottom:20px;pointer-events:all;">
 
-          <!-- Profile -->
-          <div onclick="orbitFeatureClick(0)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;">
+          <!-- Profile — always unlocked first -->
+          <div id="orbitStar0" onclick="orbitFeatureClick(0)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;">
             <div style="width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,80,0,.4),rgba(0,0,0,.8));border:2px solid rgba(255,100,50,.9);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 20px rgba(255,100,0,.7),0 0 40px rgba(255,50,0,.3);animation:starPulse 2s infinite 0s;">⭐</div>
             <span style="font-size:10px;letter-spacing:.15em;color:rgba(255,150,50,.9);text-transform:uppercase;font-family:'Cinzel',Georgia,serif;text-shadow:0 0 8px rgba(255,100,0,.7);">Profile</span>
           </div>
 
-          <!-- Language -->
-          <div onclick="orbitFeatureClick(1)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;">
+          <!-- Language — locked until Profile done -->
+          <div id="orbitStar1" onclick="orbitFeatureClick(1)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;opacity:0.35;pointer-events:none;">
             <div style="width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,100,255,.4),rgba(0,0,0,.8));border:2px solid rgba(100,180,255,.9);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 20px rgba(50,150,255,.7),0 0 40px rgba(0,100,255,.3);animation:starPulse 2s infinite .7s;">⭐</div>
             <span style="font-size:10px;letter-spacing:.15em;color:rgba(100,180,255,.9);text-transform:uppercase;font-family:'Cinzel',Georgia,serif;text-shadow:0 0 8px rgba(50,150,255,.7);">Language</span>
           </div>
 
-          <!-- App Details -->
-          <div onclick="orbitFeatureClick(2)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;">
+          <!-- App Details — locked until Language done -->
+          <div id="orbitStar2" onclick="orbitFeatureClick(2)" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;opacity:0.35;pointer-events:none;">
             <div style="width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,200,100,.4),rgba(0,0,0,.8));border:2px solid rgba(150,255,150,.9);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 20px rgba(100,255,150,.7),0 0 40px rgba(0,200,100,.3);animation:starPulse 2s infinite 1.4s;">⭐</div>
             <span style="font-size:10px;letter-spacing:.15em;color:rgba(150,255,150,.9);text-transform:uppercase;font-family:'Cinzel',Georgia,serif;text-shadow:0 0 8px rgba(100,255,150,.7);">App Details</span>
           </div>
@@ -986,7 +960,7 @@ const WORDS_PER_MINUTE = 130;
           </div>
         </div>
       </div>
-      <button onclick="saveProfile()" style="width:100%;padding:14px;border-radius:10px;margin-top:20px;background:linear-gradient(135deg,#1a6bb5,#2980d4);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.1em;box-shadow:0 4px 20px rgba(41,128,212,.4);">✅ DONE</button>
+      <button onclick="saveProfile()" style="width:100%;padding:14px;border-radius:10px;margin-top:20px;background:linear-gradient(135deg,#1a6bb5,#2980d4);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.1em;box-shadow:0 4px 20px rgba(41,128,212,.4);">✅ SAVE PROFILE</button>
     </div>
   </div>
 
@@ -1090,7 +1064,7 @@ const WORDS_PER_MINUTE = 130;
         </div>
         <div id="emptyProjects" class="empty-state hidden">
           <div class="em-mark">🎞️</div>
-          <div>No projects yet. Start a new reel above.</div>
+          <div id="emptyProjMsg">No projects. Create now.</div>
       </div>
       </div>
 
@@ -1378,7 +1352,7 @@ async function incrementUsage(){
 }
 async function refreshQuota(){
   const usage=await getUsageDoc(); const used=usage.count||0;
-  $("quotaText").textContent=`${used}/${DAILY_LIMIT} `+(typeof tx==='function'?tx('quota_suffix')||'scripts used today':'scripts used today');
+  $("quotaText").textContent=`${used}/${DAILY_LIMIT} scripts used today`; // Always English
   const dot=$("quotaDot");
   dot.className="quota-dot "+(used>=DAILY_LIMIT?"danger":used===DAILY_LIMIT-1?"warn":"");
   $("dailyWarning").classList.toggle("hidden",used<DAILY_LIMIT);
@@ -2395,7 +2369,7 @@ async function featureCreateProject(feature){
     nameInput.value='';
     // Don't auto-open project — show picker with updated list
     await featureRenderProjectList(feature);
-    showToast(typeof tx==='function' ? (tx('proj_created')||'✅ Project created! Click in list.') : '✅ Project created!');
+    showToast('✅ Project created! Click in list.');
   }catch(e){ showToast('Error: '+e.message); }
 }
 
@@ -2447,7 +2421,7 @@ async function featureDeleteProject(feature, projectId){
         document.getElementById(cfg.activeBar).classList.add('hidden');
         document.getElementById(cfg.formSection).classList.add('hidden');
       }
-      showToast(typeof tx==='function' ? (tx('proj_deleted')||'🗑️ Project deleted') : '🗑️ Project deleted');
+      showToast('🗑️ Project deleted');
     }catch(e){ showToast('Error: '+e.message); }
   };
 }
@@ -2966,25 +2940,31 @@ const orbitDone = [false, false, false];
 
 function markOrbitDone(idx){
   orbitDone[idx] = true;
-  // Show progress bar on first completion
   const progressEl = document.getElementById('orbitProgress');
   const subtextEl = document.getElementById('orbitSubText');
   if(progressEl) progressEl.style.display = 'flex';
-  if(subtextEl){ subtextEl.style.display = 'block'; subtextEl.textContent = 'SELECT ALL 3 TO CONTINUE'; }
 
   const prog = document.getElementById('prog'+idx);
-  if(prog){
-    prog.style.border = '2px solid #5fae6f';
-    prog.style.background = 'rgba(95,174,111,.3)';
-    prog.textContent = '✅';
+  if(prog){ prog.style.border='2px solid #5fae6f'; prog.style.background='rgba(95,174,111,.3)'; prog.textContent='✅'; }
+
+  // Unlock next star sequentially
+  if(idx === 0){
+    // Profile done → unlock Language star
+    const s1 = document.getElementById('orbitStar1');
+    if(s1){ s1.style.opacity='1'; s1.style.pointerEvents='all'; }
+    if(subtextEl){ subtextEl.style.display='block'; subtextEl.textContent='NOW SELECT LANGUAGE ✨'; }
+  } else if(idx === 1){
+    // Language done → unlock App Details star
+    const s2 = document.getElementById('orbitStar2');
+    if(s2){ s2.style.opacity='1'; s2.style.pointerEvents='all'; }
+    if(subtextEl){ subtextEl.textContent='NOW SELECT APP DETAILS ✨'; }
   }
+
   // Check all done
   if(orbitDone.every(Boolean)){
     if(orbitAnimFrame) cancelAnimationFrame(orbitAnimFrame);
-    if(subtextEl){ subtextEl.textContent = 'YOU ARE READY! 🔥'; subtextEl.style.color = '#5fae6f'; subtextEl.style.textShadow = '0 0 15px #5fae6f'; }
-    setTimeout(()=>{
-      document.getElementById('enterAppBtn').style.display = 'block';
-    }, 300);
+    if(subtextEl){ subtextEl.textContent='YOU ARE READY! 🔥'; subtextEl.style.color='#5fae6f'; subtextEl.style.textShadow='0 0 15px #5fae6f'; }
+    setTimeout(()=>{ document.getElementById('enterAppBtn').style.display='block'; }, 300);
   }
 }
 
@@ -3077,11 +3057,11 @@ function handleProfilePic(input){
 async function saveProfile(){
   const username = document.getElementById('profileUsername').value.trim();
   const dob = document.getElementById('profileDob').value;
-  if(!username){ showToast('Naam likho pehle!'); return; }
+  if(!username){ showToast('Please enter your username!'); return; }
   try{
     if(currentUser) await db.collection('users').doc(currentUser.uid).set({username,dob,gender:selectedGender,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
     localStorage.setItem('ns_profile', JSON.stringify({username,dob,gender:selectedGender}));
-    showToast('✅ Profile save ho gayi!');
+    showToast('✅ Profile saved!');
     closePage('profilePage');
     markOrbitDone(0); // Mark profile done
   }catch(e){ showToast('Error: '+e.message); }
@@ -3311,7 +3291,7 @@ const TRANSLATIONS = {
     'share_options_label': 'Share Options',
     // Main page
     'dashboard_eyebrow': 'Darr Ka Asli Chehra',
-    'dashboard_title': 'Aapke Projects',
+    'dashboard_title': 'आपके Projects',
     'search_ph': 'Projects dhundho...',
     'new_project_btn': 'New Project',
     'no_projects_msg': 'Koi project nahi hai. Upar naya banao.',
@@ -3415,6 +3395,20 @@ function applyAppLanguage(code){
   const set = (id, key) => { const el=document.getElementById(id); if(el&&el.textContent!==undefined) el.textContent=tx(key); };
   const ph  = (id, key) => { const el=document.getElementById(id); if(el) el.placeholder=tx(key); };
 
+  // ── ALWAYS ENGLISH — regardless of selected language ──
+  const _alwaysEn = (id, text) => { const el=document.getElementById(id); if(el) el.textContent=text; };
+  const _alwaysPh = (id, text) => { const el=document.getElementById(id); if(el) el.placeholder=text; };
+  _alwaysPh('projectSearch', 'Search projects...');
+  _alwaysPh('profileUsername', 'Enter username');
+  // Quota always English
+  const _qt = document.getElementById('quotaText');
+  if(_qt){ const _cur=_qt.textContent.match(/\d+\/\d+/)?.[0]||'0/3'; _qt.textContent=_cur+' scripts used today'; }
+  // Feature names always English
+  document.querySelectorAll('.feature-title-shimmer').forEach(el=>{
+    const t=el.getAttribute('data-en-title');
+    if(t) el.textContent=t;
+  });
+
   // ── GENERATE BUTTONS ──
   set('iw2-gen-btn', 'iw_gen_btn');
   set('prod-gen-btn', 'prod_gen_btn');
@@ -3427,7 +3421,8 @@ function applyAppLanguage(code){
   ph('prod-script-input', 'script_ph');
   ph('sd-script-input', 'script_ph');
   ph('dm-script-input', 'script_ph');
-  ph('profileUsername', 'username_ph');
+  // profile username always English
+  const puEl=document.getElementById('profileUsername'); if(puEl) puEl.placeholder='Enter username';
   // lang search always English
   ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>ph(id,'proj_ph'));
 
@@ -3439,7 +3434,7 @@ function applyAppLanguage(code){
 
   // ── PROFILE PAGE ──
   const pd=document.querySelector('#profilePage button[onclick="saveProfile()"]');
-  if(pd) pd.textContent=tx('done_btn');
+  if(pd) pd.textContent='✅ SAVE PROFILE'; // Always English
   const picHint=document.querySelector('#profilePage div[style*="TAP TO"]') || document.querySelector('#profilePage div[style*="PHOTO"]');
   if(picHint) picHint.textContent=tx('tab_pic_hint');
 
@@ -3497,26 +3492,28 @@ function applyAppLanguage(code){
 
   // ── MAIN DASHBOARD PAGE ──
   const eyebrow = document.querySelector('.section-title .eyebrow');
-  if(eyebrow) eyebrow.textContent = tx('dashboard_eyebrow');
-  const dashTitle = document.querySelector('.section-title span > span:last-child') || document.querySelector('.section-title > span');
-  if(dashTitle && dashTitle.tagName !== 'SPAN') dashTitle.textContent = tx('dashboard_title');
+  if(eyebrow) eyebrow.textContent = 'GK Nightmare Studio'; // Always English
+  // dashboard_title — always English
+  const dashTitleEl = document.querySelector('[data-i18n="dashboard_title"]');
+  if(dashTitleEl) dashTitleEl.textContent = 'Your Projects'; // Always English
 
   // New project card
   const newProjDiv = document.querySelector('#newProjectCard div:not(.plus)');
   if(newProjDiv) newProjDiv.textContent = tx('new_project_btn');
 
   // Empty state
-  const emptyMsg = document.querySelector('#emptyProjects div:last-child');
-  if(emptyMsg) emptyMsg.textContent = tx('no_projects_msg');
+  const emptyMsg = document.getElementById('emptyProjMsg');
+  if(emptyMsg) emptyMsg.textContent = code==='hi' ? 'कोई project नहीं। ऊपर नया बनाओ।' : 'No projects. Create now.';
 
   // Search
-  ph('projectSearch', 'search_ph');
+  // search always English
+  const psEl=document.getElementById('projectSearch'); if(psEl) psEl.placeholder='Search projects...';
 
   // Quota text
   const qt = document.getElementById('quotaText');
   if(qt){
     const cur = qt.textContent.match(/\d+\/\d+/)?.[0] || '0/3';
-    qt.textContent = cur + ' ' + (tx('quota_suffix')||'scripts used today');
+    qt.textContent = cur + ' scripts used today'; // Always English
   }
 
   // ── WORKSPACE TABS ──
