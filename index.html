@@ -1472,17 +1472,23 @@ function openProjectMenu(p){
   };
   $("m_dup").onclick=async()=>{
     closeModal();
-    const bgSnap=await db.collection("backgrounds").where("projectId","==",p.id).get();
-    const newRef=await db.collection("projects").add({
-      userId:currentUser.uid,projectName:(p.projectName||"Project")+" (Copy)",
-      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
-      lastOpenedAt:firebase.firestore.FieldValue.serverTimestamp(),
-      bgCount:p.bgCount||0,sceneCount:p.sceneCount||0
-    });
-    const batch=db.batch();
-    bgSnap.forEach(doc=>{ const ref=db.collection("backgrounds").doc(); batch.set(ref,{...doc.data(),projectId:newRef.id}); });
-    await batch.commit(); showToast("Duplicated 🎞️"); loadProjects();
+    showToast('⏳ Duplicating...');
+    try{
+      const bgSnap=await db.collection("backgrounds").where("projectId","==",p.id).get();
+      const newRef=await db.collection("projects").add({
+        userId:currentUser.uid,
+        projectName:(p.projectName||"Project")+" (Copy)",
+        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        lastOpenedAt:firebase.firestore.FieldValue.serverTimestamp(),
+        bgCount:p.bgCount||0,sceneCount:p.sceneCount||0
+      });
+      const batch=db.batch();
+      bgSnap.forEach(doc=>{ const ref=db.collection("backgrounds").doc(); batch.set(ref,{...doc.data(),projectId:newRef.id}); });
+      await batch.commit();
+      showToast('✅ Duplicated!');
+      loadProjects();
+    }catch(e){ showToast('❌ '+e.message); }
   };
   $("m_export").onclick=async()=>{
     const bgSnap=await db.collection("backgrounds").where("projectId","==",p.id).get();
@@ -1502,7 +1508,9 @@ function openProjectMenu(p){
       const scriptSnap=await db.collection("scripts").where("projectId","==",p.id).get();
       scriptSnap.forEach(doc=>batch.delete(doc.ref));
       batch.delete(db.collection("projects").doc(p.id));
-      await batch.commit(); closeModal(); loadProjects(); showToast("🗑️ Deleted: " + (p.projectName||"Project"));
+      await batch.commit();
+      if(currentProject && currentProject.id === p.id) currentProject = null;
+      closeModal(); loadProjects(); showToast("🗑️ Deleted: " + (p.projectName||"Project"));
     };
   };
 }
@@ -2233,19 +2241,33 @@ window.saveProdToFirestore = async function(){
 // ============================================================
 // SHARE PROJECT PAGE
 // ============================================================
-window.openSharePage = function(){
+window.openSharePage = async function(){
   document.getElementById('sideDrawer').classList.add('hidden');
+  openPage('shareProjectPage');
+  // Verify currentProject still exists in Firestore
   if(!currentProject){
     document.getElementById('share-no-project').classList.remove('hidden');
     document.getElementById('share-content').classList.add('hidden');
-  } else {
+    return;
+  }
+  try{
+    const doc = await db.collection('projects').doc(currentProject.id).get();
+    if(!doc.exists){
+      // Project was deleted — clear currentProject
+      currentProject = null;
+      document.getElementById('share-no-project').classList.remove('hidden');
+      document.getElementById('share-content').classList.add('hidden');
+      return;
+    }
     document.getElementById('share-no-project').classList.add('hidden');
     document.getElementById('share-content').classList.remove('hidden');
     document.getElementById('share-project-name').textContent = currentProject.projectName||'Untitled';
-    document.getElementById('share-project-meta').textContent = 'Project ID: '+currentProject.id;
+    document.getElementById('share-project-meta').textContent = 'Project: '+currentProject.projectName;
     document.getElementById('share-qr-wrap').classList.add('hidden');
+  }catch(e){
+    document.getElementById('share-no-project').classList.remove('hidden');
+    document.getElementById('share-content').classList.add('hidden');
   }
-  openPage('shareProjectPage');
 };
 
 window.shareViaLink = function(){
@@ -2277,18 +2299,21 @@ window.generateQR = function(){
 window.duplicateProject = async function(){
   if(!currentProject) return;
   try{
-    showToast('Duplicate ban raha hai...');
+    showToast('⏳ Duplicating project...');
+    // Only copy data fields — NOT the old id
     const ref = await db.collection('projects').add({
-      ...currentProject,
+      userId: currentUser.uid,
       projectName: (currentProject.projectName||'Project')+' (Copy)',
+      bgCount: currentProject.bgCount||0,
+      sceneCount: currentProject.sceneCount||0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       lastOpenedAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
     await loadProjects();
-    showToast('✅ Project duplicate ho gaya!');
+    showToast('✅ Project duplicated!');
     closePage('shareProjectPage');
-  }catch(e){ showToast('Error: '+e.message); }
+  }catch(e){ showToast('❌ Error: '+e.message); }
 };
 
 // ============================================================
