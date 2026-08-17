@@ -720,7 +720,7 @@ const WORDS_PER_MINUTE = 130;
             <button onclick="shareViaLink()" style="width:100%;padding:13px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">🔗 <span>Share Link Copy Karo</span></button>
             <button onclick="generateQR()" style="width:100%;padding:13px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">📱 <span>QR Code Generate Karo</span></button>
             <button onclick="copyReadOnlyLink()" style="width:100%;padding:13px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">👁️ <span>Read-Only Link</span></button>
-            <button onclick="duplicateProject()" style="width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">📋 <span>Project Duplicate Karo</span></button>
+            <button onclick="duplicateProject()" style="width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,#7a1a1f,#b1272d);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;">📋 <span>Duplicate Project</span></button>
           </div>
         </div>
         <div id="share-qr-wrap" class="hidden" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;margin-bottom:12px;">
@@ -877,7 +877,7 @@ const WORDS_PER_MINUTE = 130;
       <div style="position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:40px 20px;pointer-events:none;">
 
         <!-- TOP: CLICK FOR OPTIONS text above logo area -->
-        <div id="clickHintTop" style="margin-top:20px;font-family:'Cinzel',Georgia,serif;font-size:13px;font-weight:700;letter-spacing:.25em;color:#d98e3a;text-shadow:0 0 15px #d98e3a,0 0 30px rgba(217,142,58,.5);text-transform:uppercase;text-align:center;animation:pulse 1.8s infinite;pointer-events:none;">✨ CLICK FOR OPTIONS</div>
+        <div id="clickHintTop" style="margin-top:20px;font-family:'Cinzel',Georgia,serif;font-size:13px;font-weight:700;letter-spacing:.25em;color:#d98e3a;text-shadow:0 0 15px #d98e3a,0 0 30px rgba(217,142,58,.5);text-transform:uppercase;text-align:center;animation:pulse 1.8s infinite;pointer-events:none;">✨ FILL IN THE OPTIONS</div>
 
         <!-- SPACER -->
         <div style="flex:1;"></div>
@@ -1063,7 +1063,7 @@ const WORDS_PER_MINUTE = 130;
         </div>
         <div id="emptyProjects" class="empty-state hidden">
           <div class="em-mark">🎞️</div>
-          <div id="emptyProjMsg">No projects. Create now.</div>
+          <div id="emptyProjMsg">No project. Please create a new project.</div>
       </div>
       </div>
 
@@ -1494,7 +1494,7 @@ function openProjectMenu(p){
   };
   $("m_del").onclick=()=>{
     closeModal();
-    openModal(`<p style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:16px;">Delete this project?</p><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="delConfirmBtn" data-i18n="delete">Delete</button></div>`);
+    openModal(`<h3 style="color:var(--ember);">🗑️ Delete Project</h3><p style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px;">"${escapeHtml(p.projectName||'Project')}"</p><p style="font-size:12px;color:var(--ink-dim);margin-bottom:16px;">This will be permanently deleted.</p><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="delConfirmBtn">Delete</button></div>`);
     $("delConfirmBtn").onclick=async()=>{
       const bgSnap=await db.collection("backgrounds").where("projectId","==",p.id).get();
       const batch=db.batch();
@@ -1502,7 +1502,7 @@ function openProjectMenu(p){
       const scriptSnap=await db.collection("scripts").where("projectId","==",p.id).get();
       scriptSnap.forEach(doc=>batch.delete(doc.ref));
       batch.delete(db.collection("projects").doc(p.id));
-      await batch.commit(); closeModal(); loadProjects(); showToast("Deleted 🔥");
+      await batch.commit(); closeModal(); loadProjects(); showToast("🗑️ Deleted: " + (p.projectName||"Project"));
     };
   };
 }
@@ -2353,7 +2353,7 @@ async function featureRenderProjectList(feature){
       row.innerHTML = `
         <div style="flex:1;min-width:0;" onclick="featureSelectProject('${feature}','${p.id}')">
           <div style="font-size:13px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.projectName||'Untitled')}</div>
-          <div style="font-size:10px;color:var(--ink-faint);margin-top:2px;">${hasData ? '✅ Pehle se generated hai' : '⚪ Khali project'}</div>
+          <div style="font-size:10px;color:var(--ink-faint);margin-top:2px;">${hasData ? '✅ Generated before' : (window.nsAppLang==='hi' ? '⚪ खाली project' : '⚪ Empty project')}</div>
         </div>
         <button onclick="event.stopPropagation();featureDeleteProject('${feature}','${p.id}')" style="background:none;border:none;color:#b1272d;font-size:16px;cursor:pointer;padding:4px 8px;flex-shrink:0;">🗑️</button>
       `;
@@ -2382,7 +2382,7 @@ async function featureCreateProject(feature){
     nameInput.value='';
     // Don't auto-open project — show picker with updated list
     await featureRenderProjectList(feature);
-    showToast('✅ Project created! Click in list.');
+    showToast('✅ Project created — continue your work!');
   }catch(e){ showToast('Error: '+e.message); }
 }
 
@@ -2420,7 +2420,7 @@ async function featureDeleteProject(feature, projectId){
   const cfg = featurePageMap[feature];
   const p = featureProjectsCache[feature].find(pr=>pr.id===projectId);
   if(!p) return;
-  openModal(`<h3>Delete?</h3><p style="font-size:13px;color:var(--ink-dim);">"${escapeHtml(p.projectName||'Untitled')}" will be deleted.</p>
+  openModal(`<h3 style="color:var(--ember);">🗑️ Delete Project</h3><p style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;">"${escapeHtml(p.projectName||'Project')}"</p><p style="font-size:12px;color:var(--ink-dim);margin-bottom:16px;">This will be permanently deleted.</p>
   <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" id="featureDelConfirm">Delete</button></div>`);
   document.getElementById('featureDelConfirm').onclick = async()=>{
     try{
@@ -2434,7 +2434,7 @@ async function featureDeleteProject(feature, projectId){
         document.getElementById(cfg.activeBar).classList.add('hidden');
         document.getElementById(cfg.formSection).classList.add('hidden');
       }
-      showToast('🗑️ Project deleted');
+      showToast('🗑️ Deleted: ' + (p.projectName||'Project'));
     }catch(e){ showToast('Error: '+e.message); }
   };
 }
@@ -3404,7 +3404,7 @@ function applyAppLanguage(code){
   const _alwaysEn = (id, text) => { const el=document.getElementById(id); if(el) el.textContent=text; };
   const _alwaysPh = (id, text) => { const el=document.getElementById(id); if(el) el.placeholder=text; };
   _alwaysPh('projectSearch', 'Search projects...');
-  _alwaysPh('profileUsername', 'Enter username');
+  _alwaysPh('profileUsername', 'Enter the username');
   // Quota always English
   const _qt = document.getElementById('quotaText');
   if(_qt){ const _cur=_qt.textContent.match(/\d+\/\d+/)?.[0]||'0/3'; _qt.textContent=_cur+' scripts used today'; }
@@ -3422,20 +3422,20 @@ function applyAppLanguage(code){
   set('enterAppBtn', 'enter_btn');
 
   // ── PLACEHOLDERS ──
-  ph('iw2-subject', 'subject_ph');
+  const iwSubEl=document.getElementById('iw2-subject'); if(iwSubEl) iwSubEl.placeholder='Enter the subject name';
   ph('prod-script-input', 'script_ph');
   ph('sd-script-input', 'script_ph');
   ph('dm-script-input', 'script_ph');
   // profile username always English
-  const puEl=document.getElementById('profileUsername'); if(puEl) puEl.placeholder='Enter username';
+  const puEl=document.getElementById('profileUsername'); if(puEl) puEl.placeholder='Enter the username';
   // lang search always English
-  ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>ph(id,'proj_ph'));
+  ['iw2-new-proj-name','prod-new-proj-name','sd-new-proj-name','dm-new-proj-name'].forEach(id=>{ const el=document.getElementById(id); if(el) el.placeholder='Enter project name'; });
 
   // ── ALL CREATE BUTTONS ──
-  document.querySelectorAll('[onclick*="featureCreateProject"]').forEach(btn=>{ btn.textContent=tx('create_btn'); });
+  document.querySelectorAll('[onclick*="featureCreateProject"]').forEach(btn=>{ btn.textContent='Create'; });
 
   // ── ALL SWITCH BUTTONS ──
-  document.querySelectorAll('[onclick*="featureSwitchProject"]').forEach(btn=>{ btn.textContent=tx('switch_btn'); });
+  document.querySelectorAll('[onclick*="featureSwitchProject"]').forEach(btn=>{ btn.textContent='Switch Project'; });
 
   // ── PROFILE PAGE ──
   const pd=document.querySelector('#profilePage button[onclick="saveProfile()"]');
@@ -3508,7 +3508,7 @@ function applyAppLanguage(code){
 
   // Empty state
   const emptyMsg = document.getElementById('emptyProjMsg');
-  if(emptyMsg) emptyMsg.textContent = code==='hi' ? 'कोई project नहीं। ऊपर नया बनाओ।' : 'No projects. Create now.';
+  if(emptyMsg) emptyMsg.textContent = code==='hi' ? 'कोई project नहीं है। ऊपर नया बनाओ।' : 'No project. Please create a new project.';
 
   // Search
   // search always English
@@ -3521,13 +3521,13 @@ function applyAppLanguage(code){
     qt.textContent = cur + ' scripts used today'; // Always English
   }
 
-  // ── WORKSPACE TABS ──
+  // ── WORKSPACE TABS — always English ──
   document.querySelectorAll('.tabs .tab').forEach(tab=>{
     const dt = tab.dataset.tab;
-    if(dt==='script') tab.textContent = tx('tab_script');
-    else if(dt==='backgrounds') tab.textContent = tx('tab_backgrounds');
-    else if(dt==='analytics') tab.textContent = tx('tab_analytics');
-    else if(dt==='history') tab.textContent = tx('tab_history');
+    if(dt==='script') tab.textContent = '📝 Script';
+    else if(dt==='backgrounds') tab.textContent = '🖼️ Backgrounds';
+    else if(dt==='analytics') tab.textContent = '📊 Analytics';
+    else if(dt==='history') tab.textContent = '🕯️ History';
   });
 
   // Back button in workspace
